@@ -38,7 +38,7 @@ public class Player : MonoBehaviour
 
     private float _lastGroundedTime = 0;
 
-    private List<Zipline> _ziplinesCreated;
+    private List<Zipline> _ziplinesCreated = new List<Zipline>();
     
     public void Awake()
     {
@@ -60,14 +60,19 @@ public class Player : MonoBehaviour
 
            if (_ziplinesCreated.Count > 0)
            {
-               if(_ziplinesCreated[^1].PointsPlaced <2)
-               active = _ziplinesCreated[^1];
+               if (_ziplinesCreated[^1].PointsPlaced < 2)
+               {
+                   active = _ziplinesCreated[^1];
+               }
+              
            }
            else
            {
-             active  = Instantiate(ZiplinePrefab);
+             active = Instantiate(ZiplinePrefab);
            }
-           active.PlacePoint(transform.position);
+           
+           active?.PlacePoint(transform.position);
+           _ziplinesCreated.Add(active);
         };
     }
 
@@ -87,6 +92,8 @@ public class Player : MonoBehaviour
         Vector3 forward = (transform.position - VCam.transform.position).normalized;
         Vector3 right = Quaternion.AngleAxis(90, Vector3.up) * forward;
 
+        bool qHTriggers = Physics.queriesHitTriggers;
+        Physics.queriesHitTriggers = false;
         if (Physics.Raycast(transform.position + Vector3.up*0.5f, -transform.up, out RaycastHit info, 0.8f))
         {
             _grounded = true;
@@ -100,6 +107,7 @@ public class Player : MonoBehaviour
         {
             _grounded = false;
         }
+        Physics.queriesHitTriggers = qHTriggers;
         
         Vector3 flatForward = new Vector3(forward.x, 0, forward.z).normalized;
         

@@ -43,7 +43,7 @@ public class Zipline : MonoBehaviour
         {
             case 0:
                 Debug.Log("Point 1 Placed");
-                Point1.gameObject.SetActive(true);
+                Point1.gameObject.SetActive(true); 
                 Point1.transform.position = point;
                 break;
             case 1:
