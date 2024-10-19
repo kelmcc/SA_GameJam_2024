@@ -6,7 +6,7 @@ using UnityEngine;
 
 [RequireComponent(typeof(LineRenderer))]
 [ExecuteAlways]
-public class Zipline : MonoBehaviour
+public class Zipline : Building
 {
     public ZiplinePole Point1;
     public ZiplinePole Point2;

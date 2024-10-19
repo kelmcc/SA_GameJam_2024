@@ -1044,6 +1044,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: ZiplineConstructionZone (2)
       objectReference: {fileID: 0}
+    - target: {fileID: 3989402554293216131, guid: 67587963d50adfd46b234d217f716cdd,
+        type: 3}
+      propertyPath: Building
+      value: 
+      objectReference: {fileID: 7207471477462615243}
     - target: {fileID: 7379632391474388142, guid: 67587963d50adfd46b234d217f716cdd,
         type: 3}
       propertyPath: MidOffset
@@ -1060,6 +1065,18 @@ Transform:
     type: 3}
   m_PrefabInstance: {fileID: 175549746963241061}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &7207471477462615243 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 7379632391474388142, guid: 67587963d50adfd46b234d217f716cdd,
+    type: 3}
+  m_PrefabInstance: {fileID: 175549746963241061}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9547dd9c86e5c114099f01056350a4cb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1001 &197548322909016421
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -2058,6 +2075,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: ZiplineConstructionZone (4)
       objectReference: {fileID: 0}
+    - target: {fileID: 3989402554293216131, guid: 67587963d50adfd46b234d217f716cdd,
+        type: 3}
+      propertyPath: Building
+      value: 
+      objectReference: {fileID: 7265552669563637195}
     - target: {fileID: 7379632391474388142, guid: 67587963d50adfd46b234d217f716cdd,
         type: 3}
       propertyPath: MidOffset
@@ -2074,6 +2096,18 @@ Transform:
     type: 3}
   m_PrefabInstance: {fileID: 197548322909016421}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &7265552669563637195 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 7379632391474388142, guid: 67587963d50adfd46b234d217f716cdd,
+    type: 3}
+  m_PrefabInstance: {fileID: 197548322909016421}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9547dd9c86e5c114099f01056350a4cb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1001 &877918734926188799
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -4587,6 +4621,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: ZiplineConstructionZone (11)
       objectReference: {fileID: 0}
+    - target: {fileID: 3989402554293216131, guid: 67587963d50adfd46b234d217f716cdd,
+        type: 3}
+      propertyPath: Building
+      value: 
+      objectReference: {fileID: 7658167754580790353}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -4598,6 +4637,18 @@ Transform:
     type: 3}
   m_PrefabInstance: {fileID: 877918734926188799}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &7658167754580790353 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 7379632391474388142, guid: 67587963d50adfd46b234d217f716cdd,
+    type: 3}
+  m_PrefabInstance: {fileID: 877918734926188799}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9547dd9c86e5c114099f01056350a4cb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1001 &2079772114950925936
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -7111,6 +7162,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: ZiplineConstructionZone (12)
       objectReference: {fileID: 0}
+    - target: {fileID: 3989402554293216131, guid: 67587963d50adfd46b234d217f716cdd,
+        type: 3}
+      propertyPath: Building
+      value: 
+      objectReference: {fileID: 8842093528812466910}
     - target: {fileID: 7379632391474388142, guid: 67587963d50adfd46b234d217f716cdd,
         type: 3}
       propertyPath: MidOffset
@@ -7127,6 +7183,18 @@ Transform:
     type: 3}
   m_PrefabInstance: {fileID: 2079772114950925936}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &8842093528812466910 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 7379632391474388142, guid: 67587963d50adfd46b234d217f716cdd,
+    type: 3}
+  m_PrefabInstance: {fileID: 2079772114950925936}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9547dd9c86e5c114099f01056350a4cb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1001 &2595942112264045192
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -9640,6 +9708,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: ZiplineConstructionZone (9)
       objectReference: {fileID: 0}
+    - target: {fileID: 3989402554293216131, guid: 67587963d50adfd46b234d217f716cdd,
+        type: 3}
+      propertyPath: Building
+      value: 
+      objectReference: {fileID: 4787074715593596454}
     - target: {fileID: 7379632391474388142, guid: 67587963d50adfd46b234d217f716cdd,
         type: 3}
       propertyPath: MidOffset
@@ -9656,6 +9729,18 @@ Transform:
     type: 3}
   m_PrefabInstance: {fileID: 2595942112264045192}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &4787074715593596454 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 7379632391474388142, guid: 67587963d50adfd46b234d217f716cdd,
+    type: 3}
+  m_PrefabInstance: {fileID: 2595942112264045192}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9547dd9c86e5c114099f01056350a4cb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1001 &4461227801512686483
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -10099,6 +10184,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: ZiplineConstructionZone
       objectReference: {fileID: 0}
+    - target: {fileID: 3989402554293216131, guid: 67587963d50adfd46b234d217f716cdd,
+        type: 3}
+      propertyPath: Building
+      value: 
+      objectReference: {fileID: 6593498016581070653}
     - target: {fileID: 7379632391474388142, guid: 67587963d50adfd46b234d217f716cdd,
         type: 3}
       propertyPath: MidOffset
@@ -10115,6 +10205,18 @@ Transform:
     type: 3}
   m_PrefabInstance: {fileID: 4461227801512686483}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &6593498016581070653 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 7379632391474388142, guid: 67587963d50adfd46b234d217f716cdd,
+    type: 3}
+  m_PrefabInstance: {fileID: 4461227801512686483}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9547dd9c86e5c114099f01056350a4cb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1001 &5343218788132924508
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -11113,6 +11215,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: ZiplineConstructionZone (7)
       objectReference: {fileID: 0}
+    - target: {fileID: 3989402554293216131, guid: 67587963d50adfd46b234d217f716cdd,
+        type: 3}
+      propertyPath: Building
+      value: 
+      objectReference: {fileID: 3192864816126963954}
     - target: {fileID: 7379632391474388142, guid: 67587963d50adfd46b234d217f716cdd,
         type: 3}
       propertyPath: MidOffset
@@ -11123,6 +11230,18 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 67587963d50adfd46b234d217f716cdd, type: 3}
+--- !u!114 &3192864816126963954 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 7379632391474388142, guid: 67587963d50adfd46b234d217f716cdd,
+    type: 3}
+  m_PrefabInstance: {fileID: 5343218788132924508}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9547dd9c86e5c114099f01056350a4cb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!4 &6512737545526498841 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 1172916566806755909, guid: 67587963d50adfd46b234d217f716cdd,
@@ -12127,6 +12246,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: ZiplineConstructionZone (3)
       objectReference: {fileID: 0}
+    - target: {fileID: 3989402554293216131, guid: 67587963d50adfd46b234d217f716cdd,
+        type: 3}
+      propertyPath: Building
+      value: 
+      objectReference: {fileID: 2917013249256716428}
     - target: {fileID: 7379632391474388142, guid: 67587963d50adfd46b234d217f716cdd,
         type: 3}
       propertyPath: MidOffset
@@ -12137,6 +12261,18 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 67587963d50adfd46b234d217f716cdd, type: 3}
+--- !u!114 &2917013249256716428 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 7379632391474388142, guid: 67587963d50adfd46b234d217f716cdd,
+    type: 3}
+  m_PrefabInstance: {fileID: 5625814624034219042}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9547dd9c86e5c114099f01056350a4cb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!4 &6797587636957355623 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 1172916566806755909, guid: 67587963d50adfd46b234d217f716cdd,
@@ -14656,6 +14792,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: ZiplineConstructionZone (13)
       objectReference: {fileID: 0}
+    - target: {fileID: 3989402554293216131, guid: 67587963d50adfd46b234d217f716cdd,
+        type: 3}
+      propertyPath: Building
+      value: 
+      objectReference: {fileID: 3505683271960174131}
     - target: {fileID: 7379632391474388142, guid: 67587963d50adfd46b234d217f716cdd,
         type: 3}
       propertyPath: MidOffset
@@ -14666,6 +14807,18 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 67587963d50adfd46b234d217f716cdd, type: 3}
+--- !u!114 &3505683271960174131 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 7379632391474388142, guid: 67587963d50adfd46b234d217f716cdd,
+    type: 3}
+  m_PrefabInstance: {fileID: 6255228109956252317}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9547dd9c86e5c114099f01056350a4cb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!4 &5082314053055215832 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 1172916566806755909, guid: 67587963d50adfd46b234d217f716cdd,
@@ -17185,6 +17338,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: ZiplineConstructionZone (8)
       objectReference: {fileID: 0}
+    - target: {fileID: 3989402554293216131, guid: 67587963d50adfd46b234d217f716cdd,
+        type: 3}
+      propertyPath: Building
+      value: 
+      objectReference: {fileID: 528381290588176040}
     - target: {fileID: 7379632391474388142, guid: 67587963d50adfd46b234d217f716cdd,
         type: 3}
       propertyPath: MidOffset
@@ -17195,6 +17353,18 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 67587963d50adfd46b234d217f716cdd, type: 3}
+--- !u!114 &528381290588176040 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 7379632391474388142, guid: 67587963d50adfd46b234d217f716cdd,
+    type: 3}
+  m_PrefabInstance: {fileID: 7006641646258643462}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9547dd9c86e5c114099f01056350a4cb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!4 &8177303354643028035 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 1172916566806755909, guid: 67587963d50adfd46b234d217f716cdd,
@@ -19714,6 +19884,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: ZiplineConstructionZone (10)
       objectReference: {fileID: 0}
+    - target: {fileID: 3989402554293216131, guid: 67587963d50adfd46b234d217f716cdd,
+        type: 3}
+      propertyPath: Building
+      value: 
+      objectReference: {fileID: 113388353154025617}
     - target: {fileID: 7379632391474388142, guid: 67587963d50adfd46b234d217f716cdd,
         type: 3}
       propertyPath: MidOffset
@@ -19724,6 +19899,18 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 67587963d50adfd46b234d217f716cdd, type: 3}
+--- !u!114 &113388353154025617 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 7379632391474388142, guid: 67587963d50adfd46b234d217f716cdd,
+    type: 3}
+  m_PrefabInstance: {fileID: 7492703989640041535}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9547dd9c86e5c114099f01056350a4cb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!4 &8627885282429660794 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 1172916566806755909, guid: 67587963d50adfd46b234d217f716cdd,
@@ -20728,6 +20915,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: ZiplineConstructionZone (6)
       objectReference: {fileID: 0}
+    - target: {fileID: 3989402554293216131, guid: 67587963d50adfd46b234d217f716cdd,
+        type: 3}
+      propertyPath: Building
+      value: 
+      objectReference: {fileID: 971398651923707314}
     - target: {fileID: 7379632391474388142, guid: 67587963d50adfd46b234d217f716cdd,
         type: 3}
       propertyPath: MidOffset
@@ -20738,6 +20930,18 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 67587963d50adfd46b234d217f716cdd, type: 3}
+--- !u!114 &971398651923707314 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 7379632391474388142, guid: 67587963d50adfd46b234d217f716cdd,
+    type: 3}
+  m_PrefabInstance: {fileID: 7715406558178879772}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9547dd9c86e5c114099f01056350a4cb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!4 &8887194182575674201 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 1172916566806755909, guid: 67587963d50adfd46b234d217f716cdd,
@@ -21742,6 +21946,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: ZiplineConstructionZone (1)
       objectReference: {fileID: 0}
+    - target: {fileID: 3989402554293216131, guid: 67587963d50adfd46b234d217f716cdd,
+        type: 3}
+      propertyPath: Building
+      value: 
+      objectReference: {fileID: 589740328769350076}
     - target: {fileID: 7379632391474388142, guid: 67587963d50adfd46b234d217f716cdd,
         type: 3}
       propertyPath: MidOffset
@@ -21752,6 +21961,18 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 67587963d50adfd46b234d217f716cdd, type: 3}
+--- !u!114 &589740328769350076 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 7379632391474388142, guid: 67587963d50adfd46b234d217f716cdd,
+    type: 3}
+  m_PrefabInstance: {fileID: 7946202677284238610}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9547dd9c86e5c114099f01056350a4cb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!4 &9079710246051974999 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 1172916566806755909, guid: 67587963d50adfd46b234d217f716cdd,
@@ -24271,6 +24492,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: ZiplineConstructionZone (14)
       objectReference: {fileID: 0}
+    - target: {fileID: 3989402554293216131, guid: 67587963d50adfd46b234d217f716cdd,
+        type: 3}
+      propertyPath: Building
+      value: 
+      objectReference: {fileID: 1628578896427762049}
     - target: {fileID: 7379632391474388142, guid: 67587963d50adfd46b234d217f716cdd,
         type: 3}
       propertyPath: MidOffset
@@ -24281,6 +24507,18 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 67587963d50adfd46b234d217f716cdd, type: 3}
+--- !u!114 &1628578896427762049 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 7379632391474388142, guid: 67587963d50adfd46b234d217f716cdd,
+    type: 3}
+  m_PrefabInstance: {fileID: 8138118253375020335}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9547dd9c86e5c114099f01056350a4cb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!4 &6969159929607595882 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 1172916566806755909, guid: 67587963d50adfd46b234d217f716cdd,
@@ -25285,6 +25523,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: ZiplineConstructionZone (5)
       objectReference: {fileID: 0}
+    - target: {fileID: 3989402554293216131, guid: 67587963d50adfd46b234d217f716cdd,
+        type: 3}
+      propertyPath: Building
+      value: 
+      objectReference: {fileID: 1374137418623894763}
     - target: {fileID: 7379632391474388142, guid: 67587963d50adfd46b234d217f716cdd,
         type: 3}
       propertyPath: MidOffset
@@ -25295,6 +25538,18 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 67587963d50adfd46b234d217f716cdd, type: 3}
+--- !u!114 &1374137418623894763 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 7379632391474388142, guid: 67587963d50adfd46b234d217f716cdd,
+    type: 3}
+  m_PrefabInstance: {fileID: 8464605917418772549}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9547dd9c86e5c114099f01056350a4cb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!4 &7295650368649011712 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 1172916566806755909, guid: 67587963d50adfd46b234d217f716cdd,

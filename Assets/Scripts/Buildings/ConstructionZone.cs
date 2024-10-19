@@ -1,5 +1,6 @@
 using Framework;
 using System;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.InputSystem;
@@ -11,11 +12,12 @@ public class ConstructionZone : MonoBehaviour
    public SphereCollider Coll;
    public InputActionReference InteractReference;
    
-   public UnityEvent<GameObject> OnBuilt;
+   public UnityEvent<Building> OnBuilt;
 
-   public GameObject Holograph;
-
-   public GameObject Building;
+   private List<Material> _mats = new List<Material>();
+   private Renderer[] _renderers;
+   public Building Building;
+   public Material HologramMaterial;
 
    private bool _canBuild;
    private bool _built;
@@ -23,10 +25,29 @@ public class ConstructionZone : MonoBehaviour
 
    private void Start()
    {
-      if (Holograph != null)
+      _renderers =  Building.GetComponentsInChildren<Renderer>();
+      SetHologram();
+      Building.gameObject.SetActive(false);
+   }
+
+   private void SetHologram()
+   {
+      Building.SetPassive();
+      _mats.Clear();
+      foreach (Renderer r in _renderers)
       {
-         Holograph.SetActive(false);
+         _mats.Add(r.sharedMaterial);
+         r.sharedMaterial = HologramMaterial;
       }
+   }
+
+   private void SetReal()
+   {
+      for (int i = 0; i < _renderers.Length; i++)
+      {
+         _renderers[i].sharedMaterial = _mats[i];
+      }
+      Building.SetInteractable();
    }
 
    public void OnTriggerEnter(Collider other)
@@ -34,10 +55,7 @@ public class ConstructionZone : MonoBehaviour
       if (BuildTriggerMask.Contains(other.gameObject.layer))
       {
          _builder = other;
-         if (Holograph)
-         {
-            Holograph.SetActive(true);
-         }
+         Building.gameObject.SetActive(true); 
          _canBuild = true;
       }
    }
@@ -46,10 +64,11 @@ public class ConstructionZone : MonoBehaviour
    {
       if (other == _builder)
       {
-         if (Holograph)
+         if (!_built)
          {
-            Holograph?.SetActive(false);
+            Building.gameObject.SetActive(false); 
          }
+       
          _canBuild = false;
       }
    }
@@ -57,15 +76,18 @@ public class ConstructionZone : MonoBehaviour
    public void Update()
    {
       Coll.radius = Radius;
+
+      if (!_canBuild)
+      {
+         return;
+      }
+      
       if (InteractReference.ToInputAction().IsPressed())
       {
          if (!_built)
          {
-            if (Holograph)
-            {
-               Holograph?.SetActive(false);
-            }
-            Building.SetActive(true);
+            Building.gameObject.SetActive(true);
+            SetReal();
             OnBuilt?.Invoke(Building);
             _canBuild = false;
             _built = true;

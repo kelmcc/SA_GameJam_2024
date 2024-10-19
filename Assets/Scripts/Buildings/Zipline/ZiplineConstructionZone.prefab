@@ -98,10 +98,20 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6764437722518807770, guid: 0de3360d5f1d65f4da1afbe60739d4a5,
         type: 3}
+      propertyPath: Building
+      value: 
+      objectReference: {fileID: 8776234713666619598}
+    - target: {fileID: 6764437722518807770, guid: 0de3360d5f1d65f4da1afbe60739d4a5,
+        type: 3}
       propertyPath: Holograph
       value: 
       objectReference: {fileID: 203565466152617481, guid: 3003c398f98fe2a4cb88c6e756df77c9,
         type: 3}
+    - target: {fileID: 6764437722518807770, guid: 0de3360d5f1d65f4da1afbe60739d4a5,
+        type: 3}
+      propertyPath: HologramMaterial
+      value: 
+      objectReference: {fileID: 2100000, guid: 578383ce7186755459432f590984d8cd, type: 2}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -599,6 +609,12 @@ PrefabInstance:
 --- !u!4 &1095216938462300918 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 8370706606477018161, guid: 3003c398f98fe2a4cb88c6e756df77c9,
+    type: 3}
+  m_PrefabInstance: {fileID: 8869917873940549319}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1 &8776234713666619598 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 203565466152617481, guid: 3003c398f98fe2a4cb88c6e756df77c9,
     type: 3}
   m_PrefabInstance: {fileID: 8869917873940549319}
   m_PrefabAsset: {fileID: 0}
