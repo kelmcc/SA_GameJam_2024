@@ -58,8 +58,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1534723203913602554}
   serializedVersion: 2
-  m_LocalRotation: {x: 0.19966623, y: 0.653932, z: -0.58760834, w: 0.4326926}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalRotation: {x: 0.27152863, y: 0.5664937, z: -0.50904584, w: 0.5884127}
+  m_LocalPosition: {x: 0, y: 0.00000007038761, z: 0.00000022779159}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -137,8 +137,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2476438111577166606}
   serializedVersion: 2
-  m_LocalRotation: {x: 0.2242173, y: 0.61907375, z: -0.6241937, w: 0.42054328}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalRotation: {x: 0.30488384, y: 0.536314, z: -0.54074955, w: 0.5718419}
+  m_LocalPosition: {x: 0, y: 0.00000007038761, z: 0.00000022779159}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -202,7 +202,7 @@ GameObject:
   - component: {fileID: 1845401125537859336}
   - component: {fileID: 7631319498874580005}
   - component: {fileID: 2413623620745365701}
-  m_Layer: 3
+  m_Layer: 0
   m_Name: FWD
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -302,7 +302,7 @@ Transform:
   m_GameObject: {fileID: 4284448583010590741}
   serializedVersion: 2
   m_LocalRotation: {x: 0.1492864, y: -0, z: -0, w: 0.988794}
-  m_LocalPosition: {x: -2.513864, y: 10, z: 1.6372199}
+  m_LocalPosition: {x: -2.9613094, y: 10, z: 0.48025656}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -440,7 +440,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 4284448583010590741}
-  m_Enabled: 0
+  m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: e501d18bb52cf8c40b1853ca4904654f, type: 3}
   m_Name: 
@@ -615,8 +615,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 6149162538972518045}
   serializedVersion: 2
-  m_LocalRotation: {x: 0.21198702, y: 0.6368236, z: -0.60609543, w: 0.42680866}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalRotation: {x: 0.28827003, y: 0.5516817, z: -0.52506196, w: 0.5803944}
+  m_LocalPosition: {x: 0, y: 0.00000007038761, z: 0.00000022779159}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -681,7 +681,7 @@ GameObject:
   - component: {fileID: 6313027941652833023}
   - component: {fileID: 7322994155798744769}
   - component: {fileID: 8072166849881743070}
-  m_Layer: 3
+  m_Layer: 0
   m_Name: Capsule
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -786,7 +786,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 891981350141337268}
-  m_Layer: 3
+  m_Layer: 0
   m_Name: LookTarget
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1071,7 +1071,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 2124808178788892642}
-  m_Layer: 3
+  m_Layer: 0
   m_Name: Character
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1105,7 +1105,8 @@ GameObject:
   - component: {fileID: 6723180433001404617}
   - component: {fileID: 6806644745019158950}
   - component: {fileID: 3034907632639712371}
-  m_Layer: 3
+  - component: {fileID: 2334680722190206101}
+  m_Layer: 0
   m_Name: Player
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1141,8 +1142,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d4a175624171126408de99c0a02207a7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  ZiplinePrefab: {fileID: 2121758100067275369, guid: 3003c398f98fe2a4cb88c6e756df77c9,
-    type: 3}
+  ZiplinePrefab: {fileID: 0}
   WalkSpeed: 10
   SprintSpeed: 20
   JumpForce: 30
@@ -1158,6 +1158,7 @@ MonoBehaviour:
   Grapple: {fileID: 2473330573701837956, guid: beebc186c9198a5408aab7737b4d8c34, type: 3}
   Interact: {fileID: 1781555164194001046, guid: beebc186c9198a5408aab7737b4d8c34,
     type: 3}
+  _health: 200
 --- !u!54 &3034907632639712371
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -1185,6 +1186,29 @@ Rigidbody:
   m_Interpolate: 1
   m_Constraints: 80
   m_CollisionDetection: 2
+--- !u!136 &2334680722190206101
+CapsuleCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8820060958917170014}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 1
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Radius: 0.68
+  m_Height: 2.51
+  m_Direction: 1
+  m_Center: {x: 0, y: 1, z: 0}
 --- !u!1 &8882340152166219190
 GameObject:
   m_ObjectHideFlags: 0

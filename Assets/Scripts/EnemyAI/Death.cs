@@ -17,16 +17,13 @@ namespace EnemyAI.Spawning
                 enemyBase.OnDeath();
                 EnemyPool.Instance.Pool.Release(enemyBase);
             }
+            
+            Player player = other.gameObject.GetComponent<Player>();
+            if (player!= null)
+            {
+                player.OnDeath();
+            }
         }
 
-        private void OnTriggerExit(Collider other)
-        {
-            
-        }
-        
-        private void OnTriggerStay(Collider other)
-        {
-            
-        }
     }
 }
