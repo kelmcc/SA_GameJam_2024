@@ -7,8 +7,6 @@ using UnityEngine.InputSystem;
 
 public class Player : Damagable
 {
-    public Zipline ZiplinePrefab;
-
     public float WalkSpeed = 5;
     public float SprintSpeed = 10;
     public float JumpForce = 10;
@@ -37,8 +35,6 @@ public class Player : Damagable
 
     private float _lastGroundedTime = 0;
 
-    private List<Zipline> _ziplinesCreated;
-
     [SerializeField] private float _health = 200;
 
     public void Awake()
@@ -51,19 +47,7 @@ public class Player : Damagable
 
         Interact.ToInputAction().performed += (context) =>
         {
-            Zipline active = null;
-
-            if (_ziplinesCreated.Count > 0)
-            {
-                if (_ziplinesCreated[^1].PointsPlaced < 2)
-                    active = _ziplinesCreated[^1];
-            }
-            else
-            {
-                active = Instantiate(ZiplinePrefab);
-            }
-
-            active.PlacePoint(transform.position);
+           
         };
     }
 
@@ -83,7 +67,7 @@ public class Player : Damagable
         Vector3 forward = (transform.position - VCam.transform.position).normalized;
         Vector3 right = Quaternion.AngleAxis(90, Vector3.up) * forward;
 
-        if (Physics.Raycast(transform.position + Vector3.up * 0.5f, -transform.up, out RaycastHit info, 0.8f))
+        if (Physics.Raycast(transform.position + Vector3.up * 0.5f, -transform.up, out RaycastHit info, 1f))
         {
             _grounded = true;
             _groundedDistance = info.distance;
@@ -94,6 +78,7 @@ public class Player : Damagable
         }
         else
         {
+            Debug.Log("<color=cyan>Player Ungrounded</color>");
             _grounded = false;
         }
 
@@ -101,8 +86,8 @@ public class Player : Damagable
 
         if (_grounded)
         {
-            Vector3 v = _body.velocity * Mathf.Clamp01(Time.deltaTime * 20);
-            _body.velocity = new Vector3(v.x, _body.velocity.y, v.z);
+            //Vector3 v = _body.velocity * Mathf.Clamp01(Time.deltaTime * 20);
+            //_body.velocity = new Vector3(v.x, _body.velocity.y, v.z);
         }
         else
         {

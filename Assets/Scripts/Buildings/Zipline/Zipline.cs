@@ -27,37 +27,7 @@ public class Zipline : MonoBehaviour
             return _lineRenderer;
         }
     }
-
-    private void Awake()
-    {
-        if (Application.isPlaying)
-        {
-            Point1.gameObject.SetActive(false);
-            Point2.gameObject.SetActive(false);
-        }
-    }
-
-    public void PlacePoint(Vector3 point)
-    {
-        switch (PointsPlaced)
-        {
-            case 0:
-                Debug.Log("Point 1 Placed");
-                Point1.gameObject.SetActive(true); 
-                Point1.transform.position = point;
-                break;
-            case 1:
-                Debug.Log("Point 2 Placed");
-                Point2.gameObject.SetActive(true);
-                Point2.transform.position = point;
-                break;
-            default:
-                Debug.LogError("Placing point on already set up zipline!");
-                break;
-        }
-        PointsPlaced++;
-    }
-
+    
     private void LateUpdate()
     {
         if (Point1.isActiveAndEnabled && Point2.isActiveAndEnabled)

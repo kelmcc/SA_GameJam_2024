@@ -58,8 +58,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1534723203913602554}
   serializedVersion: 2
-  m_LocalRotation: {x: 0.27152863, y: 0.5664937, z: -0.50904584, w: 0.5884127}
-  m_LocalPosition: {x: 0, y: 0.00000007038761, z: 0.00000022779159}
+  m_LocalRotation: {x: 0.1996873, y: 0.6539105, z: -0.5875977, w: 0.43272978}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -137,8 +137,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2476438111577166606}
   serializedVersion: 2
-  m_LocalRotation: {x: 0.30488384, y: 0.536314, z: -0.54074955, w: 0.5718419}
-  m_LocalPosition: {x: 0, y: 0.00000007038761, z: 0.00000022779159}
+  m_LocalRotation: {x: 0.22421731, y: 0.61907375, z: -0.62419367, w: 0.4205433}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -202,7 +202,7 @@ GameObject:
   - component: {fileID: 1845401125537859336}
   - component: {fileID: 7631319498874580005}
   - component: {fileID: 2413623620745365701}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: FWD
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -217,13 +217,13 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 4008388319097201795}
   serializedVersion: 2
-  m_LocalRotation: {x: -0, y: -0, z: 0.3290912, w: 0.94429815}
-  m_LocalPosition: {x: 0, y: 0.619, z: 0.514}
-  m_LocalScale: {x: 0.5275661, y: 0.51386, z: 0.8140618}
+  m_LocalRotation: {x: 0.6789179, y: -0.2366055, z: 0.22873335, w: 0.65633035}
+  m_LocalPosition: {x: 0, y: 0.631, z: 0.318}
+  m_LocalScale: {x: 0.5275661, y: 0.51386, z: 0.16002826}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 2682426616806899425}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 38.427}
+  m_LocalEulerAnglesHint: {x: 91.93799, y: 0.0010070801, z: 38.427994}
 --- !u!33 &7631319498874580005
 MeshFilter:
   m_ObjectHideFlags: 0
@@ -302,7 +302,7 @@ Transform:
   m_GameObject: {fileID: 4284448583010590741}
   serializedVersion: 2
   m_LocalRotation: {x: 0.1492864, y: -0, z: -0, w: 0.988794}
-  m_LocalPosition: {x: -2.9613094, y: 10, z: 0.48025656}
+  m_LocalPosition: {x: -2.513864, y: 10, z: 1.6372199}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -615,8 +615,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 6149162538972518045}
   serializedVersion: 2
-  m_LocalRotation: {x: 0.28827003, y: 0.5516817, z: -0.52506196, w: 0.5803944}
-  m_LocalPosition: {x: 0, y: 0.00000007038761, z: 0.00000022779159}
+  m_LocalRotation: {x: 0.21199916, y: 0.63681287, z: -0.6060853, w: 0.42683303}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -681,7 +681,7 @@ GameObject:
   - component: {fileID: 6313027941652833023}
   - component: {fileID: 7322994155798744769}
   - component: {fileID: 8072166849881743070}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: Capsule
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -786,7 +786,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 891981350141337268}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: LookTarget
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1071,7 +1071,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 2124808178788892642}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: Character
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1106,7 +1106,7 @@ GameObject:
   - component: {fileID: 6806644745019158950}
   - component: {fileID: 3034907632639712371}
   - component: {fileID: 2334680722190206101}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: Player
   m_TagString: Untagged
   m_Icon: {fileID: 0}

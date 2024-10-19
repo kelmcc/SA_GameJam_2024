@@ -10,15 +10,15 @@ public class ConstructionZone : MonoBehaviour
    public float Radius;
    public SphereCollider Coll;
    public InputActionReference InteractReference;
-
-   public GameObject ToBuild;
+   
    public UnityEvent<GameObject> OnBuilt;
 
    public GameObject Holograph;
 
-   public GameObject Instance { get; private set; }
+   public GameObject Building;
 
    private bool _canBuild;
+   private bool _built;
    private Collider _builder;
 
    private void Start()
@@ -59,13 +59,21 @@ public class ConstructionZone : MonoBehaviour
       Coll.radius = Radius;
       if (InteractReference.ToInputAction().IsPressed())
       {
-         if (!Instance && ToBuild)
+         if (!_built)
          {
-            Instance = Instantiate(ToBuild);
-            Instance.transform.position = transform.position;
+            if (Holograph)
+            {
+               Holograph?.SetActive(false);
+            }
+            Building.SetActive(true);
+            OnBuilt?.Invoke(Building);
+            _canBuild = false;
+            _built = true;
          }
-       
-         OnBuilt?.Invoke(Instance);
+         else
+         {
+            //Destroy. Get back coins
+         }
       }
    }
 
