@@ -1,18 +1,5 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
---- !u!114 &-2890827620060118866
-MonoBehaviour:
-  m_ObjectHideFlags: 11
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d0353a89b1f911e48b9e16bdc9f2e058, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  version: 7
 --- !u!21 &2100000
 Material:
   serializedVersion: 8
@@ -20,13 +7,11 @@ Material:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: Mesa
+  m_Name: Gloves
   m_Shader: {fileID: 4800000, guid: 77e497a80e47b4672ab683b98550db62, type: 3}
   m_Parent: {fileID: 0}
   m_ModifiedSerializedProperties: 0
-  m_ValidKeywords:
-  - _ENVIRONMENTREFLECTIONS_OFF
-  - _SPECULARHIGHLIGHTS_OFF
+  m_ValidKeywords: []
   m_InvalidKeywords: []
   m_LightmapFlags: 4
   m_EnableInstancingVariants: 0
@@ -110,41 +95,52 @@ Material:
     - _DetailNormalMapScale: 1
     - _DstBlend: 0
     - _DstBlendAlpha: 0
-    - _EnvironmentReflections: 0
-    - _GlossMapScale: 0
+    - _EnvironmentReflections: 1
+    - _GlossMapScale: 1
     - _Glossiness: 0
-    - _GlossyReflections: 0
-    - _LineStep: 0.181
+    - _GlossyReflections: 1
     - _Metallic: 0
-    - _NoiseScale: 5.63
-    - _NoiseStrength: 0.31
+    - _Mode: 0
+    - _NoiseScale: 0
+    - _NoiseStrength: 0
     - _OcclusionStrength: 1
-    - _Parallax: 0.005
+    - _Parallax: 0.02
     - _QueueControl: 0
     - _QueueOffset: 0
     - _ReceiveShadows: 1
-    - _ShadingFreq: 1
-    - _ShadingNoiseScale: 0.28
+    - _ShadingFreq: 2.34
+    - _ShadingNoiseScale: 0
     - _ShadingThreshold: 0.386
-    - _ShadowThreshold: 0.316
+    - _ShadowThreshold: 0.751
     - _Smoothness: 0
     - _SmoothnessTextureChannel: 0
-    - _SpecularHighlights: 0
+    - _SpecularHighlights: 1
     - _SrcBlend: 1
     - _SrcBlendAlpha: 1
     - _Surface: 0
+    - _UVSec: 0
     - _WorkflowMode: 1
     - _ZWrite: 1
     m_Colors:
-    - _BaseColor: {r: 1, g: 1, b: 1, a: 1}
-    - _Color: {r: 1, g: 1, b: 1, a: 1}
-    - _Color1: {r: 0, g: 0, b: 0, a: 0}
-    - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
-    - _LineColor: {r: 1.4980394, g: 0.60969645, b: 0.120125815, a: 0}
-    - _MainColor: {r: 0.39215687, g: 0.39215687, b: 0.39215687, a: 1}
-    - _MesaXY1: {r: 1, g: 0.95240456, b: 0, a: 0}
-    - _MesaXY2: {r: 0.21960774, g: 0.945098, b: 0.8411337, a: 0}
-    - _MesaZ: {r: 0, g: 0.06301301, b: 1, a: 0}
-    - _ShadingColor: {r: 0.17542441, g: 0.08232467, b: 0.4716981, a: 0}
+    - _BaseColor: {r: 0.12947637, g: 0.4074145, b: 0.90659666, a: 1}
+    - _Color: {r: 0.12947634, g: 0.40741447, b: 0.90659666, a: 1}
+    - _EmissionColor: {r: 0, g: 0, b: 0, a: 0}
+    - _MesaXY1: {r: 0.9103774, g: 0.9145949, b: 1, a: 0}
+    - _MesaXY2: {r: 0.15503883, g: 0, b: 1, a: 0}
+    - _MesaZ: {r: 0.16509432, g: 0.52629703, b: 1, a: 0}
+    - _ShadingColor: {r: 0, g: 0, b: 0, a: 0}
     - _SpecColor: {r: 0.19999996, g: 0.19999996, b: 0.19999996, a: 1}
   m_BuildTextureStacks: []
+--- !u!114 &858349219444648080
+MonoBehaviour:
+  m_ObjectHideFlags: 11
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d0353a89b1f911e48b9e16bdc9f2e058, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  version: 7
