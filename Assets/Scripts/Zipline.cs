@@ -84,6 +84,7 @@ public class Zipline : MonoBehaviour
                 points.Add(Vector3.Lerp(Vector3.Lerp(p1, mid, t), Vector3.Lerp(mid, p2, t), t));
                 
             }
+            points.Add(p2);
             LineRenderer.positionCount = points.Count;
             LineRenderer.SetPositions(points.ToArray());
         }
