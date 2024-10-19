@@ -4,16 +4,26 @@ using System.Collections.Generic;
 using Agents;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.SceneManagement;
+using UnityEngine.Serialization;
 
 public class Player : Damagable
 {
+    [FormerlySerializedAs("Respawn")] public Transform LastStableGroundPosition;
     public float WalkSpeed = 5;
     public float SprintSpeed = 10;
     public float JumpForce = 10;
     public float JumpApplyCutoffTime = 0.5f;
     public float MinimumJumpApplyTime = 0.1f;
     public float AllowJumpOnceUngroundedTime = 0.1f;
-    public float RotateToFacingSpeed = 5;
+
+    [Space] public float GroundedRaycastDistance = 0.8f;
+
+    [FormerlySerializedAs("FrictionCurve")] public AnimationCurve FrictionInverseCurve;
+    public float MaxGroundedVelocity = 20;
+
+    [Range(0, 1)]
+    public float Sliding = 0;
 
     [Space] public CinemachineFreeLook VCam;
 
@@ -28,14 +38,20 @@ public class Player : Damagable
     private Rigidbody _body;
     private bool _jumpStarted;
     private float _jumpTime;
-    private bool _isMoving;
+    private bool _hasInput;
 
     private float _currentSpeed = 0;
     private float _groundedDistance = 0;
 
     private float _lastGroundedTime = 0;
 
+    [Header("Damagable")]
+    [SerializeField] private float _fallDamage = 50;
     [SerializeField] private float _health = 200;
+
+    [Header("Anim")] public SkaterAnimator Anim;
+    
+    public float VelocityAnimSpeedMultiplier = 0.1f;
 
     public void Awake()
     {
@@ -56,7 +72,7 @@ public class Player : Damagable
         Vector2 movement = Move.ToInputAction().ReadValue<Vector2>();
         movement.Normalize();
 
-        _isMoving = Mathf.Abs(movement.y) > 0 || Mathf.Abs(movement.x) > 0;
+        _hasInput = Mathf.Abs(movement.y) > 0 || Mathf.Abs(movement.x) > 0;
 
         _currentSpeed = WalkSpeed;
         if (Sprint.ToInputAction().IsPressed())
@@ -67,41 +83,95 @@ public class Player : Damagable
         Vector3 forward = (transform.position - VCam.transform.position).normalized;
         Vector3 right = Quaternion.AngleAxis(90, Vector3.up) * forward;
 
-        if (Physics.Raycast(transform.position + Vector3.up * 0.5f, -transform.up, out RaycastHit info, 1f))
+        Debug.DrawLine(transform.position + Vector3.up * 0.5f, transform.position + -transform.up * GroundedRaycastDistance, Color.magenta);
+        if (Physics.Raycast(transform.position + Vector3.up * 0.5f, -transform.up, out RaycastHit info, 100f))
         {
-            _grounded = true;
-            _groundedDistance = info.distance;
-            _lastGroundedTime = Time.time;
+            if (info.distance < GroundedRaycastDistance)
+            {
+                _grounded = true;
+                _groundedDistance = info.distance;
+                _lastGroundedTime = Time.time;
 
-            right = Vector3.Cross(info.normal, forward);
-            forward = Quaternion.AngleAxis(-90, Vector3.up) * right;
+                right = Vector3.Cross(info.normal, forward);
+                forward = Quaternion.AngleAxis(-90, Vector3.up) * right;
+                Debug.DrawLine(transform.position, transform.position + Vector3.up * 3, Color.green);
+
+                LastStableGroundPosition.position = transform.position;
+            }
         }
         else
         {
             Debug.Log("<color=cyan>Player Ungrounded</color>");
             _grounded = false;
+            Debug.DrawLine(transform.position, transform.position + Vector3.up * 5, Color.cyan);
         }
+        
+        if(!_grounded)
+        {
+            Vector3 flatForward = new Vector3(forward.x, 0, forward.z).normalized;
+           forward = flatForward;
+        }
+        
+        right.Normalize();
+        forward.Normalize();
 
-        Vector3 flatForward = new Vector3(forward.x, 0, forward.z).normalized;
+        //Debug.
+        Vector3 u = Vector3.up * 0.1f;
+        Debug.DrawLine(transform.position + u, transform.position + u + forward * 5, Color.blue);
+        Debug.DrawLine(transform.position + u, transform.position + u + right * 5, Color.red);
+        //
 
         if (_grounded)
         {
-            //Vector3 v = _body.velocity * Mathf.Clamp01(Time.deltaTime * 20);
-            //_body.velocity = new Vector3(v.x, _body.velocity.y, v.z);
+            _body.AddForce(((forward * movement.y) + (right * movement.x)) * Time.deltaTime * _currentSpeed, ForceMode.VelocityChange);
+        }
+        
+        float mag = _body.velocity.magnitude;
+        float maxSpeedNorm =  mag  / MaxGroundedVelocity;
+        Debug.Log($"{mag}/{MaxGroundedVelocity} = {maxSpeedNorm}");
+
+        bool jumpingEvenIfStillGrounded = _jumpStarted && _jumpTime < MinimumJumpApplyTime;
+        if (_grounded && !jumpingEvenIfStillGrounded)
+        {
+            mag  *= FrictionInverseCurve.Evaluate(Mathf.Clamp01(maxSpeedNorm));
+            mag  = Mathf.Min(MaxGroundedVelocity, mag);
+        }
+
+        Vector3 vNorm = _body.velocity.normalized;
+
+        if (_grounded)
+        {
+            //rotate v to facing dir
+            Sliding = Mathf.Lerp(0, 1, maxSpeedNorm);
+            _body.velocity = Vector3.Lerp(forward * mag, vNorm * mag, Sliding);
+
+            if (!jumpingEvenIfStillGrounded)
+            {
+                if (_hasInput)
+                {
+                    Anim.PlaySkate();
+                }
+                else
+                {
+                    Anim.PlayFreewheel();
+                }
+            }
+          
+            Anim.Speed = mag * VelocityAnimSpeedMultiplier;
         }
         else
         {
-            forward = flatForward;
+            Anim.Speed = 1;
+            
+            //cant rotate to facing dir while falling.
+            _body.velocity = vNorm * mag;
         }
+        
+        Vector3 vDir = new Vector3(vNorm.x, 0, vNorm.z).normalized;
 
-        _body.MovePosition(_body.position +
-                           ((forward * movement.y) + (right * movement.x)) * Time.deltaTime * _currentSpeed);
-
-        if (_isMoving)
+        if (mag > 0.01)
         {
-            Vector3 current =
-                Vector3.Slerp(transform.forward, flatForward, Time.deltaTime * RotateToFacingSpeed); //bad but yolo
-            _body.MoveRotation(Quaternion.LookRotation(current, Vector3.up));
+            _body.MoveRotation(Quaternion.LookRotation(vDir, Vector3.up));
         }
 
         CalculateJump();
@@ -114,7 +184,7 @@ public class Player : Damagable
                 {
                     if (_grounded || Time.time - _lastGroundedTime < AllowJumpOnceUngroundedTime)
                     {
-                        _body.velocity = new Vector3(_body.velocity.x, _body.velocity.y, _body.velocity.z);
+                        Anim.PlayJump();
                         _jumpStarted = true;
                         _jumpTime = 0;
                     }
@@ -145,11 +215,16 @@ public class Player : Damagable
         }
     }
 
-    public void OnDeath()
+    public void OnFall()
     {
         // what happens when the player dies?
-
-        Debug.LogError("Player has died");
+        
+        TakeDamage(_fallDamage);
+        
+        _body.velocity = Vector3.zero;
+        transform.position = LastStableGroundPosition.position;
+        
+        Debug.LogError("Player has fallen");
     }
 
     protected override void TakeDamage(float damage)
@@ -158,7 +233,12 @@ public class Player : Damagable
 
         if (_health <= 0)
         {
-            OnDeath();
+            Death();
         }
+    }
+
+    public void Death()
+    {
+        SceneManager.LoadScene(1);
     }
 }

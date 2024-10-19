@@ -21,7 +21,7 @@ namespace EnemyAI.Spawning
             Player player = other.gameObject.GetComponent<Player>();
             if (player!= null)
             {
-                player.OnDeath();
+                player.OnFall();
             }
         }
 
