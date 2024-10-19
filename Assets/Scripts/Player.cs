@@ -1,10 +1,13 @@
 using Cinemachine;
 using System;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
 public class Player : MonoBehaviour
 {
+    public Zipline ZiplinePrefab;
+    
     public float WalkSpeed = 5;
     public float SprintSpeed = 10;
     public float JumpForce = 10;
@@ -34,6 +37,9 @@ public class Player : MonoBehaviour
     private float _groundedDistance = 0;
 
     private float _lastGroundedTime = 0;
+
+    private List<Zipline> _ziplinesCreated;
+    
     public void Awake()
     {
         _body = GetComponent<Rigidbody>();
@@ -50,7 +56,18 @@ public class Player : MonoBehaviour
         
         Interact.ToInputAction().performed += (context) =>
         {
-            Debug.Log("INTERACT");
+            Zipline active = null;
+
+           if (_ziplinesCreated.Count > 0)
+           {
+               if(_ziplinesCreated[^1].PointsPlaced <2)
+               active = _ziplinesCreated[^1];
+           }
+           else
+           {
+             active  = Instantiate(ZiplinePrefab);
+           }
+           active.PlacePoint(transform.position);
         };
     }
 
