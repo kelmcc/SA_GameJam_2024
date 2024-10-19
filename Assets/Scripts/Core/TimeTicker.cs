@@ -9,7 +9,12 @@ namespace Core
         public static event Action OnTick;
         
         private float _tickInterval = 1f;
-        
+        public float TickInterval
+        {
+            get => _tickInterval;
+            set => _tickInterval = value;
+        }
+
         private float _tickTimer = 0;
 
         private TimeTicker()
