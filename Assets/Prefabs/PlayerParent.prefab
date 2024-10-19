@@ -58,8 +58,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1534723203913602554}
   serializedVersion: 2
-  m_LocalRotation: {x: 0.41899914, y: 0.00000011937522, z: -0.000000107269436, w: 0.90798664}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalRotation: {x: 0.27152863, y: 0.5664937, z: -0.50904584, w: 0.5884127}
+  m_LocalPosition: {x: 0, y: 0.00000007038761, z: 0.00000022779159}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -137,8 +137,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2476438111577166606}
   serializedVersion: 2
-  m_LocalRotation: {x: 0.47046992, y: 0.00000011301556, z: -0.00000011395024, w: 0.88241607}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalRotation: {x: 0.30488384, y: 0.536314, z: -0.54074955, w: 0.5718419}
+  m_LocalPosition: {x: 0, y: 0.00000007038761, z: 0.00000022779159}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -302,7 +302,7 @@ Transform:
   m_GameObject: {fileID: 4284448583010590741}
   serializedVersion: 2
   m_LocalRotation: {x: 0.1492864, y: -0, z: -0, w: 0.988794}
-  m_LocalPosition: {x: 0, y: 10, z: -3}
+  m_LocalPosition: {x: -2.9613094, y: 10, z: 0.48025656}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -615,8 +615,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 6149162538972518045}
   serializedVersion: 2
-  m_LocalRotation: {x: 0.44483295, y: 0.00000011625393, z: -0.000000110644464, w: 0.8956136}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalRotation: {x: 0.28827003, y: 0.5516817, z: -0.52506196, w: 0.5803944}
+  m_LocalPosition: {x: 0, y: 0.00000007038761, z: 0.00000022779159}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -1142,8 +1142,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   ZiplinePrefab: {fileID: 0}
-  WalkSpeed: 5
-  SprintSpeed: 10
+  WalkSpeed: 10
+  SprintSpeed: 20
   JumpForce: 30
   JumpApplyCutoffTime: 0.2
   MinimumJumpApplyTime: 0.1
