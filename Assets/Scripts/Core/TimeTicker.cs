@@ -8,7 +8,7 @@ namespace Core
     {
         public static event Action OnTick;
         
-        private const float TICK_INTERVAL = 1f;
+        [SerializeField] private float _tickInterval = 0.1f;
         
         private float _tickTimer = 0;
 
@@ -20,7 +20,7 @@ namespace Core
         {
             _tickTimer += Time.deltaTime;
             
-            if (_tickTimer >= TICK_INTERVAL)
+            if (_tickTimer >= _tickInterval)
             {
                 _tickTimer = 0f;
                 OnTick?.Invoke();

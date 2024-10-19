@@ -97,6 +97,7 @@ GameObject:
   - component: {fileID: 4372405367932028462}
   - component: {fileID: 7076143041089497564}
   - component: {fileID: 306145133189589823}
+  - component: {fileID: 1012825167743318972}
   m_Layer: 2
   m_Name: SpiderDefault
   m_TagString: Untagged
@@ -209,10 +210,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   version: 5
-  radius: 0.5
+  radius: 1
   height: 2
   canMove: 1
-  maxSpeed: 5
+  maxSpeed: 10
   gravity: {x: NaN, y: NaN, z: NaN}
   groundMask:
     serializedVersion: 2
@@ -252,3 +253,17 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   version: 1
   target: {fileID: 0}
+--- !u!114 &1012825167743318972
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2482513378836594791}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7b129894d7964c46a66ed90cef9eedc1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _ai: {fileID: 7076143041089497564}
+  _destination: {fileID: 306145133189589823}

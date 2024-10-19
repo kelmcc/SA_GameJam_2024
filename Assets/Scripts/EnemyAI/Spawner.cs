@@ -8,6 +8,8 @@ namespace EnemyAI.Spawning
         [SerializeField] private double _spawnInterval = 1f;
         [SerializeField] private int _maxSpawnForDay = 500;
         [SerializeField] private double _spawnStartOffSet = 50;
+        [SerializeField] private Transform _target;
+        
 
         private void Start()
         {
@@ -16,7 +18,13 @@ namespace EnemyAI.Spawning
 
         private void OnTick()
         {
-            // Spawn enemies based on the normalized time of day
+            var enemyBase = EnemyPool.Instance.Pool.Get();
+            enemyBase.transform.position = transform.position;
+            enemyBase.transform.rotation = transform.rotation;
+
+            enemyBase.SetActivate(_target);
+            
+            enemyBase.gameObject.SetActive(true);
         }
     }
 }
