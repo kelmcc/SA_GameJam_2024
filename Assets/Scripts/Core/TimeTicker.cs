@@ -8,7 +8,7 @@ namespace Core
     {
         public static event Action OnTick;
         
-        [SerializeField] private float _tickInterval = 0.1f;
+        private float _tickInterval = 1f;
         
         private float _tickTimer = 0;
 

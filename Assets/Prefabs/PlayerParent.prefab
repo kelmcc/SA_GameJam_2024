@@ -1105,6 +1105,7 @@ GameObject:
   - component: {fileID: 6723180433001404617}
   - component: {fileID: 6806644745019158950}
   - component: {fileID: 3034907632639712371}
+  - component: {fileID: 2334680722190206101}
   m_Layer: 0
   m_Name: Player
   m_TagString: Untagged
@@ -1157,6 +1158,7 @@ MonoBehaviour:
   Grapple: {fileID: 2473330573701837956, guid: beebc186c9198a5408aab7737b4d8c34, type: 3}
   Interact: {fileID: 1781555164194001046, guid: beebc186c9198a5408aab7737b4d8c34,
     type: 3}
+  _health: 200
 --- !u!54 &3034907632639712371
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -1184,6 +1186,29 @@ Rigidbody:
   m_Interpolate: 1
   m_Constraints: 80
   m_CollisionDetection: 2
+--- !u!136 &2334680722190206101
+CapsuleCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8820060958917170014}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 1
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Radius: 0.68
+  m_Height: 2.51
+  m_Direction: 1
+  m_Center: {x: 0, y: 1, z: 0}
 --- !u!1 &8882340152166219190
 GameObject:
   m_ObjectHideFlags: 0

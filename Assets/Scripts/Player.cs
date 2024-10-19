@@ -1,13 +1,14 @@
 using Cinemachine;
 using System;
 using System.Collections.Generic;
+using Agents;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
-public class Player : MonoBehaviour
+public class Player : Damagable
 {
     public Zipline ZiplinePrefab;
-    
+
     public float WalkSpeed = 5;
     public float SprintSpeed = 10;
     public float JumpForce = 10;
@@ -17,15 +18,13 @@ public class Player : MonoBehaviour
     public float RotateToFacingSpeed = 5;
 
     [Space] public CinemachineFreeLook VCam;
-    
-    [Space]
-    public InputActionReference Move;
+
+    [Space] public InputActionReference Move;
     public InputActionReference Jump;
     public InputActionReference Attack;
     public InputActionReference Sprint;
     public InputActionReference Grapple;
     public InputActionReference Interact;
-
 
     private bool _grounded = false;
     private Rigidbody _body;
@@ -39,35 +38,32 @@ public class Player : MonoBehaviour
     private float _lastGroundedTime = 0;
 
     private List<Zipline> _ziplinesCreated;
-    
+
+    [SerializeField] private float _health = 200;
+
     public void Awake()
     {
         _body = GetComponent<Rigidbody>();
 
-        Attack.ToInputAction().performed += (context) =>
-        {
-            Debug.Log("ATTACK");
-        };
-        
-        Grapple.ToInputAction().performed += (context) =>
-        {
-            Debug.Log("GRAPPLE");
-        };
-        
+        Attack.ToInputAction().performed += (context) => { Debug.Log("ATTACK"); };
+
+        Grapple.ToInputAction().performed += (context) => { Debug.Log("GRAPPLE"); };
+
         Interact.ToInputAction().performed += (context) =>
         {
             Zipline active = null;
 
-           if (_ziplinesCreated.Count > 0)
-           {
-               if(_ziplinesCreated[^1].PointsPlaced <2)
-               active = _ziplinesCreated[^1];
-           }
-           else
-           {
-             active  = Instantiate(ZiplinePrefab);
-           }
-           active.PlacePoint(transform.position);
+            if (_ziplinesCreated.Count > 0)
+            {
+                if (_ziplinesCreated[^1].PointsPlaced < 2)
+                    active = _ziplinesCreated[^1];
+            }
+            else
+            {
+                active = Instantiate(ZiplinePrefab);
+            }
+
+            active.PlacePoint(transform.position);
         };
     }
 
@@ -75,7 +71,7 @@ public class Player : MonoBehaviour
     {
         Vector2 movement = Move.ToInputAction().ReadValue<Vector2>();
         movement.Normalize();
-        
+
         _isMoving = Mathf.Abs(movement.y) > 0 || Mathf.Abs(movement.x) > 0;
 
         _currentSpeed = WalkSpeed;
@@ -83,16 +79,16 @@ public class Player : MonoBehaviour
         {
             _currentSpeed = SprintSpeed;
         }
-        
+
         Vector3 forward = (transform.position - VCam.transform.position).normalized;
         Vector3 right = Quaternion.AngleAxis(90, Vector3.up) * forward;
 
-        if (Physics.Raycast(transform.position + Vector3.up*0.5f, -transform.up, out RaycastHit info, 0.8f))
+        if (Physics.Raycast(transform.position + Vector3.up * 0.5f, -transform.up, out RaycastHit info, 0.8f))
         {
             _grounded = true;
             _groundedDistance = info.distance;
             _lastGroundedTime = Time.time;
-            
+
             right = Vector3.Cross(info.normal, forward);
             forward = Quaternion.AngleAxis(-90, Vector3.up) * right;
         }
@@ -100,27 +96,28 @@ public class Player : MonoBehaviour
         {
             _grounded = false;
         }
-        
+
         Vector3 flatForward = new Vector3(forward.x, 0, forward.z).normalized;
-        
+
         if (_grounded)
         {
-             Vector3 v= _body.velocity * Mathf.Clamp01(Time.deltaTime * 20);
-             _body.velocity = new Vector3(v.x,_body.velocity.y, v.z);
+            Vector3 v = _body.velocity * Mathf.Clamp01(Time.deltaTime * 20);
+            _body.velocity = new Vector3(v.x, _body.velocity.y, v.z);
         }
         else
         {
             forward = flatForward;
         }
-        
-        _body.MovePosition(_body.position + ((forward * movement.y) + (right * movement.x)) * Time.deltaTime * _currentSpeed);
-        
+
+        _body.MovePosition(_body.position +
+                           ((forward * movement.y) + (right * movement.x)) * Time.deltaTime * _currentSpeed);
+
         if (_isMoving)
         {
-            Vector3 current = Vector3.Slerp(transform.forward, flatForward, Time.deltaTime * RotateToFacingSpeed); //bad but yolo
+            Vector3 current =
+                Vector3.Slerp(transform.forward, flatForward, Time.deltaTime * RotateToFacingSpeed); //bad but yolo
             _body.MoveRotation(Quaternion.LookRotation(current, Vector3.up));
         }
-        
 
         CalculateJump();
 
@@ -160,6 +157,23 @@ public class Player : MonoBehaviour
                     _body.AddForce(Vector3.up * JumpForce * Time.deltaTime, ForceMode.VelocityChange);
                 }
             }
+        }
+    }
+
+    public void OnDeath()
+    {
+        // what happens when the player dies?
+
+        Debug.LogError("Player has died");
+    }
+
+    protected override void TakeDamage(float damage)
+    {
+        _health -= damage;
+
+        if (_health <= 0)
+        {
+            OnDeath();
         }
     }
 }

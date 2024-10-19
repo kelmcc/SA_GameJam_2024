@@ -6,6 +6,10 @@ namespace EnemyAI.Spawning
 {
     public class EnemyBase : MonoBehaviour
     {
+        public float DamagePerHit => _baseDamagePerHit * _damageMultiplier;
+        [SerializeField] private float _baseDamagePerHit = 1;
+        [SerializeField] private float _damageMultiplier = 1; // alter this to be a curve over timeTicker's day timer
+        
         [SerializeField] private AIPath _ai;
         [SerializeField] private AIDestinationSetter _destination;
         public void Deactivate()
