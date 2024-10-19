@@ -289,7 +289,6 @@ Shader "Fur"
 			#endif
 
 			#define ASE_NEEDS_FRAG_WORLD_NORMAL
-			#define ASE_NEEDS_FRAG_SCREEN_POSITION
 			#define ASE_NEEDS_FRAG_WORLD_VIEW_DIR
 
 
@@ -328,7 +327,7 @@ Shader "Fur"
 				#if defined(DYNAMICLIGHTMAP_ON)
 					float2 dynamicLightmapUV : TEXCOORD7;
 				#endif
-				
+				float4 ase_texcoord8 : TEXCOORD8;
 				UNITY_VERTEX_INPUT_INSTANCE_ID
 				UNITY_VERTEX_OUTPUT_STEREO
 			};
@@ -411,7 +410,10 @@ Shader "Fur"
 				UNITY_TRANSFER_INSTANCE_ID(v, o);
 				UNITY_INITIALIZE_VERTEX_OUTPUT_STEREO(o);
 
+				o.ase_texcoord8.xy = v.texcoord.xy;
 				
+				//setting value to unused interpolator channels and avoid initialization warnings
+				o.ase_texcoord8.zw = 0;
 
 				#ifdef ASE_ABSOLUTE_VERTEX_POS
 					float3 defaultVertexValue = v.positionOS.xyz;
@@ -611,27 +613,20 @@ Shader "Fur"
 				float4 lerpResult20 = lerp( _MesaXY2 , _MesaXY1 , dotResult13);
 				float dotResult46 = dot( WorldNormal , float3(0,0,-1) );
 				float4 lerpResult98 = lerp( _MesaZ , lerpResult20 , saturate( dotResult46 ));
-				float4 ase_screenPosNorm = ScreenPos / ScreenPos.w;
-				ase_screenPosNorm.z = ( UNITY_NEAR_CLIP_VALUE >= 0 ) ? ase_screenPosNorm.z : ase_screenPosNorm.z * 0.5 + 0.5;
-				float2 appendResult62 = (float2(1.0 , ( _ScreenParams.y / _ScreenParams.x )));
-				float4 matrixToPos54 = float4( GetObjectToWorldMatrix()[0][3],GetObjectToWorldMatrix()[1][3],GetObjectToWorldMatrix()[2][3],GetObjectToWorldMatrix()[3][3]);
-				float4 worldPos58 = matrixToPos54;
-				float4 worldToClip63 = TransformWorldToHClip(worldPos58.xyz);
-				float4 worldToClip63NDC = worldToClip63/worldToClip63.w;
-				float3 worldToView74 = mul( UNITY_MATRIX_V, float4( worldPos58.xyz, 1 ) ).xyz;
-				float4 texCoord77 = (float4( 0,0,0,0 ) + (( (float4( -1,-1,0,0 ) + (( float4( ( ( ( ( ( (ase_screenPosNorm).xy + -0.5 ) * 2.0 ) * appendResult62 ) + 1.0 ) * 0.5 ), 0.0 , 0.0 ) - ( float4( appendResult62, 0.0 , 0.0 ) * ( float4( float2( 0.5,-0.5 ), 0.0 , 0.0 ) * worldToClip63NDC ) ) ) - float4( 0,0,0,0 )) * (float4( 1,1,1,1 ) - float4( -1,-1,0,0 )) / (float4( 1,1,1,1 ) - float4( 0,0,0,0 ))) * worldToView74.z ) - float4( -1,-1,0,0 )) * (float4( 1,1,1,1 ) - float4( 0,0,0,0 )) / (float4( 1,1,1,1 ) - float4( -1,-1,0,0 )));
-				float simplePerlin2D140 = snoise( texCoord77.xy*_ShadingNoiseScale );
+				float2 texCoord142 = IN.ase_texcoord8.xy * float2( 1,1 ) + float2( 0,0 );
+				float simplePerlin2D140 = snoise( texCoord142*_ShadingNoiseScale );
 				simplePerlin2D140 = simplePerlin2D140*0.5 + 0.5;
 				float cos136 = cos( ( simplePerlin2D140 + 0.0 ) );
 				float sin136 = sin( ( simplePerlin2D140 + 0.0 ) );
-				float2 rotator136 = mul( texCoord77.xy - float2( 0.5,0.5 ) , float2x2( cos136 , -sin136 , sin136 , cos136 )) + float2( 0.5,0.5 );
+				float2 rotator136 = mul( texCoord142 - float2( 0.5,0.5 ) , float2x2( cos136 , -sin136 , sin136 , cos136 )) + float2( 0.5,0.5 );
 				float2 break124 = ( rotator136 * _ShadingFreq );
 				float temp_output_132_0 = step( frac( ( break124.x + break124.y ) ) , _ShadingThreshold );
 				float4 color131 = IsGammaSpace() ? float4(0,0,0,0) : float4(0,0,0,0);
 				float4 lerpResult130 = lerp( color131 , _ShadingColor , temp_output_132_0);
 				float4 lerpResult113 = lerp( lerpResult98 , ( temp_output_132_0 * lerpResult130 ) , temp_output_132_0);
 				
-				float simplePerlin2D51 = snoise( texCoord77.xy*_NoiseScale );
+				float2 texCoord143 = IN.ase_texcoord8.xy * float2( 1,1 ) + float2( 0,0 );
+				float simplePerlin2D51 = snoise( texCoord143*_NoiseScale );
 				simplePerlin2D51 = simplePerlin2D51*0.5 + 0.5;
 				float fresnelNdotV50 = dot( WorldNormal, WorldViewDirection );
 				float fresnelNode50 = ( (-_NoiseStrength + (simplePerlin2D51 - 0.0) * (_NoiseStrength - -_NoiseStrength) / (1.0 - 0.0)) + 0.4 * pow( 1.0 - fresnelNdotV50, 4.0 ) );
@@ -951,7 +946,6 @@ Shader "Fur"
 
 			#define ASE_NEEDS_FRAG_WORLD_POSITION
 			#define ASE_NEEDS_VERT_NORMAL
-			#define ASE_NEEDS_FRAG_SCREEN_POSITION
 
 
 			#if defined(ASE_EARLY_Z_DEPTH_OPTIMIZE) && (SHADER_TARGET >= 45)
@@ -966,7 +960,7 @@ Shader "Fur"
 			{
 				float4 positionOS : POSITION;
 				float3 normalOS : NORMAL;
-				
+				float4 ase_texcoord : TEXCOORD0;
 				UNITY_VERTEX_INPUT_INSTANCE_ID
 			};
 
@@ -981,6 +975,7 @@ Shader "Fur"
 					float4 shadowCoord : TEXCOORD2;
 				#endif				
 				float4 ase_texcoord3 : TEXCOORD3;
+				float4 ase_texcoord4 : TEXCOORD4;
 				UNITY_VERTEX_INPUT_INSTANCE_ID
 				UNITY_VERTEX_OUTPUT_STEREO
 			};
@@ -1069,9 +1064,11 @@ Shader "Fur"
 				float3 ase_worldNormal = TransformObjectToWorldNormal(v.normalOS);
 				o.ase_texcoord3.xyz = ase_worldNormal;
 				
+				o.ase_texcoord4.xy = v.ase_texcoord.xy;
 				
 				//setting value to unused interpolator channels and avoid initialization warnings
 				o.ase_texcoord3.w = 0;
+				o.ase_texcoord4.zw = 0;
 
 				#ifdef ASE_ABSOLUTE_VERTEX_POS
 					float3 defaultVertexValue = v.positionOS.xyz;
@@ -1127,7 +1124,8 @@ Shader "Fur"
 			{
 				float4 vertex : INTERNALTESSPOS;
 				float3 normalOS : NORMAL;
-				
+				float4 ase_texcoord : TEXCOORD0;
+
 				UNITY_VERTEX_INPUT_INSTANCE_ID
 			};
 
@@ -1144,7 +1142,7 @@ Shader "Fur"
 				UNITY_TRANSFER_INSTANCE_ID(v, o);
 				o.vertex = v.positionOS;
 				o.normalOS = v.normalOS;
-				
+				o.ase_texcoord = v.ase_texcoord;
 				return o;
 			}
 
@@ -1183,7 +1181,7 @@ Shader "Fur"
 				VertexInput o = (VertexInput) 0;
 				o.positionOS = patch[0].vertex * bary.x + patch[1].vertex * bary.y + patch[2].vertex * bary.z;
 				o.normalOS = patch[0].normalOS * bary.x + patch[1].normalOS * bary.y + patch[2].normalOS * bary.z;
-				
+				o.ase_texcoord = patch[0].ase_texcoord * bary.x + patch[1].ase_texcoord * bary.y + patch[2].ase_texcoord * bary.z;
 				#if defined(ASE_PHONG_TESSELLATION)
 				float3 pp[3];
 				for (int i = 0; i < 3; ++i)
@@ -1229,16 +1227,8 @@ Shader "Fur"
 				float3 ase_worldViewDir = ( _WorldSpaceCameraPos.xyz - WorldPosition );
 				ase_worldViewDir = normalize(ase_worldViewDir);
 				float3 ase_worldNormal = IN.ase_texcoord3.xyz;
-				float4 ase_screenPosNorm = ScreenPos / ScreenPos.w;
-				ase_screenPosNorm.z = ( UNITY_NEAR_CLIP_VALUE >= 0 ) ? ase_screenPosNorm.z : ase_screenPosNorm.z * 0.5 + 0.5;
-				float2 appendResult62 = (float2(1.0 , ( _ScreenParams.y / _ScreenParams.x )));
-				float4 matrixToPos54 = float4( GetObjectToWorldMatrix()[0][3],GetObjectToWorldMatrix()[1][3],GetObjectToWorldMatrix()[2][3],GetObjectToWorldMatrix()[3][3]);
-				float4 worldPos58 = matrixToPos54;
-				float4 worldToClip63 = TransformWorldToHClip(worldPos58.xyz);
-				float4 worldToClip63NDC = worldToClip63/worldToClip63.w;
-				float3 worldToView74 = mul( UNITY_MATRIX_V, float4( worldPos58.xyz, 1 ) ).xyz;
-				float4 texCoord77 = (float4( 0,0,0,0 ) + (( (float4( -1,-1,0,0 ) + (( float4( ( ( ( ( ( (ase_screenPosNorm).xy + -0.5 ) * 2.0 ) * appendResult62 ) + 1.0 ) * 0.5 ), 0.0 , 0.0 ) - ( float4( appendResult62, 0.0 , 0.0 ) * ( float4( float2( 0.5,-0.5 ), 0.0 , 0.0 ) * worldToClip63NDC ) ) ) - float4( 0,0,0,0 )) * (float4( 1,1,1,1 ) - float4( -1,-1,0,0 )) / (float4( 1,1,1,1 ) - float4( 0,0,0,0 ))) * worldToView74.z ) - float4( -1,-1,0,0 )) * (float4( 1,1,1,1 ) - float4( 0,0,0,0 )) / (float4( 1,1,1,1 ) - float4( -1,-1,0,0 )));
-				float simplePerlin2D51 = snoise( texCoord77.xy*_NoiseScale );
+				float2 texCoord143 = IN.ase_texcoord4.xy * float2( 1,1 ) + float2( 0,0 );
+				float simplePerlin2D51 = snoise( texCoord143*_NoiseScale );
 				simplePerlin2D51 = simplePerlin2D51*0.5 + 0.5;
 				float fresnelNdotV50 = dot( ase_worldNormal, ase_worldViewDir );
 				float fresnelNode50 = ( (-_NoiseStrength + (simplePerlin2D51 - 0.0) * (_NoiseStrength - -_NoiseStrength) / (1.0 - 0.0)) + 0.4 * pow( 1.0 - fresnelNdotV50, 4.0 ) );
@@ -1341,7 +1331,6 @@ Shader "Fur"
 
 			#define ASE_NEEDS_FRAG_WORLD_POSITION
 			#define ASE_NEEDS_VERT_NORMAL
-			#define ASE_NEEDS_FRAG_SCREEN_POSITION
 
 
 			#if defined(ASE_EARLY_Z_DEPTH_OPTIMIZE) && (SHADER_TARGET >= 45)
@@ -1356,7 +1345,7 @@ Shader "Fur"
 			{
 				float4 positionOS : POSITION;
 				float3 normalOS : NORMAL;
-				
+				float4 ase_texcoord : TEXCOORD0;
 				UNITY_VERTEX_INPUT_INSTANCE_ID
 			};
 
@@ -1371,6 +1360,7 @@ Shader "Fur"
 				float4 shadowCoord : TEXCOORD2;
 				#endif
 				float4 ase_texcoord3 : TEXCOORD3;
+				float4 ase_texcoord4 : TEXCOORD4;
 				UNITY_VERTEX_INPUT_INSTANCE_ID
 				UNITY_VERTEX_OUTPUT_STEREO
 			};
@@ -1456,9 +1446,11 @@ Shader "Fur"
 				float3 ase_worldNormal = TransformObjectToWorldNormal(v.normalOS);
 				o.ase_texcoord3.xyz = ase_worldNormal;
 				
+				o.ase_texcoord4.xy = v.ase_texcoord.xy;
 				
 				//setting value to unused interpolator channels and avoid initialization warnings
 				o.ase_texcoord3.w = 0;
+				o.ase_texcoord4.zw = 0;
 
 				#ifdef ASE_ABSOLUTE_VERTEX_POS
 					float3 defaultVertexValue = v.positionOS.xyz;
@@ -1496,7 +1488,8 @@ Shader "Fur"
 			{
 				float4 vertex : INTERNALTESSPOS;
 				float3 normalOS : NORMAL;
-				
+				float4 ase_texcoord : TEXCOORD0;
+
 				UNITY_VERTEX_INPUT_INSTANCE_ID
 			};
 
@@ -1513,7 +1506,7 @@ Shader "Fur"
 				UNITY_TRANSFER_INSTANCE_ID(v, o);
 				o.vertex = v.positionOS;
 				o.normalOS = v.normalOS;
-				
+				o.ase_texcoord = v.ase_texcoord;
 				return o;
 			}
 
@@ -1552,7 +1545,7 @@ Shader "Fur"
 				VertexInput o = (VertexInput) 0;
 				o.positionOS = patch[0].vertex * bary.x + patch[1].vertex * bary.y + patch[2].vertex * bary.z;
 				o.normalOS = patch[0].normalOS * bary.x + patch[1].normalOS * bary.y + patch[2].normalOS * bary.z;
-				
+				o.ase_texcoord = patch[0].ase_texcoord * bary.x + patch[1].ase_texcoord * bary.y + patch[2].ase_texcoord * bary.z;
 				#if defined(ASE_PHONG_TESSELLATION)
 				float3 pp[3];
 				for (int i = 0; i < 3; ++i)
@@ -1598,16 +1591,8 @@ Shader "Fur"
 				float3 ase_worldViewDir = ( _WorldSpaceCameraPos.xyz - WorldPosition );
 				ase_worldViewDir = normalize(ase_worldViewDir);
 				float3 ase_worldNormal = IN.ase_texcoord3.xyz;
-				float4 ase_screenPosNorm = ScreenPos / ScreenPos.w;
-				ase_screenPosNorm.z = ( UNITY_NEAR_CLIP_VALUE >= 0 ) ? ase_screenPosNorm.z : ase_screenPosNorm.z * 0.5 + 0.5;
-				float2 appendResult62 = (float2(1.0 , ( _ScreenParams.y / _ScreenParams.x )));
-				float4 matrixToPos54 = float4( GetObjectToWorldMatrix()[0][3],GetObjectToWorldMatrix()[1][3],GetObjectToWorldMatrix()[2][3],GetObjectToWorldMatrix()[3][3]);
-				float4 worldPos58 = matrixToPos54;
-				float4 worldToClip63 = TransformWorldToHClip(worldPos58.xyz);
-				float4 worldToClip63NDC = worldToClip63/worldToClip63.w;
-				float3 worldToView74 = mul( UNITY_MATRIX_V, float4( worldPos58.xyz, 1 ) ).xyz;
-				float4 texCoord77 = (float4( 0,0,0,0 ) + (( (float4( -1,-1,0,0 ) + (( float4( ( ( ( ( ( (ase_screenPosNorm).xy + -0.5 ) * 2.0 ) * appendResult62 ) + 1.0 ) * 0.5 ), 0.0 , 0.0 ) - ( float4( appendResult62, 0.0 , 0.0 ) * ( float4( float2( 0.5,-0.5 ), 0.0 , 0.0 ) * worldToClip63NDC ) ) ) - float4( 0,0,0,0 )) * (float4( 1,1,1,1 ) - float4( -1,-1,0,0 )) / (float4( 1,1,1,1 ) - float4( 0,0,0,0 ))) * worldToView74.z ) - float4( -1,-1,0,0 )) * (float4( 1,1,1,1 ) - float4( 0,0,0,0 )) / (float4( 1,1,1,1 ) - float4( -1,-1,0,0 )));
-				float simplePerlin2D51 = snoise( texCoord77.xy*_NoiseScale );
+				float2 texCoord143 = IN.ase_texcoord4.xy * float2( 1,1 ) + float2( 0,0 );
+				float simplePerlin2D51 = snoise( texCoord143*_NoiseScale );
 				simplePerlin2D51 = simplePerlin2D51*0.5 + 0.5;
 				float fresnelNdotV50 = dot( ase_worldNormal, ase_worldViewDir );
 				float fresnelNode50 = ( (-_NoiseStrength + (simplePerlin2D51 - 0.0) * (_NoiseStrength - -_NoiseStrength) / (1.0 - 0.0)) + 0.4 * pow( 1.0 - fresnelNdotV50, 4.0 ) );
@@ -1800,13 +1785,12 @@ Shader "Fur"
 
 				float3 ase_worldNormal = TransformObjectToWorldNormal(v.normalOS);
 				o.ase_texcoord4.xyz = ase_worldNormal;
-				float4 ase_clipPos = TransformObjectToHClip((v.positionOS).xyz);
-				float4 screenPos = ComputeScreenPos(ase_clipPos);
-				o.ase_texcoord5 = screenPos;
 				
+				o.ase_texcoord5.xy = v.texcoord0.xy;
 				
 				//setting value to unused interpolator channels and avoid initialization warnings
 				o.ase_texcoord4.w = 0;
+				o.ase_texcoord5.zw = 0;
 
 				#ifdef ASE_ABSOLUTE_VERTEX_POS
 					float3 defaultVertexValue = v.positionOS.xyz;
@@ -1962,21 +1946,12 @@ Shader "Fur"
 				float4 lerpResult20 = lerp( _MesaXY2 , _MesaXY1 , dotResult13);
 				float dotResult46 = dot( ase_worldNormal , float3(0,0,-1) );
 				float4 lerpResult98 = lerp( _MesaZ , lerpResult20 , saturate( dotResult46 ));
-				float4 screenPos = IN.ase_texcoord5;
-				float4 ase_screenPosNorm = screenPos / screenPos.w;
-				ase_screenPosNorm.z = ( UNITY_NEAR_CLIP_VALUE >= 0 ) ? ase_screenPosNorm.z : ase_screenPosNorm.z * 0.5 + 0.5;
-				float2 appendResult62 = (float2(1.0 , ( _ScreenParams.y / _ScreenParams.x )));
-				float4 matrixToPos54 = float4( GetObjectToWorldMatrix()[0][3],GetObjectToWorldMatrix()[1][3],GetObjectToWorldMatrix()[2][3],GetObjectToWorldMatrix()[3][3]);
-				float4 worldPos58 = matrixToPos54;
-				float4 worldToClip63 = TransformWorldToHClip(worldPos58.xyz);
-				float4 worldToClip63NDC = worldToClip63/worldToClip63.w;
-				float3 worldToView74 = mul( UNITY_MATRIX_V, float4( worldPos58.xyz, 1 ) ).xyz;
-				float4 texCoord77 = (float4( 0,0,0,0 ) + (( (float4( -1,-1,0,0 ) + (( float4( ( ( ( ( ( (ase_screenPosNorm).xy + -0.5 ) * 2.0 ) * appendResult62 ) + 1.0 ) * 0.5 ), 0.0 , 0.0 ) - ( float4( appendResult62, 0.0 , 0.0 ) * ( float4( float2( 0.5,-0.5 ), 0.0 , 0.0 ) * worldToClip63NDC ) ) ) - float4( 0,0,0,0 )) * (float4( 1,1,1,1 ) - float4( -1,-1,0,0 )) / (float4( 1,1,1,1 ) - float4( 0,0,0,0 ))) * worldToView74.z ) - float4( -1,-1,0,0 )) * (float4( 1,1,1,1 ) - float4( 0,0,0,0 )) / (float4( 1,1,1,1 ) - float4( -1,-1,0,0 )));
-				float simplePerlin2D140 = snoise( texCoord77.xy*_ShadingNoiseScale );
+				float2 texCoord142 = IN.ase_texcoord5.xy * float2( 1,1 ) + float2( 0,0 );
+				float simplePerlin2D140 = snoise( texCoord142*_ShadingNoiseScale );
 				simplePerlin2D140 = simplePerlin2D140*0.5 + 0.5;
 				float cos136 = cos( ( simplePerlin2D140 + 0.0 ) );
 				float sin136 = sin( ( simplePerlin2D140 + 0.0 ) );
-				float2 rotator136 = mul( texCoord77.xy - float2( 0.5,0.5 ) , float2x2( cos136 , -sin136 , sin136 , cos136 )) + float2( 0.5,0.5 );
+				float2 rotator136 = mul( texCoord142 - float2( 0.5,0.5 ) , float2x2( cos136 , -sin136 , sin136 , cos136 )) + float2( 0.5,0.5 );
 				float2 break124 = ( rotator136 * _ShadingFreq );
 				float temp_output_132_0 = step( frac( ( break124.x + break124.y ) ) , _ShadingThreshold );
 				float4 color131 = IsGammaSpace() ? float4(0,0,0,0) : float4(0,0,0,0);
@@ -1985,7 +1960,8 @@ Shader "Fur"
 				
 				float3 ase_worldViewDir = ( _WorldSpaceCameraPos.xyz - WorldPosition );
 				ase_worldViewDir = normalize(ase_worldViewDir);
-				float simplePerlin2D51 = snoise( texCoord77.xy*_NoiseScale );
+				float2 texCoord143 = IN.ase_texcoord5.xy * float2( 1,1 ) + float2( 0,0 );
+				float simplePerlin2D51 = snoise( texCoord143*_NoiseScale );
 				simplePerlin2D51 = simplePerlin2D51*0.5 + 0.5;
 				float fresnelNdotV50 = dot( ase_worldNormal, ase_worldViewDir );
 				float fresnelNode50 = ( (-_NoiseStrength + (simplePerlin2D51 - 0.0) * (_NoiseStrength - -_NoiseStrength) / (1.0 - 0.0)) + 0.4 * pow( 1.0 - fresnelNdotV50, 4.0 ) );
@@ -2073,7 +2049,7 @@ Shader "Fur"
 			{
 				float4 positionOS : POSITION;
 				float3 normalOS : NORMAL;
-				
+				float4 ase_texcoord : TEXCOORD0;
 				UNITY_VERTEX_INPUT_INSTANCE_ID
 			};
 
@@ -2172,13 +2148,12 @@ Shader "Fur"
 
 				float3 ase_worldNormal = TransformObjectToWorldNormal(v.normalOS);
 				o.ase_texcoord2.xyz = ase_worldNormal;
-				float4 ase_clipPos = TransformObjectToHClip((v.positionOS).xyz);
-				float4 screenPos = ComputeScreenPos(ase_clipPos);
-				o.ase_texcoord3 = screenPos;
 				
+				o.ase_texcoord3.xy = v.ase_texcoord.xy;
 				
 				//setting value to unused interpolator channels and avoid initialization warnings
 				o.ase_texcoord2.w = 0;
+				o.ase_texcoord3.zw = 0;
 
 				#ifdef ASE_ABSOLUTE_VERTEX_POS
 					float3 defaultVertexValue = v.positionOS.xyz;
@@ -2216,7 +2191,8 @@ Shader "Fur"
 			{
 				float4 vertex : INTERNALTESSPOS;
 				float3 normalOS : NORMAL;
-				
+				float4 ase_texcoord : TEXCOORD0;
+
 				UNITY_VERTEX_INPUT_INSTANCE_ID
 			};
 
@@ -2233,7 +2209,7 @@ Shader "Fur"
 				UNITY_TRANSFER_INSTANCE_ID(v, o);
 				o.vertex = v.positionOS;
 				o.normalOS = v.normalOS;
-				
+				o.ase_texcoord = v.ase_texcoord;
 				return o;
 			}
 
@@ -2272,7 +2248,7 @@ Shader "Fur"
 				VertexInput o = (VertexInput) 0;
 				o.positionOS = patch[0].vertex * bary.x + patch[1].vertex * bary.y + patch[2].vertex * bary.z;
 				o.normalOS = patch[0].normalOS * bary.x + patch[1].normalOS * bary.y + patch[2].normalOS * bary.z;
-				
+				o.ase_texcoord = patch[0].ase_texcoord * bary.x + patch[1].ase_texcoord * bary.y + patch[2].ase_texcoord * bary.z;
 				#if defined(ASE_PHONG_TESSELLATION)
 				float3 pp[3];
 				for (int i = 0; i < 3; ++i)
@@ -2314,21 +2290,12 @@ Shader "Fur"
 				float4 lerpResult20 = lerp( _MesaXY2 , _MesaXY1 , dotResult13);
 				float dotResult46 = dot( ase_worldNormal , float3(0,0,-1) );
 				float4 lerpResult98 = lerp( _MesaZ , lerpResult20 , saturate( dotResult46 ));
-				float4 screenPos = IN.ase_texcoord3;
-				float4 ase_screenPosNorm = screenPos / screenPos.w;
-				ase_screenPosNorm.z = ( UNITY_NEAR_CLIP_VALUE >= 0 ) ? ase_screenPosNorm.z : ase_screenPosNorm.z * 0.5 + 0.5;
-				float2 appendResult62 = (float2(1.0 , ( _ScreenParams.y / _ScreenParams.x )));
-				float4 matrixToPos54 = float4( GetObjectToWorldMatrix()[0][3],GetObjectToWorldMatrix()[1][3],GetObjectToWorldMatrix()[2][3],GetObjectToWorldMatrix()[3][3]);
-				float4 worldPos58 = matrixToPos54;
-				float4 worldToClip63 = TransformWorldToHClip(worldPos58.xyz);
-				float4 worldToClip63NDC = worldToClip63/worldToClip63.w;
-				float3 worldToView74 = mul( UNITY_MATRIX_V, float4( worldPos58.xyz, 1 ) ).xyz;
-				float4 texCoord77 = (float4( 0,0,0,0 ) + (( (float4( -1,-1,0,0 ) + (( float4( ( ( ( ( ( (ase_screenPosNorm).xy + -0.5 ) * 2.0 ) * appendResult62 ) + 1.0 ) * 0.5 ), 0.0 , 0.0 ) - ( float4( appendResult62, 0.0 , 0.0 ) * ( float4( float2( 0.5,-0.5 ), 0.0 , 0.0 ) * worldToClip63NDC ) ) ) - float4( 0,0,0,0 )) * (float4( 1,1,1,1 ) - float4( -1,-1,0,0 )) / (float4( 1,1,1,1 ) - float4( 0,0,0,0 ))) * worldToView74.z ) - float4( -1,-1,0,0 )) * (float4( 1,1,1,1 ) - float4( 0,0,0,0 )) / (float4( 1,1,1,1 ) - float4( -1,-1,0,0 )));
-				float simplePerlin2D140 = snoise( texCoord77.xy*_ShadingNoiseScale );
+				float2 texCoord142 = IN.ase_texcoord3.xy * float2( 1,1 ) + float2( 0,0 );
+				float simplePerlin2D140 = snoise( texCoord142*_ShadingNoiseScale );
 				simplePerlin2D140 = simplePerlin2D140*0.5 + 0.5;
 				float cos136 = cos( ( simplePerlin2D140 + 0.0 ) );
 				float sin136 = sin( ( simplePerlin2D140 + 0.0 ) );
-				float2 rotator136 = mul( texCoord77.xy - float2( 0.5,0.5 ) , float2x2( cos136 , -sin136 , sin136 , cos136 )) + float2( 0.5,0.5 );
+				float2 rotator136 = mul( texCoord142 - float2( 0.5,0.5 ) , float2x2( cos136 , -sin136 , sin136 , cos136 )) + float2( 0.5,0.5 );
 				float2 break124 = ( rotator136 * _ShadingFreq );
 				float temp_output_132_0 = step( frac( ( break124.x + break124.y ) ) , _ShadingThreshold );
 				float4 color131 = IsGammaSpace() ? float4(0,0,0,0) : float4(0,0,0,0);
@@ -2337,7 +2304,8 @@ Shader "Fur"
 				
 				float3 ase_worldViewDir = ( _WorldSpaceCameraPos.xyz - WorldPosition );
 				ase_worldViewDir = normalize(ase_worldViewDir);
-				float simplePerlin2D51 = snoise( texCoord77.xy*_NoiseScale );
+				float2 texCoord143 = IN.ase_texcoord3.xy * float2( 1,1 ) + float2( 0,0 );
+				float simplePerlin2D51 = snoise( texCoord143*_NoiseScale );
 				simplePerlin2D51 = simplePerlin2D51*0.5 + 0.5;
 				float fresnelNdotV50 = dot( ase_worldNormal, ase_worldViewDir );
 				float fresnelNode50 = ( (-_NoiseStrength + (simplePerlin2D51 - 0.0) * (_NoiseStrength - -_NoiseStrength) / (1.0 - 0.0)) + 0.4 * pow( 1.0 - fresnelNdotV50, 4.0 ) );
@@ -2438,7 +2406,6 @@ Shader "Fur"
 
 			#define ASE_NEEDS_FRAG_WORLD_POSITION
 			#define ASE_NEEDS_FRAG_WORLD_NORMAL
-			#define ASE_NEEDS_FRAG_SCREEN_POSITION
 
 
 			#if defined(ASE_EARLY_Z_DEPTH_OPTIMIZE) && (SHADER_TARGET >= 45)
@@ -2454,7 +2421,7 @@ Shader "Fur"
 				float4 positionOS : POSITION;
 				float3 normalOS : NORMAL;
 				float4 tangentOS : TANGENT;
-				
+				float4 ase_texcoord : TEXCOORD0;
 				UNITY_VERTEX_INPUT_INSTANCE_ID
 			};
 
@@ -2470,7 +2437,7 @@ Shader "Fur"
 				#if defined(REQUIRES_VERTEX_SHADOW_COORD_INTERPOLATOR) && defined(ASE_NEEDS_FRAG_SHADOWCOORDS)
 					float4 shadowCoord : TEXCOORD4;
 				#endif
-				
+				float4 ase_texcoord5 : TEXCOORD5;
 				UNITY_VERTEX_INPUT_INSTANCE_ID
 				UNITY_VERTEX_OUTPUT_STEREO
 			};
@@ -2553,7 +2520,10 @@ Shader "Fur"
 				UNITY_TRANSFER_INSTANCE_ID(v, o);
 				UNITY_INITIALIZE_VERTEX_OUTPUT_STEREO(o);
 
+				o.ase_texcoord5.xy = v.ase_texcoord.xy;
 				
+				//setting value to unused interpolator channels and avoid initialization warnings
+				o.ase_texcoord5.zw = 0;
 				#ifdef ASE_ABSOLUTE_VERTEX_POS
 					float3 defaultVertexValue = v.positionOS.xyz;
 				#else
@@ -2598,7 +2568,8 @@ Shader "Fur"
 				float4 vertex : INTERNALTESSPOS;
 				float3 normalOS : NORMAL;
 				float4 tangentOS : TANGENT;
-				
+				float4 ase_texcoord : TEXCOORD0;
+
 				UNITY_VERTEX_INPUT_INSTANCE_ID
 			};
 
@@ -2616,7 +2587,7 @@ Shader "Fur"
 				o.vertex = v.positionOS;
 				o.normalOS = v.normalOS;
 				o.tangentOS = v.tangentOS;
-				
+				o.ase_texcoord = v.ase_texcoord;
 				return o;
 			}
 
@@ -2656,7 +2627,7 @@ Shader "Fur"
 				o.positionOS = patch[0].vertex * bary.x + patch[1].vertex * bary.y + patch[2].vertex * bary.z;
 				o.normalOS = patch[0].normalOS * bary.x + patch[1].normalOS * bary.y + patch[2].normalOS * bary.z;
 				o.tangentOS = patch[0].tangentOS * bary.x + patch[1].tangentOS * bary.y + patch[2].tangentOS * bary.z;
-				
+				o.ase_texcoord = patch[0].ase_texcoord * bary.x + patch[1].ase_texcoord * bary.y + patch[2].ase_texcoord * bary.z;
 				#if defined(ASE_PHONG_TESSELLATION)
 				float3 pp[3];
 				for (int i = 0; i < 3; ++i)
@@ -2708,16 +2679,8 @@ Shader "Fur"
 
 				float3 ase_worldViewDir = ( _WorldSpaceCameraPos.xyz - WorldPosition );
 				ase_worldViewDir = normalize(ase_worldViewDir);
-				float4 ase_screenPosNorm = ScreenPos / ScreenPos.w;
-				ase_screenPosNorm.z = ( UNITY_NEAR_CLIP_VALUE >= 0 ) ? ase_screenPosNorm.z : ase_screenPosNorm.z * 0.5 + 0.5;
-				float2 appendResult62 = (float2(1.0 , ( _ScreenParams.y / _ScreenParams.x )));
-				float4 matrixToPos54 = float4( GetObjectToWorldMatrix()[0][3],GetObjectToWorldMatrix()[1][3],GetObjectToWorldMatrix()[2][3],GetObjectToWorldMatrix()[3][3]);
-				float4 worldPos58 = matrixToPos54;
-				float4 worldToClip63 = TransformWorldToHClip(worldPos58.xyz);
-				float4 worldToClip63NDC = worldToClip63/worldToClip63.w;
-				float3 worldToView74 = mul( UNITY_MATRIX_V, float4( worldPos58.xyz, 1 ) ).xyz;
-				float4 texCoord77 = (float4( 0,0,0,0 ) + (( (float4( -1,-1,0,0 ) + (( float4( ( ( ( ( ( (ase_screenPosNorm).xy + -0.5 ) * 2.0 ) * appendResult62 ) + 1.0 ) * 0.5 ), 0.0 , 0.0 ) - ( float4( appendResult62, 0.0 , 0.0 ) * ( float4( float2( 0.5,-0.5 ), 0.0 , 0.0 ) * worldToClip63NDC ) ) ) - float4( 0,0,0,0 )) * (float4( 1,1,1,1 ) - float4( -1,-1,0,0 )) / (float4( 1,1,1,1 ) - float4( 0,0,0,0 ))) * worldToView74.z ) - float4( -1,-1,0,0 )) * (float4( 1,1,1,1 ) - float4( 0,0,0,0 )) / (float4( 1,1,1,1 ) - float4( -1,-1,0,0 )));
-				float simplePerlin2D51 = snoise( texCoord77.xy*_NoiseScale );
+				float2 texCoord143 = IN.ase_texcoord5.xy * float2( 1,1 ) + float2( 0,0 );
+				float simplePerlin2D51 = snoise( texCoord143*_NoiseScale );
 				simplePerlin2D51 = simplePerlin2D51*0.5 + 0.5;
 				float fresnelNdotV50 = dot( WorldNormal, ase_worldViewDir );
 				float fresnelNode50 = ( (-_NoiseStrength + (simplePerlin2D51 - 0.0) * (_NoiseStrength - -_NoiseStrength) / (1.0 - 0.0)) + 0.4 * pow( 1.0 - fresnelNdotV50, 4.0 ) );
@@ -2883,7 +2846,6 @@ Shader "Fur"
 			#endif
 
 			#define ASE_NEEDS_FRAG_WORLD_NORMAL
-			#define ASE_NEEDS_FRAG_SCREEN_POSITION
 			#define ASE_NEEDS_FRAG_WORLD_VIEW_DIR
 
 
@@ -2922,7 +2884,7 @@ Shader "Fur"
 				#if defined(DYNAMICLIGHTMAP_ON)
 				float2 dynamicLightmapUV : TEXCOORD7;
 				#endif
-				
+				float4 ase_texcoord8 : TEXCOORD8;
 				UNITY_VERTEX_INPUT_INSTANCE_ID
 				UNITY_VERTEX_OUTPUT_STEREO
 			};
@@ -3007,7 +2969,10 @@ Shader "Fur"
 				UNITY_TRANSFER_INSTANCE_ID(v, o);
 				UNITY_INITIALIZE_VERTEX_OUTPUT_STEREO(o);
 
+				o.ase_texcoord8.xy = v.texcoord.xy;
 				
+				//setting value to unused interpolator channels and avoid initialization warnings
+				o.ase_texcoord8.zw = 0;
 				#ifdef ASE_ABSOLUTE_VERTEX_POS
 					float3 defaultVertexValue = v.positionOS.xyz;
 				#else
@@ -3200,27 +3165,20 @@ Shader "Fur"
 				float4 lerpResult20 = lerp( _MesaXY2 , _MesaXY1 , dotResult13);
 				float dotResult46 = dot( WorldNormal , float3(0,0,-1) );
 				float4 lerpResult98 = lerp( _MesaZ , lerpResult20 , saturate( dotResult46 ));
-				float4 ase_screenPosNorm = ScreenPos / ScreenPos.w;
-				ase_screenPosNorm.z = ( UNITY_NEAR_CLIP_VALUE >= 0 ) ? ase_screenPosNorm.z : ase_screenPosNorm.z * 0.5 + 0.5;
-				float2 appendResult62 = (float2(1.0 , ( _ScreenParams.y / _ScreenParams.x )));
-				float4 matrixToPos54 = float4( GetObjectToWorldMatrix()[0][3],GetObjectToWorldMatrix()[1][3],GetObjectToWorldMatrix()[2][3],GetObjectToWorldMatrix()[3][3]);
-				float4 worldPos58 = matrixToPos54;
-				float4 worldToClip63 = TransformWorldToHClip(worldPos58.xyz);
-				float4 worldToClip63NDC = worldToClip63/worldToClip63.w;
-				float3 worldToView74 = mul( UNITY_MATRIX_V, float4( worldPos58.xyz, 1 ) ).xyz;
-				float4 texCoord77 = (float4( 0,0,0,0 ) + (( (float4( -1,-1,0,0 ) + (( float4( ( ( ( ( ( (ase_screenPosNorm).xy + -0.5 ) * 2.0 ) * appendResult62 ) + 1.0 ) * 0.5 ), 0.0 , 0.0 ) - ( float4( appendResult62, 0.0 , 0.0 ) * ( float4( float2( 0.5,-0.5 ), 0.0 , 0.0 ) * worldToClip63NDC ) ) ) - float4( 0,0,0,0 )) * (float4( 1,1,1,1 ) - float4( -1,-1,0,0 )) / (float4( 1,1,1,1 ) - float4( 0,0,0,0 ))) * worldToView74.z ) - float4( -1,-1,0,0 )) * (float4( 1,1,1,1 ) - float4( 0,0,0,0 )) / (float4( 1,1,1,1 ) - float4( -1,-1,0,0 )));
-				float simplePerlin2D140 = snoise( texCoord77.xy*_ShadingNoiseScale );
+				float2 texCoord142 = IN.ase_texcoord8.xy * float2( 1,1 ) + float2( 0,0 );
+				float simplePerlin2D140 = snoise( texCoord142*_ShadingNoiseScale );
 				simplePerlin2D140 = simplePerlin2D140*0.5 + 0.5;
 				float cos136 = cos( ( simplePerlin2D140 + 0.0 ) );
 				float sin136 = sin( ( simplePerlin2D140 + 0.0 ) );
-				float2 rotator136 = mul( texCoord77.xy - float2( 0.5,0.5 ) , float2x2( cos136 , -sin136 , sin136 , cos136 )) + float2( 0.5,0.5 );
+				float2 rotator136 = mul( texCoord142 - float2( 0.5,0.5 ) , float2x2( cos136 , -sin136 , sin136 , cos136 )) + float2( 0.5,0.5 );
 				float2 break124 = ( rotator136 * _ShadingFreq );
 				float temp_output_132_0 = step( frac( ( break124.x + break124.y ) ) , _ShadingThreshold );
 				float4 color131 = IsGammaSpace() ? float4(0,0,0,0) : float4(0,0,0,0);
 				float4 lerpResult130 = lerp( color131 , _ShadingColor , temp_output_132_0);
 				float4 lerpResult113 = lerp( lerpResult98 , ( temp_output_132_0 * lerpResult130 ) , temp_output_132_0);
 				
-				float simplePerlin2D51 = snoise( texCoord77.xy*_NoiseScale );
+				float2 texCoord143 = IN.ase_texcoord8.xy * float2( 1,1 ) + float2( 0,0 );
+				float simplePerlin2D51 = snoise( texCoord143*_NoiseScale );
 				simplePerlin2D51 = simplePerlin2D51*0.5 + 0.5;
 				float fresnelNdotV50 = dot( WorldNormal, WorldViewDirection );
 				float fresnelNode50 = ( (-_NoiseStrength + (simplePerlin2D51 - 0.0) * (_NoiseStrength - -_NoiseStrength) / (1.0 - 0.0)) + 0.4 * pow( 1.0 - fresnelNdotV50, 4.0 ) );
@@ -3407,7 +3365,7 @@ Shader "Fur"
 			{
 				float4 positionOS : POSITION;
 				float3 normalOS : NORMAL;
-				
+				float4 ase_texcoord : TEXCOORD0;
 				UNITY_VERTEX_INPUT_INSTANCE_ID
 			};
 
@@ -3511,14 +3469,13 @@ Shader "Fur"
 				o.ase_texcoord.xyz = ase_worldPos;
 				float3 ase_worldNormal = TransformObjectToWorldNormal(v.normalOS);
 				o.ase_texcoord1.xyz = ase_worldNormal;
-				float4 ase_clipPos = TransformObjectToHClip((v.positionOS).xyz);
-				float4 screenPos = ComputeScreenPos(ase_clipPos);
-				o.ase_texcoord2 = screenPos;
 				
+				o.ase_texcoord2.xy = v.ase_texcoord.xy;
 				
 				//setting value to unused interpolator channels and avoid initialization warnings
 				o.ase_texcoord.w = 0;
 				o.ase_texcoord1.w = 0;
+				o.ase_texcoord2.zw = 0;
 
 				#ifdef ASE_ABSOLUTE_VERTEX_POS
 					float3 defaultVertexValue = v.positionOS.xyz;
@@ -3548,7 +3505,8 @@ Shader "Fur"
 			{
 				float4 vertex : INTERNALTESSPOS;
 				float3 normalOS : NORMAL;
-				
+				float4 ase_texcoord : TEXCOORD0;
+
 				UNITY_VERTEX_INPUT_INSTANCE_ID
 			};
 
@@ -3565,7 +3523,7 @@ Shader "Fur"
 				UNITY_TRANSFER_INSTANCE_ID(v, o);
 				o.vertex = v.positionOS;
 				o.normalOS = v.normalOS;
-				
+				o.ase_texcoord = v.ase_texcoord;
 				return o;
 			}
 
@@ -3604,7 +3562,7 @@ Shader "Fur"
 				VertexInput o = (VertexInput) 0;
 				o.positionOS = patch[0].vertex * bary.x + patch[1].vertex * bary.y + patch[2].vertex * bary.z;
 				o.normalOS = patch[0].normalOS * bary.x + patch[1].normalOS * bary.y + patch[2].normalOS * bary.z;
-				
+				o.ase_texcoord = patch[0].ase_texcoord * bary.x + patch[1].ase_texcoord * bary.y + patch[2].ase_texcoord * bary.z;
 				#if defined(ASE_PHONG_TESSELLATION)
 				float3 pp[3];
 				for (int i = 0; i < 3; ++i)
@@ -3630,17 +3588,8 @@ Shader "Fur"
 				float3 ase_worldViewDir = ( _WorldSpaceCameraPos.xyz - ase_worldPos );
 				ase_worldViewDir = normalize(ase_worldViewDir);
 				float3 ase_worldNormal = IN.ase_texcoord1.xyz;
-				float4 screenPos = IN.ase_texcoord2;
-				float4 ase_screenPosNorm = screenPos / screenPos.w;
-				ase_screenPosNorm.z = ( UNITY_NEAR_CLIP_VALUE >= 0 ) ? ase_screenPosNorm.z : ase_screenPosNorm.z * 0.5 + 0.5;
-				float2 appendResult62 = (float2(1.0 , ( _ScreenParams.y / _ScreenParams.x )));
-				float4 matrixToPos54 = float4( GetObjectToWorldMatrix()[0][3],GetObjectToWorldMatrix()[1][3],GetObjectToWorldMatrix()[2][3],GetObjectToWorldMatrix()[3][3]);
-				float4 worldPos58 = matrixToPos54;
-				float4 worldToClip63 = TransformWorldToHClip(worldPos58.xyz);
-				float4 worldToClip63NDC = worldToClip63/worldToClip63.w;
-				float3 worldToView74 = mul( UNITY_MATRIX_V, float4( worldPos58.xyz, 1 ) ).xyz;
-				float4 texCoord77 = (float4( 0,0,0,0 ) + (( (float4( -1,-1,0,0 ) + (( float4( ( ( ( ( ( (ase_screenPosNorm).xy + -0.5 ) * 2.0 ) * appendResult62 ) + 1.0 ) * 0.5 ), 0.0 , 0.0 ) - ( float4( appendResult62, 0.0 , 0.0 ) * ( float4( float2( 0.5,-0.5 ), 0.0 , 0.0 ) * worldToClip63NDC ) ) ) - float4( 0,0,0,0 )) * (float4( 1,1,1,1 ) - float4( -1,-1,0,0 )) / (float4( 1,1,1,1 ) - float4( 0,0,0,0 ))) * worldToView74.z ) - float4( -1,-1,0,0 )) * (float4( 1,1,1,1 ) - float4( 0,0,0,0 )) / (float4( 1,1,1,1 ) - float4( -1,-1,0,0 )));
-				float simplePerlin2D51 = snoise( texCoord77.xy*_NoiseScale );
+				float2 texCoord143 = IN.ase_texcoord2.xy * float2( 1,1 ) + float2( 0,0 );
+				float simplePerlin2D51 = snoise( texCoord143*_NoiseScale );
 				simplePerlin2D51 = simplePerlin2D51*0.5 + 0.5;
 				float fresnelNdotV50 = dot( ase_worldNormal, ase_worldViewDir );
 				float fresnelNode50 = ( (-_NoiseStrength + (simplePerlin2D51 - 0.0) * (_NoiseStrength - -_NoiseStrength) / (1.0 - 0.0)) + 0.4 * pow( 1.0 - fresnelNdotV50, 4.0 ) );
@@ -3741,7 +3690,7 @@ Shader "Fur"
 			{
 				float4 positionOS : POSITION;
 				float3 normalOS : NORMAL;
-				
+				float4 ase_texcoord : TEXCOORD0;
 				UNITY_VERTEX_INPUT_INSTANCE_ID
 			};
 
@@ -3845,14 +3794,13 @@ Shader "Fur"
 				o.ase_texcoord.xyz = ase_worldPos;
 				float3 ase_worldNormal = TransformObjectToWorldNormal(v.normalOS);
 				o.ase_texcoord1.xyz = ase_worldNormal;
-				float4 ase_clipPos = TransformObjectToHClip((v.positionOS).xyz);
-				float4 screenPos = ComputeScreenPos(ase_clipPos);
-				o.ase_texcoord2 = screenPos;
 				
+				o.ase_texcoord2.xy = v.ase_texcoord.xy;
 				
 				//setting value to unused interpolator channels and avoid initialization warnings
 				o.ase_texcoord.w = 0;
 				o.ase_texcoord1.w = 0;
+				o.ase_texcoord2.zw = 0;
 
 				#ifdef ASE_ABSOLUTE_VERTEX_POS
 					float3 defaultVertexValue = v.positionOS.xyz;
@@ -3881,7 +3829,8 @@ Shader "Fur"
 			{
 				float4 vertex : INTERNALTESSPOS;
 				float3 normalOS : NORMAL;
-				
+				float4 ase_texcoord : TEXCOORD0;
+
 				UNITY_VERTEX_INPUT_INSTANCE_ID
 			};
 
@@ -3898,7 +3847,7 @@ Shader "Fur"
 				UNITY_TRANSFER_INSTANCE_ID(v, o);
 				o.vertex = v.positionOS;
 				o.normalOS = v.normalOS;
-				
+				o.ase_texcoord = v.ase_texcoord;
 				return o;
 			}
 
@@ -3937,7 +3886,7 @@ Shader "Fur"
 				VertexInput o = (VertexInput) 0;
 				o.positionOS = patch[0].vertex * bary.x + patch[1].vertex * bary.y + patch[2].vertex * bary.z;
 				o.normalOS = patch[0].normalOS * bary.x + patch[1].normalOS * bary.y + patch[2].normalOS * bary.z;
-				
+				o.ase_texcoord = patch[0].ase_texcoord * bary.x + patch[1].ase_texcoord * bary.y + patch[2].ase_texcoord * bary.z;
 				#if defined(ASE_PHONG_TESSELLATION)
 				float3 pp[3];
 				for (int i = 0; i < 3; ++i)
@@ -3963,17 +3912,8 @@ Shader "Fur"
 				float3 ase_worldViewDir = ( _WorldSpaceCameraPos.xyz - ase_worldPos );
 				ase_worldViewDir = normalize(ase_worldViewDir);
 				float3 ase_worldNormal = IN.ase_texcoord1.xyz;
-				float4 screenPos = IN.ase_texcoord2;
-				float4 ase_screenPosNorm = screenPos / screenPos.w;
-				ase_screenPosNorm.z = ( UNITY_NEAR_CLIP_VALUE >= 0 ) ? ase_screenPosNorm.z : ase_screenPosNorm.z * 0.5 + 0.5;
-				float2 appendResult62 = (float2(1.0 , ( _ScreenParams.y / _ScreenParams.x )));
-				float4 matrixToPos54 = float4( GetObjectToWorldMatrix()[0][3],GetObjectToWorldMatrix()[1][3],GetObjectToWorldMatrix()[2][3],GetObjectToWorldMatrix()[3][3]);
-				float4 worldPos58 = matrixToPos54;
-				float4 worldToClip63 = TransformWorldToHClip(worldPos58.xyz);
-				float4 worldToClip63NDC = worldToClip63/worldToClip63.w;
-				float3 worldToView74 = mul( UNITY_MATRIX_V, float4( worldPos58.xyz, 1 ) ).xyz;
-				float4 texCoord77 = (float4( 0,0,0,0 ) + (( (float4( -1,-1,0,0 ) + (( float4( ( ( ( ( ( (ase_screenPosNorm).xy + -0.5 ) * 2.0 ) * appendResult62 ) + 1.0 ) * 0.5 ), 0.0 , 0.0 ) - ( float4( appendResult62, 0.0 , 0.0 ) * ( float4( float2( 0.5,-0.5 ), 0.0 , 0.0 ) * worldToClip63NDC ) ) ) - float4( 0,0,0,0 )) * (float4( 1,1,1,1 ) - float4( -1,-1,0,0 )) / (float4( 1,1,1,1 ) - float4( 0,0,0,0 ))) * worldToView74.z ) - float4( -1,-1,0,0 )) * (float4( 1,1,1,1 ) - float4( 0,0,0,0 )) / (float4( 1,1,1,1 ) - float4( -1,-1,0,0 )));
-				float simplePerlin2D51 = snoise( texCoord77.xy*_NoiseScale );
+				float2 texCoord143 = IN.ase_texcoord2.xy * float2( 1,1 ) + float2( 0,0 );
+				float simplePerlin2D51 = snoise( texCoord143*_NoiseScale );
 				simplePerlin2D51 = simplePerlin2D51*0.5 + 0.5;
 				float fresnelNdotV50 = dot( ase_worldNormal, ase_worldViewDir );
 				float fresnelNode50 = ( (-_NoiseStrength + (simplePerlin2D51 - 0.0) * (_NoiseStrength - -_NoiseStrength) / (1.0 - 0.0)) + 0.4 * pow( 1.0 - fresnelNdotV50, 4.0 ) );
@@ -4013,9 +3953,18 @@ Shader "Fur"
 }
 /*ASEBEGIN
 Version=19603
+Node;AmplifyShaderEditor.RangedFloatNode;79;896,-736;Inherit;False;Property;_NoiseScale;NoiseScale;3;0;Create;True;0;0;0;False;0;False;0;5.63;0;0;0;1;FLOAT;0
+Node;AmplifyShaderEditor.RangedFloatNode;82;992,-656;Inherit;False;Property;_NoiseStrength;NoiseStrength;4;0;Create;True;0;0;0;False;0;False;0;0.31;0;0;0;1;FLOAT;0
+Node;AmplifyShaderEditor.TextureCoordinatesNode;143;832,-992;Inherit;False;0;-1;2;3;2;SAMPLER2D;;False;0;FLOAT2;1,1;False;1;FLOAT2;0,0;False;5;FLOAT2;0;FLOAT;1;FLOAT;2;FLOAT;3;FLOAT;4
+Node;AmplifyShaderEditor.NoiseGeneratorNode;51;1104,-896;Inherit;False;Simplex2D;True;False;2;0;FLOAT2;0,0;False;1;FLOAT;1;False;1;FLOAT;0
+Node;AmplifyShaderEditor.NegateNode;81;1232,-768;Inherit;False;1;0;FLOAT;0;False;1;FLOAT;0
 Node;AmplifyShaderEditor.CommentaryNode;52;-1300.095,862.3733;Inherit;False;855.5251;266.1579;;3;58;54;53;World Position;1,1,1,1;0;0
-Node;AmplifyShaderEditor.TransformVariables;53;-1250.095,912.3733;Inherit;False;_Object2World;0;1;FLOAT4x4;0
 Node;AmplifyShaderEditor.CommentaryNode;55;-112,-144;Inherit;False;1551.285;1074.304;TexCoord;14;71;69;68;67;66;65;64;63;62;61;60;59;57;56;StableScreenCoords;1,1,1,1;0;0
+Node;AmplifyShaderEditor.CommentaryNode;70;-155.3915,841.3022;Inherit;False;1202.444;523.4009;;2;74;72;DistanceScaleFactor;1,1,1,1;0;0
+Node;AmplifyShaderEditor.TFHCRemapNode;80;1392,-912;Inherit;False;5;0;FLOAT;0;False;1;FLOAT;0;False;2;FLOAT;1;False;3;FLOAT;-1;False;4;FLOAT;1;False;1;FLOAT;0
+Node;AmplifyShaderEditor.WorldNormalVector;83;1216,-1424;Inherit;False;False;1;0;FLOAT3;0,0,1;False;4;FLOAT3;0;FLOAT;1;FLOAT;2;FLOAT;3
+Node;AmplifyShaderEditor.ViewDirInputsCoordNode;84;1216,-1136;Inherit;False;World;False;0;4;FLOAT3;0;FLOAT;1;FLOAT;2;FLOAT;3
+Node;AmplifyShaderEditor.TransformVariables;53;-1250.095,912.3733;Inherit;False;_Object2World;0;1;FLOAT4x4;0
 Node;AmplifyShaderEditor.PosFromTransformMatrix;54;-937.2595,924.5313;Inherit;False;1;0;FLOAT4x4;1,0,0,0,0,1,0,0,0,0,1,0,0,0,0,1;False;5;FLOAT4;0;FLOAT;1;FLOAT;2;FLOAT;3;FLOAT;4
 Node;AmplifyShaderEditor.ScreenPosInputsNode;56;-32,32;Float;False;0;False;0;5;FLOAT4;0;FLOAT;1;FLOAT;2;FLOAT;3;FLOAT;4
 Node;AmplifyShaderEditor.ScreenParams;57;112,256;Inherit;False;0;5;FLOAT4;0;FLOAT;1;FLOAT;2;FLOAT;3;FLOAT;4
@@ -4029,7 +3978,6 @@ Node;AmplifyShaderEditor.Vector2Node;64;400,480;Inherit;False;Constant;_Vector3;
 Node;AmplifyShaderEditor.FunctionNode;65;336,144;Inherit;False;ConstantBiasScale;-1;;3;63208df05c83e8e49a48ffbdce2e43a0;0;3;3;FLOAT2;0,0;False;1;FLOAT;-0.5;False;2;FLOAT;2;False;1;FLOAT2;0
 Node;AmplifyShaderEditor.SimpleMultiplyOpNode;66;672,80;Inherit;False;2;2;0;FLOAT2;0,0;False;1;FLOAT2;0,0;False;1;FLOAT2;0
 Node;AmplifyShaderEditor.SimpleMultiplyOpNode;67;752,544;Inherit;False;2;2;0;FLOAT2;0,0;False;1;FLOAT4;0,0,0,0;False;1;FLOAT4;0
-Node;AmplifyShaderEditor.CommentaryNode;70;-155.3915,841.3022;Inherit;False;1202.444;523.4009;;2;74;72;DistanceScaleFactor;1,1,1,1;0;0
 Node;AmplifyShaderEditor.SimpleMultiplyOpNode;68;816,320;Inherit;False;2;2;0;FLOAT2;0,0;False;1;FLOAT4;0,0,0,0;False;1;FLOAT4;0
 Node;AmplifyShaderEditor.FunctionNode;69;928,48;Inherit;False;ConstantBiasScale;-1;;4;63208df05c83e8e49a48ffbdce2e43a0;0;3;3;FLOAT2;0,0;False;1;FLOAT;1;False;2;FLOAT;0.5;False;1;FLOAT2;0
 Node;AmplifyShaderEditor.SimpleSubtractOpNode;71;1264,128;Inherit;False;2;0;FLOAT2;0,0;False;1;FLOAT4;0,0,0,0;False;1;FLOAT4;0
@@ -4038,15 +3986,7 @@ Node;AmplifyShaderEditor.TFHCRemapNode;73;1675.451,-90.97876;Inherit;False;5;0;F
 Node;AmplifyShaderEditor.TransformPositionNode;74;171.5394,953.6172;Inherit;False;World;View;False;Fast;True;1;0;FLOAT3;0,0,0;False;5;FLOAT3;0;FLOAT;1;FLOAT;2;FLOAT;3;FLOAT;4
 Node;AmplifyShaderEditor.SimpleMultiplyOpNode;75;1947.539,41.61719;Inherit;False;2;2;0;FLOAT4;0,0,0,0;False;1;FLOAT;0;False;1;FLOAT4;0
 Node;AmplifyShaderEditor.TFHCRemapNode;76;2134.203,111.5782;Inherit;False;5;0;FLOAT4;0,0,0,0;False;1;FLOAT4;-1,-1,0,0;False;2;FLOAT4;1,1,1,1;False;3;FLOAT4;0,0,0,0;False;4;FLOAT4;1,1,1,1;False;1;FLOAT4;0
-Node;AmplifyShaderEditor.RegisterLocalVarNode;77;2376.124,79.06213;Inherit;False;texCoord;-1;True;1;0;FLOAT4;0,0,0,0;False;1;FLOAT4;0
 Node;AmplifyShaderEditor.GetLocalVarNode;78;864,-880;Inherit;False;77;texCoord;1;0;OBJECT;;False;1;FLOAT4;0
-Node;AmplifyShaderEditor.RangedFloatNode;79;896,-736;Inherit;False;Property;_NoiseScale;NoiseScale;3;0;Create;True;0;0;0;False;0;False;0;5.63;0;0;0;1;FLOAT;0
-Node;AmplifyShaderEditor.RangedFloatNode;82;992,-656;Inherit;False;Property;_NoiseStrength;NoiseStrength;4;0;Create;True;0;0;0;False;0;False;0;0.31;0;0;0;1;FLOAT;0
-Node;AmplifyShaderEditor.NoiseGeneratorNode;51;1104,-896;Inherit;False;Simplex2D;True;False;2;0;FLOAT2;0,0;False;1;FLOAT;1;False;1;FLOAT;0
-Node;AmplifyShaderEditor.NegateNode;81;1232,-768;Inherit;False;1;0;FLOAT;0;False;1;FLOAT;0
-Node;AmplifyShaderEditor.TFHCRemapNode;80;1392,-912;Inherit;False;5;0;FLOAT;0;False;1;FLOAT;0;False;2;FLOAT;1;False;3;FLOAT;-1;False;4;FLOAT;1;False;1;FLOAT;0
-Node;AmplifyShaderEditor.WorldNormalVector;83;1216,-1424;Inherit;False;False;1;0;FLOAT3;0,0,1;False;4;FLOAT3;0;FLOAT;1;FLOAT;2;FLOAT;3
-Node;AmplifyShaderEditor.ViewDirInputsCoordNode;84;1216,-1136;Inherit;False;World;False;0;4;FLOAT3;0;FLOAT;1;FLOAT;2;FLOAT;3
 Node;AmplifyShaderEditor.LerpOp;20;-64,-528;Inherit;False;3;0;COLOR;0,0,0,0;False;1;COLOR;0,0,0,0;False;2;FLOAT;0;False;1;COLOR;0
 Node;AmplifyShaderEditor.ColorNode;21;-560,-560;Inherit;False;Property;_MesaXY1;MesaXY1;0;0;Create;True;0;0;0;False;0;False;1,0.4764151,0.9294767,0;1,0.9524046,0,0;True;True;0;6;COLOR;0;FLOAT;1;FLOAT;2;FLOAT;3;FLOAT;4;FLOAT3;5
 Node;AmplifyShaderEditor.DotProductOpNode;13;-352,-272;Inherit;False;2;0;FLOAT3;0,0,0;False;1;FLOAT3;0,0,0;False;1;FLOAT;0
@@ -4062,7 +4002,6 @@ Node;AmplifyShaderEditor.Vector3Node;45;-176,-288;Inherit;False;Constant;_Vector
 Node;AmplifyShaderEditor.SimpleSubtractOpNode;105;2238.291,-1618.006;Inherit;False;2;0;FLOAT;0;False;1;FLOAT;0;False;1;FLOAT;0
 Node;AmplifyShaderEditor.RangedFloatNode;96;1712,-1792;Inherit;False;Constant;_Float0;Float 0;5;0;Create;True;0;0;0;False;0;False;0;0;0;0;0;1;FLOAT;0
 Node;AmplifyShaderEditor.SimpleMaxOpNode;107;2688,-1696;Inherit;False;2;0;FLOAT;0;False;1;FLOAT;0;False;1;FLOAT;0
-Node;AmplifyShaderEditor.GetLocalVarNode;116;2576,-1168;Inherit;False;77;texCoord;1;0;OBJECT;;False;1;FLOAT4;0
 Node;AmplifyShaderEditor.BreakToComponentsNode;124;3168,-1408;Inherit;False;FLOAT2;1;0;FLOAT2;0,0;False;16;FLOAT;0;FLOAT;1;FLOAT;2;FLOAT;3;FLOAT;4;FLOAT;5;FLOAT;6;FLOAT;7;FLOAT;8;FLOAT;9;FLOAT;10;FLOAT;11;FLOAT;12;FLOAT;13;FLOAT;14;FLOAT;15
 Node;AmplifyShaderEditor.SimpleAddOpNode;125;3328,-1392;Inherit;False;2;2;0;FLOAT;0;False;1;FLOAT;0;False;1;FLOAT;0
 Node;AmplifyShaderEditor.ColorNode;120;3184,-1248;Inherit;False;Property;_ShadingColor;ShadingColor;6;0;Create;True;0;0;0;False;0;False;0,0,0,0;0,0,0,0;True;True;0;6;COLOR;0;FLOAT;1;FLOAT;2;FLOAT;3;FLOAT;4;FLOAT3;5
@@ -4080,6 +4019,8 @@ Node;AmplifyShaderEditor.LerpOp;113;3168,-1728;Inherit;False;3;0;COLOR;0,0,0,0;F
 Node;AmplifyShaderEditor.StepOpNode;132;3632,-1520;Inherit;False;2;0;FLOAT;0;False;1;FLOAT;0;False;1;FLOAT;0
 Node;AmplifyShaderEditor.RangedFloatNode;122;3392,-1264;Inherit;False;Property;_ShadingThreshold;ShadingThreshold;7;0;Create;True;0;0;0;False;0;False;0;0.632;0;1;0;1;FLOAT;0
 Node;AmplifyShaderEditor.SimpleMultiplyOpNode;119;3888,-1664;Inherit;False;2;2;0;FLOAT;0;False;1;COLOR;0,0,0,0;False;1;COLOR;0
+Node;AmplifyShaderEditor.TextureCoordinatesNode;142;2624,-1232;Inherit;False;0;-1;2;3;2;SAMPLER2D;;False;0;FLOAT2;1,1;False;1;FLOAT2;0,0;False;5;FLOAT2;0;FLOAT;1;FLOAT;2;FLOAT;3;FLOAT;4
+Node;AmplifyShaderEditor.RegisterLocalVarNode;77;2376.124,79.06213;Inherit;False;texCoord;-1;True;1;0;FLOAT4;0,0,0,0;False;1;FLOAT4;0
 Node;AmplifyShaderEditor.TemplateMultiPassMasterNode;35;1280,-704;Float;False;False;-1;2;UnityEditor.ShaderGraphLitGUI;0;12;New Amplify Shader;94348b07e5e8bab40bd6c8a1e3df54cd;True;ExtraPrePass;0;0;ExtraPrePass;5;False;False;False;False;False;False;False;False;False;False;False;False;True;0;False;;False;True;0;False;;False;False;False;False;False;False;False;False;False;True;False;0;False;;255;False;;255;False;;0;False;;0;False;;0;False;;0;False;;0;False;;0;False;;0;False;;0;False;;False;True;1;False;;True;3;False;;True;True;0;False;;0;False;;True;4;RenderPipeline=UniversalPipeline;RenderType=Opaque=RenderType;Queue=Geometry=Queue=0;UniversalMaterialType=Lit;True;5;True;12;all;0;False;True;1;1;False;;0;False;;0;1;False;;0;False;;False;False;False;False;False;False;False;False;False;False;False;False;True;0;False;;False;True;True;True;True;True;0;False;;False;False;False;False;False;False;False;True;False;0;False;;255;False;;255;False;;0;False;;0;False;;0;False;;0;False;;0;False;;0;False;;0;False;;0;False;;False;True;1;False;;True;3;False;;True;True;0;False;;0;False;;True;0;False;False;0;;0;0;Standard;0;False;0
 Node;AmplifyShaderEditor.TemplateMultiPassMasterNode;37;1280,-704;Float;False;False;-1;2;UnityEditor.ShaderGraphLitGUI;0;12;New Amplify Shader;94348b07e5e8bab40bd6c8a1e3df54cd;True;ShadowCaster;0;2;ShadowCaster;0;False;False;False;False;False;False;False;False;False;False;False;False;True;0;False;;False;True;0;False;;False;False;False;False;False;False;False;False;False;True;False;0;False;;255;False;;255;False;;0;False;;0;False;;0;False;;0;False;;0;False;;0;False;;0;False;;0;False;;False;True;1;False;;True;3;False;;True;True;0;False;;0;False;;True;4;RenderPipeline=UniversalPipeline;RenderType=Opaque=RenderType;Queue=Geometry=Queue=0;UniversalMaterialType=Lit;True;5;True;12;all;0;False;False;False;False;False;False;False;False;False;False;False;False;True;0;False;;False;False;False;True;False;False;False;False;0;False;;False;False;False;False;False;False;False;False;False;True;1;False;;True;3;False;;False;True;1;LightMode=ShadowCaster;False;False;0;;0;0;Standard;0;False;0
 Node;AmplifyShaderEditor.TemplateMultiPassMasterNode;38;1280,-704;Float;False;False;-1;2;UnityEditor.ShaderGraphLitGUI;0;12;New Amplify Shader;94348b07e5e8bab40bd6c8a1e3df54cd;True;DepthOnly;0;3;DepthOnly;0;False;False;False;False;False;False;False;False;False;False;False;False;True;0;False;;False;True;0;False;;False;False;False;False;False;False;False;False;False;True;False;0;False;;255;False;;255;False;;0;False;;0;False;;0;False;;0;False;;0;False;;0;False;;0;False;;0;False;;False;True;1;False;;True;3;False;;True;True;0;False;;0;False;;True;4;RenderPipeline=UniversalPipeline;RenderType=Opaque=RenderType;Queue=Geometry=Queue=0;UniversalMaterialType=Lit;True;5;True;12;all;0;False;False;False;False;False;False;False;False;False;False;False;False;True;0;False;;False;False;False;True;True;False;False;False;0;False;;False;False;False;False;False;False;False;False;False;True;1;False;;False;False;True;1;LightMode=DepthOnly;False;False;0;;0;0;Standard;0;False;0
@@ -4090,6 +4031,12 @@ Node;AmplifyShaderEditor.TemplateMultiPassMasterNode;42;1280,-704;Float;False;Fa
 Node;AmplifyShaderEditor.TemplateMultiPassMasterNode;43;1280,-704;Float;False;False;-1;2;UnityEditor.ShaderGraphLitGUI;0;12;New Amplify Shader;94348b07e5e8bab40bd6c8a1e3df54cd;True;SceneSelectionPass;0;8;SceneSelectionPass;0;False;False;False;False;False;False;False;False;False;False;False;False;True;0;False;;False;True;0;False;;False;False;False;False;False;False;False;False;False;True;False;0;False;;255;False;;255;False;;0;False;;0;False;;0;False;;0;False;;0;False;;0;False;;0;False;;0;False;;False;True;1;False;;True;3;False;;True;True;0;False;;0;False;;True;4;RenderPipeline=UniversalPipeline;RenderType=Opaque=RenderType;Queue=Geometry=Queue=0;UniversalMaterialType=Lit;True;5;True;12;all;0;False;False;False;False;False;False;False;False;False;False;False;False;True;0;False;;False;True;2;False;;False;False;False;False;False;False;False;False;False;False;False;False;False;False;True;1;LightMode=SceneSelectionPass;False;False;0;;0;0;Standard;0;False;0
 Node;AmplifyShaderEditor.TemplateMultiPassMasterNode;44;1280,-704;Float;False;False;-1;2;UnityEditor.ShaderGraphLitGUI;0;12;New Amplify Shader;94348b07e5e8bab40bd6c8a1e3df54cd;True;ScenePickingPass;0;9;ScenePickingPass;0;False;False;False;False;False;False;False;False;False;False;False;False;True;0;False;;False;True;0;False;;False;False;False;False;False;False;False;False;False;True;False;0;False;;255;False;;255;False;;0;False;;0;False;;0;False;;0;False;;0;False;;0;False;;0;False;;0;False;;False;True;1;False;;True;3;False;;True;True;0;False;;0;False;;True;4;RenderPipeline=UniversalPipeline;RenderType=Opaque=RenderType;Queue=Geometry=Queue=0;UniversalMaterialType=Lit;True;5;True;12;all;0;False;False;False;False;False;False;False;False;False;False;False;False;True;0;False;;False;False;False;False;False;False;False;False;False;False;False;False;False;False;False;False;True;1;LightMode=Picking;False;False;0;;0;0;Standard;0;False;0
 Node;AmplifyShaderEditor.TemplateMultiPassMasterNode;36;2544,-2096;Float;False;True;-1;2;UnityEditor.ShaderGraphLitGUI;0;12;Fur;94348b07e5e8bab40bd6c8a1e3df54cd;True;Forward;0;1;Forward;21;False;False;False;False;False;False;False;False;False;False;False;False;True;0;False;;False;True;0;False;;False;False;False;False;False;False;False;False;False;True;False;0;False;;255;False;;255;False;;0;False;;0;False;;0;False;;0;False;;0;False;;0;False;;0;False;;0;False;;False;True;1;False;;True;3;False;;True;True;0;False;;0;False;;True;4;RenderPipeline=UniversalPipeline;RenderType=Opaque=RenderType;Queue=Geometry=Queue=0;UniversalMaterialType=SimpleLit;True;5;True;12;all;0;False;True;1;1;False;;0;False;;1;1;False;;0;False;;False;False;False;False;False;False;False;False;False;False;False;False;False;False;True;True;True;True;True;0;False;;False;False;False;False;False;False;False;True;False;0;False;;255;False;;255;False;;0;False;;0;False;;0;False;;0;False;;0;False;;0;False;;0;False;;0;False;;False;True;1;False;;True;3;False;;True;True;0;False;;0;False;;True;1;LightMode=UniversalForward;False;False;0;;0;0;Standard;42;Lighting Model;1;638648967592351970;Workflow;0;0;Surface;0;0;  Refraction Model;0;0;  Blend;0;0;Two Sided;1;0;Fragment Normal Space,InvertActionOnDeselection;0;0;Forward Only;0;0;Transmission;0;0;  Transmission Shadow;0.5,False,;0;Translucency;0;0;  Translucency Strength;1,False,;0;  Normal Distortion;0.5,False,;0;  Scattering;2,False,;0;  Direct;0.9,False,;0;  Ambient;0.1,False,;0;  Shadow;0.5,False,;0;Cast Shadows;1;0;  Use Shadow Threshold;0;0;Receive Shadows;1;0;Receive SSAO;1;0;GPU Instancing;1;0;LOD CrossFade;1;0;Built-in Fog;0;638648967415346410;_FinalColorxAlpha;0;0;Meta Pass;1;0;Override Baked GI;0;0;Extra Pre Pass;0;0;Tessellation;0;0;  Phong;0;0;  Strength;0.5,False,;0;  Type;0;0;  Tess;16,False,;0;  Min;10,False,;0;  Max;25,False,;0;  Edge Length;16,False,;0;  Max Displacement;25,False,;0;Write Depth;0;0;  Early Z;0;0;Vertex Position,InvertActionOnDeselection;1;0;Debug Display;0;0;Clear Coat;0;0;0;10;False;True;True;True;True;True;True;True;True;True;False;;False;0
+WireConnection;51;0;143;0
+WireConnection;51;1;79;0
+WireConnection;81;0;82;0
+WireConnection;80;0;51;0
+WireConnection;80;3;81;0
+WireConnection;80;4;82;0
 WireConnection;54;0;53;0
 WireConnection;58;0;54;0
 WireConnection;59;0;57;2
@@ -4112,13 +4059,6 @@ WireConnection;74;0;72;0
 WireConnection;75;0;73;0
 WireConnection;75;1;74;3
 WireConnection;76;0;75;0
-WireConnection;77;0;76;0
-WireConnection;51;0;78;0
-WireConnection;51;1;79;0
-WireConnection;81;0;82;0
-WireConnection;80;0;51;0
-WireConnection;80;3;81;0
-WireConnection;80;4;82;0
 WireConnection;20;0;19;0
 WireConnection;20;1;21;0
 WireConnection;20;2;13;0
@@ -4145,9 +4085,9 @@ WireConnection;127;0;125;0
 WireConnection;114;0;136;0
 WireConnection;114;1;117;0
 WireConnection;139;0;140;0
-WireConnection;140;0;116;0
+WireConnection;140;0;142;0
 WireConnection;140;1;141;0
-WireConnection;136;0;116;0
+WireConnection;136;0;142;0
 WireConnection;136;2;139;0
 WireConnection;113;0;98;0
 WireConnection;113;1;119;0
@@ -4156,9 +4096,10 @@ WireConnection;132;0;127;0
 WireConnection;132;1;122;0
 WireConnection;119;0;132;0
 WireConnection;119;1;130;0
+WireConnection;77;0;76;0
 WireConnection;36;0;113;0
 WireConnection;36;2;113;0
 WireConnection;36;4;96;0
 WireConnection;36;7;50;0
 ASEEND*/
-//CHKSM=AB98915FF0DB3C18E287F86105E60BDD2303F283
+//CHKSM=2AAF54EB45171DD188B33E0C87438CDC2C15FEB5

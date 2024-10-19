@@ -108,9 +108,9 @@ Material:
     - _QueueControl: 0
     - _QueueOffset: 0
     - _ReceiveShadows: 1
-    - _ShadingFreq: 0.86
-    - _ShadingNoiseScale: 2.61
-    - _ShadingThreshold: 0.208
+    - _ShadingFreq: 1.22
+    - _ShadingNoiseScale: 25.74
+    - _ShadingThreshold: 0.138
     - _ShadowThreshold: 1
     - _Smoothness: 0.5
     - _SmoothnessTextureChannel: 0

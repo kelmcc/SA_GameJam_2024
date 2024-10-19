@@ -1,5 +1,62 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
+--- !u!114 &-6795102210048331374
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 94fe7c5309b5be14584db469f32df97c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Gradient:
+    serializedVersion: 2
+    key0: {r: 1, g: 1, b: 1, a: 0}
+    key1: {r: 0.2924528, g: 0.22910738, b: 0.009656467, a: 1}
+    key2: {r: 0.5566038, g: 0.22773086, b: 0.04463333, a: 0}
+    key3: {r: 0, g: 0, b: 0, a: 0}
+    key4: {r: 0, g: 0, b: 0, a: 0}
+    key5: {r: 0, g: 0, b: 0, a: 0}
+    key6: {r: 0, g: 0, b: 0, a: 0}
+    key7: {r: 0, g: 0, b: 0, a: 0}
+    ctime0: 0
+    ctime1: 46067
+    ctime2: 65150
+    ctime3: 0
+    ctime4: 0
+    ctime5: 0
+    ctime6: 0
+    ctime7: 0
+    atime0: 964
+    atime1: 65535
+    atime2: 0
+    atime3: 0
+    atime4: 0
+    atime5: 0
+    atime6: 0
+    atime7: 0
+    m_Mode: 2
+    m_ColorSpace: 0
+    m_NumColorKeys: 3
+    m_NumAlphaKeys: 2
+  ColorSource: 2
+--- !u!114 &-3867832567289623762
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 43fd70c9b64e53a4e8702dbd00412a0f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Enabled: 1
+  Settings: {fileID: -6795102210048331374}
 --- !u!114 &11400000
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -22,6 +79,7 @@ MonoBehaviour:
   - 6d38cfdbdec79ca4ea8419df9071cd20
   processorInfos:
   - {fileID: 1909524171876485759}
+  - {fileID: -3867832567289623762}
   exportSettings:
     fileName: Assets/Textures/Fauvism/Fauvism_5x5.tga
     frameCount: 1
@@ -36,7 +94,7 @@ MonoBehaviour:
     filterMode: 1
     dataContents: 0
   editSettings:
-    selectedProcessor: 0
+    selectedProcessor: 1
     lockedProcessor: -1
   inheritSettingsReference: {fileID: 0}
 --- !u!114 &1909524171876485759
