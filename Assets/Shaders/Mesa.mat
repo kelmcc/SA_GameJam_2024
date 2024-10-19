@@ -24,7 +24,9 @@ Material:
   m_Shader: {fileID: 4800000, guid: 77e497a80e47b4672ab683b98550db62, type: 3}
   m_Parent: {fileID: 0}
   m_ModifiedSerializedProperties: 0
-  m_ValidKeywords: []
+  m_ValidKeywords:
+  - _ENVIRONMENTREFLECTIONS_OFF
+  - _SPECULARHIGHLIGHTS_OFF
   m_InvalidKeywords: []
   m_LightmapFlags: 4
   m_EnableInstancingVariants: 0
@@ -108,7 +110,7 @@ Material:
     - _DetailNormalMapScale: 1
     - _DstBlend: 0
     - _DstBlendAlpha: 0
-    - _EnvironmentReflections: 1
+    - _EnvironmentReflections: 0
     - _GlossMapScale: 0
     - _Glossiness: 0
     - _GlossyReflections: 0
@@ -121,9 +123,13 @@ Material:
     - _QueueControl: 0
     - _QueueOffset: 0
     - _ReceiveShadows: 1
+    - _ShadingFreq: 1.08
+    - _ShadingNoiseScale: 0.28
+    - _ShadingThreshold: 0.632
+    - _ShadowThreshold: 0.199
     - _Smoothness: 0
     - _SmoothnessTextureChannel: 0
-    - _SpecularHighlights: 1
+    - _SpecularHighlights: 0
     - _SrcBlend: 1
     - _SrcBlendAlpha: 1
     - _Surface: 0
@@ -132,10 +138,13 @@ Material:
     m_Colors:
     - _BaseColor: {r: 1, g: 1, b: 1, a: 1}
     - _Color: {r: 1, g: 1, b: 1, a: 1}
+    - _Color1: {r: 0, g: 0, b: 0, a: 0}
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
     - _LineColor: {r: 1.4980394, g: 0.60969645, b: 0.120125815, a: 0}
-    - _MesaXY1: {r: 1, g: 0.9524046, b: 0, a: 0}
-    - _MesaXY2: {r: 0.8773573, g: 0.21960783, b: 0.94509804, a: 0}
-    - _MesaZ: {r: 0, g: 0.06301308, b: 1, a: 0}
+    - _MainColor: {r: 0.39215687, g: 0.39215687, b: 0.39215687, a: 1}
+    - _MesaXY1: {r: 1, g: 0.95240456, b: 0, a: 0}
+    - _MesaXY2: {r: 0.21960774, g: 0.945098, b: 0.8411337, a: 0}
+    - _MesaZ: {r: 0, g: 0.06301301, b: 1, a: 0}
+    - _ShadingColor: {r: 0.17542441, g: 0.08232467, b: 0.4716981, a: 0}
     - _SpecColor: {r: 0.19999996, g: 0.19999996, b: 0.19999996, a: 1}
   m_BuildTextureStacks: []
