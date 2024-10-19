@@ -8,7 +8,6 @@ using UnityEngine;
 [ExecuteAlways]
 public class Zipline : MonoBehaviour
 {
-    public int PointsPlaced { get; private set; } = 0;
     public ZiplinePole Point1;
     public ZiplinePole Point2;
     public float SegmentLength;
@@ -39,8 +38,8 @@ public class Zipline : MonoBehaviour
             
             Vector3 mid = (p1 + p2) / 2f;
 
-            float lowest = Mathf.Min(Point1.LineConnector.position.y, Point2.LineConnector.position.y);
-            float minHeight = lowest - length / 4f;
+            float midH = (Point1.LineConnector.position.y + Point2.LineConnector.position.y) / 2f;
+            float minHeight = midH - MidOffset;
             mid = new Vector3(mid.x,minHeight, mid.z);
             
             List<Vector3> points = new List<Vector3>();
