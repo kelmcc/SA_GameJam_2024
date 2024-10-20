@@ -162,7 +162,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1534723203913602554}
   serializedVersion: 2
-  m_LocalRotation: {x: -0.017879779, y: -0.9331682, z: 0.22438529, w: 0.28022993}
+  m_LocalRotation: {x: -0.0363109, y: -0.7987007, z: 0.19205177, w: 0.56910014}
   m_LocalPosition: {x: 0.0000009536743, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -241,7 +241,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2476438111577166606}
   serializedVersion: 2
-  m_LocalRotation: {x: -0.0017513931, y: -0.91873646, z: 0.27762407, w: 0.28079388}
+  m_LocalRotation: {x: -0.0035567963, y: -0.7863484, z: 0.237619, w: 0.57024634}
   m_LocalPosition: {x: 0.0000009536743, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -406,7 +406,7 @@ Transform:
   m_GameObject: {fileID: 4284448583010590741}
   serializedVersion: 2
   m_LocalRotation: {x: 0.1492864, y: -0, z: -0, w: 0.988794}
-  m_LocalPosition: {x: 4.8735867, y: 5.980839, z: 13.805979}
+  m_LocalPosition: {x: 8.471253, y: 5.980839, z: 9.351147}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -794,7 +794,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 6149162538972518045}
   serializedVersion: 2
-  m_LocalRotation: {x: -0.009846364, y: -0.9263588, z: 0.25102016, w: 0.28062668}
+  m_LocalRotation: {x: -0.019996397, y: -0.79287237, z: 0.21484865, w: 0.56990665}
   m_LocalPosition: {x: 0.0000009536743, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -1357,13 +1357,12 @@ MonoBehaviour:
   WalkSpeed: 6
   SprintSpeed: 6
   JumpForce: 5
-  ZipJumpOffForce: 10
+  ZipJumpOffForce: 8
   AllowJumpOnceUngroundedTime: 0.15
   FlailDelay: 0.7
   ZipSyncSpeed: 20
   ZipAcceleration: 5
   MaxZipVelocity: 40
-  BreakMultiplier: 200
   FrictionCoeff: 0.1
   _zoopForce: {x: 0, y: 0, z: 0}
   GroundRaycastMask:
@@ -1404,7 +1403,6 @@ MonoBehaviour:
     m_PostInfinity: 2
     m_RotationOrder: 4
   MaxGroundedVelocity: 20
-  ReasonableGroundedVelocity: 20
   Sliding: 0
   VCam: {fileID: 392789445336873560}
   Move: {fileID: -1680190386980627800, guid: beebc186c9198a5408aab7737b4d8c34, type: 3}
@@ -1419,6 +1417,7 @@ MonoBehaviour:
   Anim: {fileID: 6754857712956739872}
   VelocityAnimSpeedMultiplier: 0.05
   JumpWindowTime: 0.1
+  BreakTime: 1.5
 --- !u!54 &3034907632639712371
 Rigidbody:
   m_ObjectHideFlags: 0

@@ -1,24 +1,29 @@
 using Framework;
 using UnityEngine;
 
+[ExecuteAlways]
 public class Pickup : MonoBehaviour
 {
     public Transform bounceRoot;
     public float BounceSpeed;
-    public float RotateSpeed;
-
-    private Vector3 _bounceIdle;
+    public FloatRange RotateSpeed;
+    public float BounceSize = 1;
     
-    // Start is called before the first frame update
+    public Vector3 StartBouncePosition;
+
+    private float _startRotOffset;
+    private float _rotateSpeed;
+    
     void Start()
     {
-        _bounceIdle = bounceRoot.localPosition;
+        bounceRoot.transform.localPosition = StartBouncePosition;
+        _startRotOffset = Random.value * 360;
+        _rotateSpeed = RotateSpeed.ChooseRandom();
     }
-
-    // Update is called once per frame
+    
     void Update()
     {
-        bounceRoot.transform.localPosition = bounceRoot.transform.localPosition.WithY(Mathf.Sign(Time.time * BounceSpeed));
-        bounceRoot.transform.localRotation = Quaternion.AngleAxis(Time.time * RotateSpeed, Vector3.up);
+        bounceRoot.transform.localPosition = bounceRoot.transform.localPosition.WithY(StartBouncePosition.y  + Mathf.Sin(Time.time * BounceSpeed) * BounceSize);
+        bounceRoot.transform.localRotation = Quaternion.AngleAxis(_startRotOffset + Time.time * _rotateSpeed, Vector3.up);
     }
 }

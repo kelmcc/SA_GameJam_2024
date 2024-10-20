@@ -7,6 +7,7 @@ Shader  "ConstructionZoneDecal"
         [HideInInspector] _AlphaCutoff("Alpha Cutoff ", Range(0, 1)) = 0.5
         [HideInInspector] _EmissionColor("Emission Color", Color) = (1,1,1,1)
         [HDR]_Color("Color", Color) = (1,0.7254902,0,1)
+        _CircleThickness("CircleThickness", Float) = 0.11
 
 
         [HideInInspector] _DrawOrder("Draw Order", Range(-50, 50)) = 0
@@ -158,6 +159,7 @@ Shader  "ConstructionZoneDecal"
 
             CBUFFER_START(UnityPerMaterial)
 			float4 _Color;
+			float _CircleThickness;
 			float _DrawOrder;
 			float _DecalMeshBiasType;
 			float _DecalMeshDepthBias;
@@ -372,7 +374,7 @@ Shader  "ConstructionZoneDecal"
 				float2 texCoord15 = texCoord0 * float2( 1,1 ) + float2( 0,0 );
 				float temp_output_17_0 = length( ( float2( 0.5,0.5 ) - texCoord15 ) );
 				float temp_output_3_0_g1 = ( 0.48 - temp_output_17_0 );
-				float temp_output_3_0_g2 = ( 0.37 - temp_output_17_0 );
+				float temp_output_3_0_g2 = ( ( 0.48 - _CircleThickness ) - temp_output_17_0 );
 				float temp_output_21_0 = ( saturate( ( temp_output_3_0_g1 / fwidth( temp_output_3_0_g1 ) ) ) - saturate( ( temp_output_3_0_g2 / fwidth( temp_output_3_0_g2 ) ) ) );
 				float3 temp_output_32_0 = ( _Color.rgb * temp_output_21_0 );
 				
@@ -503,6 +505,7 @@ Shader  "ConstructionZoneDecal"
 
             CBUFFER_START(UnityPerMaterial)
 			float4 _Color;
+			float _CircleThickness;
 			float _DrawOrder;
 			float _DecalMeshBiasType;
 			float _DecalMeshDepthBias;
@@ -702,7 +705,7 @@ Shader  "ConstructionZoneDecal"
 				float2 texCoord15 = texCoord0 * float2( 1,1 ) + float2( 0,0 );
 				float temp_output_17_0 = length( ( float2( 0.5,0.5 ) - texCoord15 ) );
 				float temp_output_3_0_g1 = ( 0.48 - temp_output_17_0 );
-				float temp_output_3_0_g2 = ( 0.37 - temp_output_17_0 );
+				float temp_output_3_0_g2 = ( ( 0.48 - _CircleThickness ) - temp_output_17_0 );
 				float temp_output_21_0 = ( saturate( ( temp_output_3_0_g1 / fwidth( temp_output_3_0_g1 ) ) ) - saturate( ( temp_output_3_0_g2 / fwidth( temp_output_3_0_g2 ) ) ) );
 				
 				float3 temp_output_32_0 = ( _Color.rgb * temp_output_21_0 );
@@ -868,6 +871,7 @@ Shader  "ConstructionZoneDecal"
 
             CBUFFER_START(UnityPerMaterial)
 			float4 _Color;
+			float _CircleThickness;
 			float _DrawOrder;
 			float _DecalMeshBiasType;
 			float _DecalMeshDepthBias;
@@ -1156,7 +1160,7 @@ Shader  "ConstructionZoneDecal"
 				float2 texCoord15 = texCoord0 * float2( 1,1 ) + float2( 0,0 );
 				float temp_output_17_0 = length( ( float2( 0.5,0.5 ) - texCoord15 ) );
 				float temp_output_3_0_g1 = ( 0.48 - temp_output_17_0 );
-				float temp_output_3_0_g2 = ( 0.37 - temp_output_17_0 );
+				float temp_output_3_0_g2 = ( ( 0.48 - _CircleThickness ) - temp_output_17_0 );
 				float temp_output_21_0 = ( saturate( ( temp_output_3_0_g1 / fwidth( temp_output_3_0_g1 ) ) ) - saturate( ( temp_output_3_0_g2 / fwidth( temp_output_3_0_g2 ) ) ) );
 				float3 temp_output_32_0 = ( _Color.rgb * temp_output_21_0 );
 				
@@ -1346,6 +1350,7 @@ Shader  "ConstructionZoneDecal"
 
             CBUFFER_START(UnityPerMaterial)
 			float4 _Color;
+			float _CircleThickness;
 			float _DrawOrder;
 			float _DecalMeshBiasType;
 			float _DecalMeshDepthBias;
@@ -1628,7 +1633,7 @@ Shader  "ConstructionZoneDecal"
 				float2 texCoord15 = texCoord0 * float2( 1,1 ) + float2( 0,0 );
 				float temp_output_17_0 = length( ( float2( 0.5,0.5 ) - texCoord15 ) );
 				float temp_output_3_0_g1 = ( 0.48 - temp_output_17_0 );
-				float temp_output_3_0_g2 = ( 0.37 - temp_output_17_0 );
+				float temp_output_3_0_g2 = ( ( 0.48 - _CircleThickness ) - temp_output_17_0 );
 				float temp_output_21_0 = ( saturate( ( temp_output_3_0_g1 / fwidth( temp_output_3_0_g1 ) ) ) - saturate( ( temp_output_3_0_g2 / fwidth( temp_output_3_0_g2 ) ) ) );
 				float3 temp_output_32_0 = ( _Color.rgb * temp_output_21_0 );
 				
@@ -1822,6 +1827,7 @@ Shader  "ConstructionZoneDecal"
 
             CBUFFER_START(UnityPerMaterial)
 			float4 _Color;
+			float _CircleThickness;
 			float _DrawOrder;
 			float _DecalMeshBiasType;
 			float _DecalMeshDepthBias;
@@ -2026,7 +2032,7 @@ Shader  "ConstructionZoneDecal"
 				float2 texCoord15 = packedInput.texCoord0.xy * float2( 1,1 ) + float2( 0,0 );
 				float temp_output_17_0 = length( ( float2( 0.5,0.5 ) - texCoord15 ) );
 				float temp_output_3_0_g1 = ( 0.48 - temp_output_17_0 );
-				float temp_output_3_0_g2 = ( 0.37 - temp_output_17_0 );
+				float temp_output_3_0_g2 = ( ( 0.48 - _CircleThickness ) - temp_output_17_0 );
 				float temp_output_21_0 = ( saturate( ( temp_output_3_0_g1 / fwidth( temp_output_3_0_g1 ) ) ) - saturate( ( temp_output_3_0_g2 / fwidth( temp_output_3_0_g2 ) ) ) );
 				float3 temp_output_32_0 = ( _Color.rgb * temp_output_21_0 );
 				
@@ -2178,6 +2184,7 @@ Shader  "ConstructionZoneDecal"
 
             CBUFFER_START(UnityPerMaterial)
 			float4 _Color;
+			float _CircleThickness;
 			float _DrawOrder;
 			float _DecalMeshBiasType;
 			float _DecalMeshDepthBias;
@@ -2376,7 +2383,7 @@ Shader  "ConstructionZoneDecal"
 				float2 texCoord15 = packedInput.texCoord0.xy * float2( 1,1 ) + float2( 0,0 );
 				float temp_output_17_0 = length( ( float2( 0.5,0.5 ) - texCoord15 ) );
 				float temp_output_3_0_g1 = ( 0.48 - temp_output_17_0 );
-				float temp_output_3_0_g2 = ( 0.37 - temp_output_17_0 );
+				float temp_output_3_0_g2 = ( ( 0.48 - _CircleThickness ) - temp_output_17_0 );
 				float temp_output_21_0 = ( saturate( ( temp_output_3_0_g1 / fwidth( temp_output_3_0_g1 ) ) ) - saturate( ( temp_output_3_0_g2 / fwidth( temp_output_3_0_g2 ) ) ) );
 				float3 temp_output_32_0 = ( _Color.rgb * temp_output_21_0 );
 				
@@ -2562,6 +2569,7 @@ Shader  "ConstructionZoneDecal"
 
             CBUFFER_START(UnityPerMaterial)
 			float4 _Color;
+			float _CircleThickness;
 			float _DrawOrder;
 			float _DecalMeshBiasType;
 			float _DecalMeshDepthBias;
@@ -2843,7 +2851,7 @@ Shader  "ConstructionZoneDecal"
 				float2 texCoord15 = packedInput.texCoord0.xy * float2( 1,1 ) + float2( 0,0 );
 				float temp_output_17_0 = length( ( float2( 0.5,0.5 ) - texCoord15 ) );
 				float temp_output_3_0_g1 = ( 0.48 - temp_output_17_0 );
-				float temp_output_3_0_g2 = ( 0.37 - temp_output_17_0 );
+				float temp_output_3_0_g2 = ( ( 0.48 - _CircleThickness ) - temp_output_17_0 );
 				float temp_output_21_0 = ( saturate( ( temp_output_3_0_g1 / fwidth( temp_output_3_0_g1 ) ) ) - saturate( ( temp_output_3_0_g2 / fwidth( temp_output_3_0_g2 ) ) ) );
 				float3 temp_output_32_0 = ( _Color.rgb * temp_output_21_0 );
 				
@@ -3046,6 +3054,7 @@ Shader  "ConstructionZoneDecal"
 
             CBUFFER_START(UnityPerMaterial)
 			float4 _Color;
+			float _CircleThickness;
 			float _DrawOrder;
 			float _DecalMeshBiasType;
 			float _DecalMeshDepthBias;
@@ -3325,7 +3334,7 @@ Shader  "ConstructionZoneDecal"
 				float2 texCoord15 = packedInput.texCoord0.xy * float2( 1,1 ) + float2( 0,0 );
 				float temp_output_17_0 = length( ( float2( 0.5,0.5 ) - texCoord15 ) );
 				float temp_output_3_0_g1 = ( 0.48 - temp_output_17_0 );
-				float temp_output_3_0_g2 = ( 0.37 - temp_output_17_0 );
+				float temp_output_3_0_g2 = ( ( 0.48 - _CircleThickness ) - temp_output_17_0 );
 				float temp_output_21_0 = ( saturate( ( temp_output_3_0_g1 / fwidth( temp_output_3_0_g1 ) ) ) - saturate( ( temp_output_3_0_g2 / fwidth( temp_output_3_0_g2 ) ) ) );
 				float3 temp_output_32_0 = ( _Color.rgb * temp_output_21_0 );
 				
@@ -3469,6 +3478,7 @@ Shader  "ConstructionZoneDecal"
 
             CBUFFER_START(UnityPerMaterial)
 			float4 _Color;
+			float _CircleThickness;
 			float _DrawOrder;
 			float _DecalMeshBiasType;
 			float _DecalMeshDepthBias;
@@ -3571,7 +3581,7 @@ Shader  "ConstructionZoneDecal"
 				float2 texCoord15 = packedInput.ase_texcoord.xy * float2( 1,1 ) + float2( 0,0 );
 				float temp_output_17_0 = length( ( float2( 0.5,0.5 ) - texCoord15 ) );
 				float temp_output_3_0_g1 = ( 0.48 - temp_output_17_0 );
-				float temp_output_3_0_g2 = ( 0.37 - temp_output_17_0 );
+				float temp_output_3_0_g2 = ( ( 0.48 - _CircleThickness ) - temp_output_17_0 );
 				float temp_output_21_0 = ( saturate( ( temp_output_3_0_g1 / fwidth( temp_output_3_0_g1 ) ) ) - saturate( ( temp_output_3_0_g2 / fwidth( temp_output_3_0_g2 ) ) ) );
 				float3 temp_output_32_0 = ( _Color.rgb * temp_output_21_0 );
 				
@@ -3590,13 +3600,16 @@ Shader  "ConstructionZoneDecal"
 }
 /*ASEBEGIN
 Version=19603
-Node;AmplifyShaderEditor.TextureCoordinatesNode;15;-912,304;Inherit;False;0;-1;2;3;2;SAMPLER2D;;False;0;FLOAT2;1,1;False;1;FLOAT2;0,0;False;5;FLOAT2;0;FLOAT;1;FLOAT;2;FLOAT;3;FLOAT;4
-Node;AmplifyShaderEditor.SimpleSubtractOpNode;16;-640,272;Inherit;False;2;0;FLOAT2;0.5,0.5;False;1;FLOAT2;0.5,0.5;False;1;FLOAT2;0
-Node;AmplifyShaderEditor.LengthOpNode;17;-480,272;Inherit;True;1;0;FLOAT2;0,0;False;1;FLOAT;0
+Node;AmplifyShaderEditor.TextureCoordinatesNode;15;-1328,352;Inherit;False;0;-1;2;3;2;SAMPLER2D;;False;0;FLOAT2;1,1;False;1;FLOAT2;0,0;False;5;FLOAT2;0;FLOAT;1;FLOAT;2;FLOAT;3;FLOAT;4
+Node;AmplifyShaderEditor.SimpleSubtractOpNode;16;-1056,240;Inherit;False;2;0;FLOAT2;0.5,0.5;False;1;FLOAT2;0.5,0.5;False;1;FLOAT2;0
+Node;AmplifyShaderEditor.RangedFloatNode;35;-544,256;Inherit;False;Constant;_CircleOutside;CircleOutside;1;0;Create;True;0;0;0;False;0;False;0.48;0;0;0;0;1;FLOAT;0
+Node;AmplifyShaderEditor.RangedFloatNode;34;-768,576;Inherit;False;Property;_CircleThickness;CircleThickness;1;0;Create;True;0;0;0;False;0;False;0.11;0.11;0;0;0;1;FLOAT;0
+Node;AmplifyShaderEditor.LengthOpNode;17;-896,240;Inherit;True;1;0;FLOAT2;0,0;False;1;FLOAT;0
+Node;AmplifyShaderEditor.SimpleSubtractOpNode;36;-368,448;Inherit;False;2;0;FLOAT;0;False;1;FLOAT;0;False;1;FLOAT;0
 Node;AmplifyShaderEditor.FunctionNode;19;-128,48;Inherit;True;Step Antialiasing;-1;;1;2a825e80dfb3290468194f83380797bd;0;2;1;FLOAT;0;False;2;FLOAT;0.48;False;1;FLOAT;0
 Node;AmplifyShaderEditor.FunctionNode;20;-144,384;Inherit;True;Step Antialiasing;-1;;2;2a825e80dfb3290468194f83380797bd;0;2;1;FLOAT;0;False;2;FLOAT;0.37;False;1;FLOAT;0
 Node;AmplifyShaderEditor.SimpleSubtractOpNode;21;256,144;Inherit;True;2;0;FLOAT;0;False;1;FLOAT;0;False;1;FLOAT;0
-Node;AmplifyShaderEditor.ColorNode;31;192,-160;Inherit;False;Property;_Color;Color;0;1;[HDR];Create;True;0;0;0;False;0;False;1,0.7254902,0,1;1,0.7265503,0,1;True;True;0;6;COLOR;0;FLOAT;1;FLOAT;2;FLOAT;3;FLOAT;4;FLOAT3;5
+Node;AmplifyShaderEditor.ColorNode;31;192,-160;Inherit;False;Property;_Color;Color;0;1;[HDR];Create;True;0;0;0;False;0;False;1,0.7254902,0,1;77.87428,4.040647,4.040647,1;True;True;0;6;COLOR;0;FLOAT;1;FLOAT;2;FLOAT;3;FLOAT;4;FLOAT3;5
 Node;AmplifyShaderEditor.SimpleMultiplyOpNode;32;480,-144;Inherit;False;2;2;0;FLOAT3;0,0,0;False;1;FLOAT;0;False;1;FLOAT3;0
 Node;AmplifyShaderEditor.SimpleMultiplyOpNode;33;512,48;Inherit;False;2;2;0;FLOAT;0;False;1;FLOAT;0;False;1;FLOAT;0
 Node;AmplifyShaderEditor.TemplateMultiPassMasterNode;0;0,0;Float;False;False;-1;2;UnityEditor.Rendering.Universal.DecalShaderGraphGUI;0;1;New Amplify Shader;c2a467ab6d5391a4ea692226d82ffefd;True;DBufferProjector;0;0;DBufferProjector;0;False;False;False;False;False;False;False;False;False;False;False;False;False;False;False;False;False;False;False;False;False;False;False;False;False;False;False;False;False;True;5;RenderPipeline=UniversalPipeline;PreviewType=Plane;DisableBatching=LODFading=DisableBatching;ShaderGraphShader=true;ShaderGraphTargetId=UniversalDecalSubTarget;True;3;True;12;all;0;False;True;2;5;False;;10;False;;1;0;False;;10;False;;False;False;True;2;5;False;;10;False;;1;0;False;;10;False;;False;False;True;2;5;False;;10;False;;1;0;False;;10;False;;False;False;False;False;False;False;True;1;False;;False;False;False;True;False;False;False;False;0;False;;False;True;True;True;True;True;0;False;;False;False;False;False;False;True;2;False;;True;2;False;;False;True;1;LightMode=DBufferProjector;False;True;9;d3d11;metal;vulkan;xboxone;xboxseries;playstation;ps4;ps5;switch;0;;0;0;Standard;0;False;0
@@ -3610,8 +3623,12 @@ Node;AmplifyShaderEditor.TemplateMultiPassMasterNode;8;0,0;Float;False;False;-1;
 Node;AmplifyShaderEditor.TemplateMultiPassMasterNode;2;1088,-208;Float;False;True;-1;2;UnityEditor.Rendering.Universal.DecalShaderGraphGUI;0;14;ConstructionZoneDecal;c2a467ab6d5391a4ea692226d82ffefd;True;DecalScreenSpaceProjector;0;2;DecalScreenSpaceProjector;9;False;False;False;False;False;False;False;False;False;False;False;False;False;False;False;False;False;False;False;False;False;False;False;False;False;False;False;False;False;True;5;RenderPipeline=UniversalPipeline;PreviewType=Plane;DisableBatching=LODFading=DisableBatching;ShaderGraphShader=true;ShaderGraphTargetId=UniversalDecalSubTarget;True;3;True;12;all;0;False;True;2;5;False;;10;False;;0;1;False;;0;False;;False;False;False;False;False;False;False;False;False;False;False;False;True;1;False;;False;False;False;False;False;False;False;False;False;False;False;True;2;False;;True;2;False;;False;True;1;LightMode=DecalScreenSpaceProjector;False;False;0;;0;0;Standard;7;Affect BaseColor;1;0;Affect Normal;0;638650327597897520;Blend;0;638650327551064090;Affect MAOS;0;0;Affect Emission;1;638650271474828260;Support LOD CrossFade;0;0;Angle Fade;1;638650327493108870;0;9;True;True;True;True;True;True;True;True;True;False;;False;0
 WireConnection;16;1;15;0
 WireConnection;17;0;16;0
+WireConnection;36;0;35;0
+WireConnection;36;1;34;0
 WireConnection;19;1;17;0
+WireConnection;19;2;35;0
 WireConnection;20;1;17;0
+WireConnection;20;2;36;0
 WireConnection;21;0;19;0
 WireConnection;21;1;20;0
 WireConnection;32;0;31;5
@@ -3622,4 +3639,4 @@ WireConnection;2;0;32;0
 WireConnection;2;1;33;0
 WireConnection;2;8;32;0
 ASEEND*/
-//CHKSM=84276B38096FDEFA304B8FAF34022DD529007EC0
+//CHKSM=00E99FD057B10C6178CBA92DE8222B0EE0BA31D6
