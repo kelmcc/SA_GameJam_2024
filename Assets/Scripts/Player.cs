@@ -33,7 +33,6 @@ public class Player : Damagable
 
     [FormerlySerializedAs("FrictionCurve")] public AnimationCurve FrictionInverseCurve;
     public float MaxGroundedVelocity = 20;
-    public float ReasonableGroundedVelocity = 5;
     
     [Range(0, 1)]
     public float Sliding = 0;
@@ -175,7 +174,6 @@ public class Player : Damagable
         
         float mag = _body.velocity.magnitude;
         float maxSpeedNorm =  mag  / MaxGroundedVelocity;
-        float avSpeedNorm =  mag  / ReasonableGroundedVelocity;
         bool inJumpWindow = InJumpWindow();
         bool isZooping = Time.time - _lastZoopTime < 2;
         if (Grounded || _flailing && !isZooping)
