@@ -11,7 +11,6 @@ GameObject:
   - component: {fileID: 5780584691159555480}
   - component: {fileID: 5051304417533206130}
   - component: {fileID: 4997402164541431652}
-  - component: {fileID: 1830474451134100864}
   - component: {fileID: 3584103909645441896}
   m_Layer: 7
   m_Name: Booster
@@ -85,27 +84,6 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!65 &1830474451134100864
-BoxCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7381075428941623690}
-  m_Material: {fileID: 0}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_LayerOverridePriority: 0
-  m_IsTrigger: 1
-  m_ProvidesContacts: 0
-  m_Enabled: 1
-  serializedVersion: 3
-  m_Size: {x: 1, y: 1, z: 1}
-  m_Center: {x: 0, y: 0, z: 0}
 --- !u!114 &3584103909645441896
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -118,10 +96,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: eb72796a5bd54d3a8e18d3e9a0ed849d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  sizeX: 0
-  sizeY: 0
-  sizeZ: 0
+  sizeX: 28.24
+  sizeY: 20
+  sizeZ: 20
   velocityDirection:
-    x: 1
-    y: 0
-    z: 0
+    x: 2
+    y: 4
+    z: 0.001
