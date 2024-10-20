@@ -1,11 +1,16 @@
 using Unity.Entities;
+using Unity.Mathematics;
 using UnityEngine;
 
 namespace PhysicsDOTS
 {
     public class BoosterAuthoring : MonoBehaviour
     {
-        public float size;
+        public float sizeX;
+        public float sizeY;
+        public float sizeZ;
+        
+        public float3 velocityDirection;
 
         public class BoosterBaker : Baker<BoosterAuthoring>
         {
@@ -16,7 +21,10 @@ namespace PhysicsDOTS
                 AddComponent(boosterAuthoring,
                     new BoosterComponent()
                     {
-                        size = authoring.size,
+                        sizeX = authoring.sizeX,
+                        sizeY = authoring.sizeY,
+                        sizeZ = authoring.sizeZ,
+                        velocityDirection = authoring.velocityDirection
                     });
             }
         }
