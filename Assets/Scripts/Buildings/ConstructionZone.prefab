@@ -26,7 +26,7 @@ Transform:
   m_GameObject: {fileID: 475527064632242403}
   serializedVersion: 2
   m_LocalRotation: {x: 0.7071068, y: 0, z: 0, w: 0.7071068}
-  m_LocalPosition: {x: 0, y: 1.5, z: 0}
+  m_LocalPosition: {x: 0, y: 0.59, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -46,9 +46,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_Material: {fileID: 2100000, guid: 7393fb99cc70fe6408982f82a6a7b356, type: 2}
   m_DrawDistance: 1000
-  m_FadeScale: 0
-  m_StartAngleFade: 0
-  m_EndAngleFade: 2.0050516
+  m_FadeScale: 1
+  m_StartAngleFade: 180
+  m_EndAngleFade: 180
   m_UVScale: {x: 1, y: 1}
   m_UVBias: {x: 0, y: 0}
   m_DecalLayerMask: 1
@@ -110,11 +110,11 @@ MonoBehaviour:
   Coll: {fileID: 4197500486217309631}
   InteractReference: {fileID: 1781555164194001046, guid: beebc186c9198a5408aab7737b4d8c34,
     type: 3}
-  ToBuild: {fileID: 0}
   OnBuilt:
     m_PersistentCalls:
       m_Calls: []
-  Holograph: {fileID: 0}
+  Building: {fileID: 0}
+  HologramMaterial: {fileID: 0}
 --- !u!54 &3373180259987780091
 Rigidbody:
   m_ObjectHideFlags: 0

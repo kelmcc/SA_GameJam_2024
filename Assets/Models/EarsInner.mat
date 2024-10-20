@@ -133,6 +133,7 @@ Material:
     - _Surface: 0
     - _UVSec: 0
     - _WorkflowMode: 1
+    - _ZStep: -0.045
     - _ZWrite: 1
     m_Colors:
     - _BaseColor: {r: 0.9064651, g: 0.6061544, b: 0.6357124, a: 1}
@@ -140,7 +141,11 @@ Material:
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 0}
     - _MesaXY1: {r: 1, g: 0.47641504, b: 0.92947674, a: 0}
     - _MesaXY2: {r: 1, g: 0.5990566, b: 0.5990566, a: 0}
+    - _MesaXY3: {r: 0.9433962, g: 0.21804905, b: 0.21804905, a: 0}
+    - _MesaXY4: {r: 1, g: 0.47641504, b: 0.92947674, a: 0}
+    - _MesaXY5: {r: 1, g: 0.47641504, b: 0.92947674, a: 0}
     - _MesaZ: {r: 1, g: 0.23113209, b: 0.23113209, a: 0}
+    - _MesaZ1: {r: 0.9433962, g: 0.21804905, b: 0.21804905, a: 0}
     - _ShadingColor: {r: 0.8962264, g: 0.5030705, b: 0.5030705, a: 0}
     - _SpecColor: {r: 0.19999996, g: 0.19999996, b: 0.19999996, a: 1}
   m_BuildTextureStacks: []
