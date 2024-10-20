@@ -17,7 +17,7 @@ namespace PhysicsDOTS
                 Vector3 direction = authoring.velocityDirection.transform.position - authoring.transform.position;
                 direction.Normalize();
                 
-                float3 velocity = direction * authoring.velocityStrength;
+                //float3 velocity = direction * authoring.velocityStrength;
                 
                 var localScale = authoring.transform.localScale;
                 AddComponent(boosterAuthoring,
@@ -26,7 +26,7 @@ namespace PhysicsDOTS
                         sizeX = localScale.x,
                         sizeY = localScale.y,
                         sizeZ = localScale.z,
-                        velocityDirection = velocity
+                        velocityDirection = direction
                     });
             }
         }
