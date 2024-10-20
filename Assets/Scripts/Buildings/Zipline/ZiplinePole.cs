@@ -43,8 +43,10 @@ public class ZiplinePole : MonoBehaviour
    
    public void OnTriggerEnter(Collider other)
    {
+      Debug.Log(other.gameObject.name);
       if (PlayerMask.Contains(other.gameObject.layer))
       {
+         Debug.Log("SETTING INTERACTER");
          _interacter = other;
       }
    }
@@ -53,6 +55,7 @@ public class ZiplinePole : MonoBehaviour
    {
       if (other == _interacter)
       {
+         Debug.Log("UNSETTING INTERACTER");
          _interacter = null;
       }
    }
@@ -63,7 +66,7 @@ public class ZiplinePole : MonoBehaviour
       {
          Player player = _interacter.GetComponentInParent<Player>();
 
-         if (!player.IsZipping && player.Grounded)
+         if (!player.IsZipping)
          {
             Parent.StartZip(this, player);
             _interacter = null;

@@ -13,8 +13,13 @@ public class Player : Damagable
     public float WalkSpeed = 5;
     public float SprintSpeed = 10;
     public float JumpForce = 10;
+    public float ZipJumpOffForce = 10;
     public float AllowJumpOnceUngroundedTime = 0.1f;
     public float FlailDelay = 0.5f;
+
+    public float ZipSyncSpeed = 10;
+    public float ZipAcceleration;
+    public float MaxZipVelocity;
 
     [FormerlySerializedAs("zoopForce")] public Vector3 _zoopForce;
 
@@ -79,6 +84,8 @@ public class Player : Damagable
     private float _flailTime;
     private bool _zoopPending;
     private float _lastZoopTime;
+    private float _zipPosition;
+    private float _zipVelocity;
 
     public bool InJumpWindow()
     {
@@ -169,7 +176,7 @@ public class Player : Damagable
         if (Grounded || _flailing && !isZooping)
         {
             //mag  *= FrictionInverseCurve.Evaluate(Mathf.Clamp01(maxSpeedNorm));
-            mag *= 1-(0.01f*Time.deltaTime);
+            mag *= 1-(0.05f*Time.deltaTime);
             mag  = Mathf.Min(MaxGroundedVelocity, mag);
         }
 
@@ -202,7 +209,7 @@ public class Player : Damagable
         
         Vector3 vDir = new Vector3(vNorm.x, 0, vNorm.z).normalized;
 
-        if (mag > 0.01)
+        if (mag > 0.1)
         {
             _body.MoveRotation(Quaternion.LookRotation(vDir, Vector3.up));
         }
@@ -292,16 +299,42 @@ public class Player : Damagable
     private Zipline _zipline;
     private float _startZipTime;
     
-    public void UpdateZip()
+    private void UpdateZip()
     {
-        
+        _body.velocity = Vector3.zero;
+        _body.isKinematic = true;
+        _zipVelocity += ZipAcceleration * Time.deltaTime;
+        _zipVelocity = Mathf.Min(MaxZipVelocity, _zipVelocity);
+        _zipPosition += _zipVelocity * Time.deltaTime;
+        Vector3 position = _zipline.GetPosition(_startZip, _zipPosition);
+        _body.MovePosition(Vector3.MoveTowards(_body.position, position, (Mathf.Max(_zipVelocity, ZipSyncSpeed) * Time.deltaTime)));
+
+        if (_zipPosition >= _zipline.Length)//|| Jump.ToInputAction().IsPressed())
+        {
+            _body.isKinematic = false;
+            _body.velocity = _zipline.GetTangent(_startZip, _zipPosition) * _zipVelocity;
+            _body.AddForce(Vector3.up * ZipJumpOffForce, ForceMode.VelocityChange);
+            
+            IsZipping = false;
+
+            _zipPosition = 0;
+            _zipVelocity = 0;
+            _startZip = null;
+            _endZip = null;
+            _zipline = null;
+        }
     }
 
     public void Zip(ZiplinePole point1, ZiplinePole point2, Zipline zipline)
     {
+        Debug.Log("ZIPPING");
+        Anim.PlayGrind();
         IsZipping = true;
         _startZipTime = Time.time;
-        
+
+        _zipPosition = 0;
+        _zipVelocity = _body.velocity.magnitude;
+        _body.velocity = Vector3.zero;
         _startZip = point1;
         _endZip = point2;
         _zipline = zipline;
