@@ -12,7 +12,8 @@ public class Player : Damagable
     [FormerlySerializedAs("Respawn")] public Transform LastStableGroundPosition;
     public float WalkSpeed = 5;
     public float SprintSpeed = 10;
-    public float JumpForce = 10;
+    [FormerlySerializedAs("JumpForce")] public float JumpForceAtSpeed = 10;
+    public float JumpForceAtRest = 10;
     public float ZipJumpOffForce = 10;
     public float AllowJumpOnceUngroundedTime = 0.1f;
     public float FlailDelay = 0.5f;
@@ -255,6 +256,8 @@ public class Player : Damagable
         _body.AddForce(_zoopForce);
         _zoopForce = Vector3.zero;
 
+        float jump = Mathf.Lerp(JumpForceAtRest, JumpForceAtSpeed, maxSpeedNorm);
+
         CalculateJump();
 
         void CalculateJump()
@@ -268,7 +271,7 @@ public class Player : Damagable
                     Debug.Log("JUMP");
                     Anim.PlayJump();
                     LastJumpTime = Time.time;
-                    _body.AddForce(Vector3.up * JumpForce, ForceMode.VelocityChange);
+                    _body.AddForce(Vector3.up * jump, ForceMode.VelocityChange);
                 }
             }
             else

@@ -162,8 +162,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1534723203913602554}
   serializedVersion: 2
-  m_LocalRotation: {x: -0.0363109, y: -0.7987007, z: 0.19205177, w: 0.56910014}
-  m_LocalPosition: {x: 0.0000009536743, y: 0, z: 0}
+  m_LocalRotation: {x: 0.055092648, y: 0.48749343, z: -0.117220365, w: -0.8634665}
+  m_LocalPosition: {x: -0.00000047683716, y: -0.00000007038761, z: -0.00000022779159}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -241,8 +241,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2476438111577166606}
   serializedVersion: 2
-  m_LocalRotation: {x: -0.0035567963, y: -0.7863484, z: 0.237619, w: 0.57024634}
-  m_LocalPosition: {x: 0.0000009536743, y: 0, z: 0}
+  m_LocalRotation: {x: 0.0053965324, y: 0.47995412, z: -0.14503269, w: -0.86520547}
+  m_LocalPosition: {x: -0.00000047683716, y: -0.00000007038761, z: -0.00000022779159}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -406,7 +406,7 @@ Transform:
   m_GameObject: {fileID: 4284448583010590741}
   serializedVersion: 2
   m_LocalRotation: {x: 0.1492864, y: -0, z: -0, w: 0.988794}
-  m_LocalPosition: {x: 8.471253, y: 5.980839, z: 9.351147}
+  m_LocalPosition: {x: 7.8449306, y: 5.980839, z: 1.6942191}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -794,8 +794,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 6149162538972518045}
   serializedVersion: 2
-  m_LocalRotation: {x: -0.019996397, y: -0.79287237, z: 0.21484865, w: 0.56990665}
-  m_LocalPosition: {x: 0.0000009536743, y: 0, z: 0}
+  m_LocalRotation: {x: 0.030339466, y: 0.4839361, z: -0.13113452, w: -0.86469024}
+  m_LocalPosition: {x: -0.00000047683716, y: -0.00000007038761, z: -0.00000022779159}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -1356,13 +1356,14 @@ MonoBehaviour:
   LastStableGroundPosition: {fileID: 1656201151308733207}
   WalkSpeed: 6
   SprintSpeed: 6
-  JumpForce: 5
-  ZipJumpOffForce: 8
+  JumpForceAtSpeed: 5
+  JumpForceAtRest: 10
+  ZipJumpOffForce: 5
   AllowJumpOnceUngroundedTime: 0.15
   FlailDelay: 0.7
-  ZipSyncSpeed: 20
-  ZipAcceleration: 5
-  MaxZipVelocity: 40
+  ZipSyncSpeed: 30
+  ZipAcceleration: 20
+  MaxZipVelocity: 50
   FrictionCoeff: 0.1
   _zoopForce: {x: 0, y: 0, z: 0}
   GroundRaycastMask:

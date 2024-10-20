@@ -38,12 +38,13 @@ Material:
     m_Ints: []
     m_Floats:
     - _AlphaCutoff: 0.5
+    - _CircleThickness: 0.11
     - _DecalAngleFadeSupported: 1
     - _DecalMeshBiasType: 0
     - _DecalMeshDepthBias: 0
     - _DecalMeshViewBias: 0
     - _DrawOrder: 8
     m_Colors:
-    - _Color: {r: 77.874275, g: 4.0406466, b: 4.0406466, a: 1}
+    - _Color: {r: 0, g: 13.600273, b: 50.610973, a: 1}
     - _EmissionColor: {r: 1, g: 1, b: 1, a: 1}
   m_BuildTextureStacks: []

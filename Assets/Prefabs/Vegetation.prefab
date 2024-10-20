@@ -93,6 +93,9 @@ VisualEffect:
       - m_Value: 400
         m_Name: Count
         m_Overridden: 1
+      - m_Value: 1
+        m_Name: KCount
+        m_Overridden: 1
     m_Matrix4x4f:
       m_Array: []
     m_AnimationCurve:
@@ -104,6 +107,9 @@ VisualEffect:
       - m_Value: {fileID: -462981019419857548, guid: d6b3d2ecb4c79492aa7f15c7e1906523,
           type: 3}
         m_Name: Mesh
+        m_Overridden: 1
+      - m_Value: {fileID: 0}
+        m_Name: KTexPosMap
         m_Overridden: 1
     m_Bool:
       m_Array: []

@@ -131,27 +131,27 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 400014, guid: caeffedc34d9f4161b7694ad0d84bbd3, type: 3}
       propertyPath: m_LocalScale.x
-      value: 5
+      value: 10
       objectReference: {fileID: 0}
     - target: {fileID: 400014, guid: caeffedc34d9f4161b7694ad0d84bbd3, type: 3}
       propertyPath: m_LocalScale.y
-      value: 5
+      value: 10
       objectReference: {fileID: 0}
     - target: {fileID: 400014, guid: caeffedc34d9f4161b7694ad0d84bbd3, type: 3}
       propertyPath: m_LocalScale.z
-      value: 5
+      value: 10
       objectReference: {fileID: 0}
     - target: {fileID: 400014, guid: caeffedc34d9f4161b7694ad0d84bbd3, type: 3}
       propertyPath: m_LocalPosition.x
-      value: -0
+      value: 1.69
       objectReference: {fileID: 0}
     - target: {fileID: 400014, guid: caeffedc34d9f4161b7694ad0d84bbd3, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 0.06
+      value: 31.45
       objectReference: {fileID: 0}
     - target: {fileID: 400014, guid: caeffedc34d9f4161b7694ad0d84bbd3, type: 3}
       propertyPath: m_LocalPosition.z
-      value: 0.01
+      value: -3.94
       objectReference: {fileID: 0}
     - target: {fileID: 400014, guid: caeffedc34d9f4161b7694ad0d84bbd3, type: 3}
       propertyPath: m_LocalRotation.w
@@ -341,7 +341,7 @@ SphereCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Radius: 1.53
+  m_Radius: 1.05
   m_Center: {x: 0, y: 0, z: 0}
 --- !u!114 &9113210106235928452
 MonoBehaviour:
