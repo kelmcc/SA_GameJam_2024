@@ -10,7 +10,6 @@ GameObject:
   m_Component:
   - component: {fileID: 3994416495600374233}
   - component: {fileID: 7248023369009469701}
-  - component: {fileID: 8507097985175042506}
   - component: {fileID: 6213278222504859244}
   m_Layer: 0
   m_Name: CoreLogic
@@ -27,7 +26,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1200396760868231855}
   serializedVersion: 2
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -47,24 +46,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bea69d1a6bff47d5bef2dd878ab43112, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!114 &8507097985175042506
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1200396760868231855}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 9a618606eebf45989ac34da707baa3c5, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _poolParent: {fileID: 0}
-  _activeParent: {fileID: 0}
-  _enemyPrefab: {fileID: 1012825167743318972, guid: 05022a72ea0f94bf6ba3bd31961d83ab,
-    type: 3}
-  _maxPoolSize: 1000
-  _startingPoolSize: 200
 --- !u!114 &6213278222504859244
 MonoBehaviour:
   m_ObjectHideFlags: 0

@@ -22,10 +22,10 @@ namespace PhysicsDOTS
                     RefRW<LocalToWorld> boosterTransform = SystemAPI.GetComponentRW<LocalToWorld>(entity);
                     RefRO<BoosterComponent> boosterComponent = SystemAPI.GetComponentRO<BoosterComponent>(entity);
 
-                    float size = boosterComponent.ValueRO.size;
-                    boosterTransform.ValueRW.Value.c0 = new float4(size, 0, 0, 0);
-                    boosterTransform.ValueRW.Value.c1 = new float4(0, size, 0, 0);
-                    boosterTransform.ValueRW.Value.c2 = new float4(0, 0, size, 0);
+                    var cpm = boosterComponent.ValueRO;
+                    boosterTransform.ValueRW.Value.c0 = new float4(cpm.sizeX, 0, 0, 0);
+                    boosterTransform.ValueRW.Value.c1 = new float4(0, cpm.sizeY, 0, 0);
+                    boosterTransform.ValueRW.Value.c2 = new float4(0, 0, cpm.sizeZ, 0);
 
                     PhysicsWorldSingleton physicsWorldSingleton = SystemAPI.GetSingleton<PhysicsWorldSingleton>();
 
@@ -33,7 +33,8 @@ namespace PhysicsDOTS
 
                     physicsWorldSingleton.BoxCastAll(boosterTransform.ValueRO.Position,
                         boosterTransform.ValueRO.Rotation,
-                        boosterComponent.ValueRO.size / 2,
+                        new float3(cpm.sizeX / 2, cpm.sizeY / 2,
+                            cpm.sizeZ / 2),
                         float3.zero, 1, ref hits,
                         new CollisionFilter
                             { BelongsTo = (uint)EnemiesLayer.Triggers, CollidesWith = (uint)EnemiesLayer.Enemies });
@@ -41,7 +42,9 @@ namespace PhysicsDOTS
                     foreach (ColliderCastHit hit in hits)
                     {
                         RefRW<PhysicsVelocity> physicsVelocity = SystemAPI.GetComponentRW<PhysicsVelocity>(hit.Entity);
-                        physicsVelocity.ValueRW.Linear += new float3(20 * SystemAPI.Time.DeltaTime, 0, 0);
+                        physicsVelocity.ValueRW.Linear += new float3(cpm.velocityDirection.x * SystemAPI.Time.DeltaTime,
+                            cpm.velocityDirection.y * SystemAPI.Time.DeltaTime,
+                            cpm.velocityDirection.z * SystemAPI.Time.DeltaTime);
                     }
                 }
             }
