@@ -226,6 +226,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: ZiplinePole2
       objectReference: {fileID: 0}
+    - target: {fileID: 8754731569050245272, guid: e02b494e70d7a8e4d97cf3e1bd144116,
+        type: 3}
+      propertyPath: Parent
+      value: 
+      objectReference: {fileID: 2121758100067275369}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -312,6 +317,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: ZiplinePole1
       objectReference: {fileID: 0}
+    - target: {fileID: 8754731569050245272, guid: e02b494e70d7a8e4d97cf3e1bd144116,
+        type: 3}
+      propertyPath: Parent
+      value: 
+      objectReference: {fileID: 2121758100067275369}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []

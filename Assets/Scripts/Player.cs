@@ -40,6 +40,8 @@ public class Player : Damagable
 
     private bool _grounded = false;
     public bool Grounded => _grounded && !InJumpWindow();
+    public bool IsZipping { get; private set; }
+
     private Rigidbody _body;
     private bool _jumpStarted;
     private bool _hasInput;
@@ -85,6 +87,14 @@ public class Player : Damagable
 
     public void Update()
     {
+        if (IsZipping)
+        {
+            UpdateZip();
+
+            return;
+        }
+        
+        
         Vector2 movement = Move.ToInputAction().ReadValue<Vector2>();
         movement.Normalize();
 
@@ -158,7 +168,8 @@ public class Player : Damagable
         bool isZooping = Time.time - _lastZoopTime < 2;
         if (Grounded || _flailing && !isZooping)
         {
-            mag  *= FrictionInverseCurve.Evaluate(Mathf.Clamp01(maxSpeedNorm));
+            //mag  *= FrictionInverseCurve.Evaluate(Mathf.Clamp01(maxSpeedNorm));
+            mag *= 1-(0.01f*Time.deltaTime);
             mag  = Mathf.Min(MaxGroundedVelocity, mag);
         }
 
@@ -167,7 +178,7 @@ public class Player : Damagable
         if (Grounded)
         {
             //rotate v to facing dir
-            Sliding = Mathf.Lerp(0, 1, maxSpeedNorm);
+            //Sliding = Mathf.Lerp(0, 1, maxSpeedNorm);
             _body.velocity = Vector3.Lerp(forward * mag, vNorm * mag, Sliding);
 
             if (_hasInput)
@@ -264,10 +275,35 @@ public class Player : Damagable
     {
         SceneManager.LoadScene(1);
     }
+    
+    //ZOOP
 
     public void Zoop(Vector3 zoopForce)
     {
         _lastZoopTime = Time.time;
         _zoopForce += zoopForce;
+    }
+
+    
+    //ZIP
+    
+    private ZiplinePole _startZip;
+    private ZiplinePole _endZip;
+    private Zipline _zipline;
+    private float _startZipTime;
+    
+    public void UpdateZip()
+    {
+        
+    }
+
+    public void Zip(ZiplinePole point1, ZiplinePole point2, Zipline zipline)
+    {
+        IsZipping = true;
+        _startZipTime = Time.time;
+        
+        _startZip = point1;
+        _endZip = point2;
+        _zipline = zipline;
     }
 }

@@ -15,6 +15,8 @@ public class Zipline : Building
 
     private LineRenderer _lineRenderer;
 
+    public float Length => Vector3.Distance(Point1.transform.position, Point2.transform.position);
+    
     private LineRenderer LineRenderer
     {
         get
@@ -64,5 +66,35 @@ public class Zipline : Building
         }
         
        
+    }
+
+    public void StartZip(ZiplinePole ziplinePole, Player player)
+    {
+        if (ziplinePole == Point1)
+        {
+            player.Zip(Point1, Point2, this);
+        }
+        else if (ziplinePole == Point2)
+        {
+            player.Zip(Point2, Point1, this);
+        }
+       
+    }
+
+    public override void SetInteractable()
+    {
+        Point1.ActivateUse();
+        Point2.ActivateUse();
+    }
+
+    public override void SetPassive()
+    {
+        Point1.DisableUse();
+        Point2.DisableUse();
+    }
+
+    protected override void TakeDamage(float damage)
+    {
+        //todo?
     }
 }
