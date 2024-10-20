@@ -13,10 +13,14 @@ public class Player : Damagable
     public float WalkSpeed = 5;
     public float SprintSpeed = 10;
     public float JumpForce = 10;
-    public float JumpApplyCutoffTime = 0.5f;
-    public float MinimumJumpApplyTime = 0.1f;
     public float AllowJumpOnceUngroundedTime = 0.1f;
+    public float FlailDelay = 0.5f;
 
+    [FormerlySerializedAs("zoopForce")] public Vector3 _zoopForce;
+
+
+    public LayerMask GroundRaycastMask;
+    
     [Space] public float GroundedRaycastDistance = 0.8f;
 
     [FormerlySerializedAs("FrictionCurve")] public AnimationCurve FrictionInverseCurve;
@@ -35,9 +39,9 @@ public class Player : Damagable
     public InputActionReference Interact;
 
     private bool _grounded = false;
+    public bool Grounded => _grounded && !InJumpWindow();
     private Rigidbody _body;
     private bool _jumpStarted;
-    private float _jumpTime;
     private bool _hasInput;
 
     private float _currentSpeed = 0;
@@ -67,6 +71,18 @@ public class Player : Damagable
         };
     }
 
+    public float JumpWindowTime = 0.5f;
+    private float LastJumpTime;
+    private bool _flailing;
+    private float _flailTime;
+    private bool _zoopPending;
+    private float _lastZoopTime;
+
+    public bool InJumpWindow()
+    {
+        return Time.time - LastJumpTime < JumpWindowTime;
+    }
+
     public void Update()
     {
         Vector2 movement = Move.ToInputAction().ReadValue<Vector2>();
@@ -83,11 +99,12 @@ public class Player : Damagable
         Vector3 forward = (transform.position - VCam.transform.position).normalized;
         Vector3 right = Quaternion.AngleAxis(90, Vector3.up) * forward;
 
-        Debug.DrawLine(transform.position + Vector3.up * 0.5f, transform.position + -transform.up * GroundedRaycastDistance, Color.magenta);
-        if (Physics.Raycast(transform.position + Vector3.up * 0.5f, -transform.up, out RaycastHit info, 100f))
+        Debug.DrawLine(transform.position + Vector3.up * 0.5f, transform.position + Vector3.up * 0.5f + -transform.up * GroundedRaycastDistance, Color.magenta);
+        if (Physics.Raycast(transform.position + Vector3.up * 0.5f, -transform.up, out RaycastHit info, 100f, GroundRaycastMask))
         {
             if (info.distance < GroundedRaycastDistance)
             {
+                Debug.Log("<color=green>Player Grounded</color>");
                 _grounded = true;
                 _groundedDistance = info.distance;
                 _lastGroundedTime = Time.time;
@@ -98,15 +115,24 @@ public class Player : Damagable
 
                 LastStableGroundPosition.position = transform.position;
             }
+            else
+            {
+                Unground();
+            }
         }
         else
         {
+            Unground();
+        }
+
+        void Unground()
+        {
             Debug.Log("<color=cyan>Player Ungrounded</color>");
             _grounded = false;
-            Debug.DrawLine(transform.position, transform.position + Vector3.up * 5, Color.cyan);
+            Debug.DrawLine(transform.position, transform.position + Vector3.up * 3, Color.cyan);
         }
         
-        if(!_grounded)
+        if(!Grounded)
         {
             Vector3 flatForward = new Vector3(forward.x, 0, forward.z).normalized;
            forward = flatForward;
@@ -121,17 +147,16 @@ public class Player : Damagable
         Debug.DrawLine(transform.position + u, transform.position + u + right * 5, Color.red);
         //
 
-        if (_grounded)
+        if (Grounded)
         {
             _body.AddForce(((forward * movement.y) + (right * movement.x)) * Time.deltaTime * _currentSpeed, ForceMode.VelocityChange);
         }
         
         float mag = _body.velocity.magnitude;
         float maxSpeedNorm =  mag  / MaxGroundedVelocity;
-        Debug.Log($"{mag}/{MaxGroundedVelocity} = {maxSpeedNorm}");
-
-        bool jumpingEvenIfStillGrounded = _jumpStarted && _jumpTime < MinimumJumpApplyTime;
-        if (_grounded && !jumpingEvenIfStillGrounded)
+        bool inJumpWindow = InJumpWindow();
+        bool isZooping = Time.time - _lastZoopTime < 2;
+        if (Grounded || _flailing && !isZooping)
         {
             mag  *= FrictionInverseCurve.Evaluate(Mathf.Clamp01(maxSpeedNorm));
             mag  = Mathf.Min(MaxGroundedVelocity, mag);
@@ -139,22 +164,19 @@ public class Player : Damagable
 
         Vector3 vNorm = _body.velocity.normalized;
 
-        if (_grounded)
+        if (Grounded)
         {
             //rotate v to facing dir
             Sliding = Mathf.Lerp(0, 1, maxSpeedNorm);
             _body.velocity = Vector3.Lerp(forward * mag, vNorm * mag, Sliding);
 
-            if (!jumpingEvenIfStillGrounded)
+            if (_hasInput)
             {
-                if (_hasInput)
-                {
-                    Anim.PlaySkate();
-                }
-                else
-                {
-                    Anim.PlayFreewheel();
-                }
+                Anim.PlaySkate();
+            }
+            else
+            {
+                Anim.PlayFreewheel();
             }
           
             Anim.Speed = mag * VelocityAnimSpeedMultiplier;
@@ -173,6 +195,9 @@ public class Player : Damagable
         {
             _body.MoveRotation(Quaternion.LookRotation(vDir, Vector3.up));
         }
+        
+        _body.AddForce(_zoopForce);
+        _zoopForce = Vector3.zero;
 
         CalculateJump();
 
@@ -180,37 +205,35 @@ public class Player : Damagable
         {
             if (Jump.ToInputAction().IsPressed())
             {
-                if (!_jumpStarted)
+                _flailing = false;
+                if (Grounded && !_jumpStarted)// || Time.time - _lastGroundedTime < AllowJumpOnceUngroundedTime)
                 {
-                    if (_grounded || Time.time - _lastGroundedTime < AllowJumpOnceUngroundedTime)
-                    {
-                        Anim.PlayJump();
-                        _jumpStarted = true;
-                        _jumpTime = 0;
-                    }
+                    _jumpStarted = true;
+                    Debug.Log("JUMP");
+                    Anim.PlayJump();
+                    LastJumpTime = Time.time;
+                    _body.AddForce(Vector3.up * JumpForce, ForceMode.VelocityChange);
                 }
-                else
-                {
-                    DoJump();
-                }
-            }
-            else if (_jumpStarted && _jumpTime < MinimumJumpApplyTime)
-            {
-                DoJump();
             }
             else
             {
-                _jumpStarted = false;
-                _jumpTime = 0;
-            }
-
-            void DoJump()
-            {
-                _jumpTime += Time.deltaTime;
-                if (_jumpTime < JumpApplyCutoffTime)
+                if (!Grounded)
                 {
-                    _body.AddForce(Vector3.up * JumpForce * Time.deltaTime, ForceMode.VelocityChange);
+                    _flailing = true;
+
+                    _flailTime += Time.deltaTime;
+                    if (_flailTime > FlailDelay)
+                    {
+                        Anim.PlayFall();
+                    }
+                  
                 }
+                else
+                {
+                    _flailTime = 0;
+                    _flailing = false;
+                }
+                _jumpStarted = false;
             }
         }
     }
@@ -240,5 +263,11 @@ public class Player : Damagable
     public void Death()
     {
         SceneManager.LoadScene(1);
+    }
+
+    public void Zoop(Vector3 zoopForce)
+    {
+        _lastZoopTime = Time.time;
+        _zoopForce += zoopForce;
     }
 }

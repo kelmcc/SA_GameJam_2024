@@ -162,8 +162,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1534723203913602554}
   serializedVersion: 2
-  m_LocalRotation: {x: -0.012235537, y: -0.9541675, z: 0.22943446, w: 0.19176692}
-  m_LocalPosition: {x: -0.0000009536743, y: 0, z: 0}
+  m_LocalRotation: {x: 0.05881115, y: 0.37268507, z: -0.08961408, w: -0.92174643}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -241,8 +241,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2476438111577166606}
   serializedVersion: 2
-  m_LocalRotation: {x: -0.0011985189, y: -0.9394109, z: 0.28387144, w: 0.19215298}
-  m_LocalPosition: {x: -0.0000009536743, y: 0, z: 0}
+  m_LocalRotation: {x: 0.005760795, y: 0.3669213, z: -0.11087654, w: -0.9236027}
+  m_LocalPosition: {x: 0.0000009536743, y: -0.00000010558141, z: -0.00000034168738}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -406,7 +406,7 @@ Transform:
   m_GameObject: {fileID: 4284448583010590741}
   serializedVersion: 2
   m_LocalRotation: {x: 0.1492864, y: -0, z: -0, w: 0.988794}
-  m_LocalPosition: {x: 3.4101467, y: 5.980839, z: 14.564121}
+  m_LocalPosition: {x: 6.4021864, y: 5.980839, z: -0.1949035}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -794,8 +794,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 6149162538972518045}
   serializedVersion: 2
-  m_LocalRotation: {x: -0.006738091, y: -0.9472048, z: 0.2566688, w: 0.19203863}
-  m_LocalPosition: {x: -0.0000009536743, y: 0, z: 0}
+  m_LocalRotation: {x: 0.032387253, y: 0.36996552, z: -0.10025139, w: -0.92305267}
+  m_LocalPosition: {x: 0.0000009536743, y: -0.00000010558141, z: -0.00000034168738}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -1354,13 +1354,16 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   LastStableGroundPosition: {fileID: 1656201151308733207}
-  WalkSpeed: 10
-  SprintSpeed: 20
-  JumpForce: 40
-  JumpApplyCutoffTime: 0.2
-  MinimumJumpApplyTime: 0.2
+  WalkSpeed: 8
+  SprintSpeed: 8
+  JumpForce: 3
   AllowJumpOnceUngroundedTime: 0.15
-  GroundedRaycastDistance: 0.8
+  FlailDelay: 0.7
+  _zoopForce: {x: 0, y: 0, z: 0}
+  GroundRaycastMask:
+    serializedVersion: 2
+    m_Bits: 1
+  GroundedRaycastDistance: 0.7
   FrictionInverseCurve:
     serializedVersion: 2
     m_Curve:
@@ -1407,7 +1410,8 @@ MonoBehaviour:
   _fallDamage: 50
   _health: 200
   Anim: {fileID: 6754857712956739872}
-  VelocityAnimSpeedMultiplier: 0.1
+  VelocityAnimSpeedMultiplier: 0.05
+  JumpWindowTime: 0.1
 --- !u!54 &3034907632639712371
 Rigidbody:
   m_ObjectHideFlags: 0
