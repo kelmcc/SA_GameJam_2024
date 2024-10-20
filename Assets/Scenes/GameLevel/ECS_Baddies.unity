@@ -419,7 +419,6 @@ GameObject:
   - component: {fileID: 132129840}
   - component: {fileID: 132129839}
   - component: {fileID: 132129838}
-  - component: {fileID: 132129837}
   - component: {fileID: 132129836}
   m_Layer: 7
   m_Name: Booster
@@ -440,34 +439,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: eb72796a5bd54d3a8e18d3e9a0ed849d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  sizeX: 0
-  sizeY: 0
-  sizeZ: 0
+  sizeX: 28.24
+  sizeY: 20
+  sizeZ: 20
   velocityDirection:
     x: 0
     y: 2
     z: 20
---- !u!65 &132129837
-BoxCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 132129835}
-  m_Material: {fileID: 0}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_LayerOverridePriority: 0
-  m_IsTrigger: 0
-  m_ProvidesContacts: 0
-  m_Enabled: 1
-  serializedVersion: 3
-  m_Size: {x: 1, y: 1, z: 1}
-  m_Center: {x: 0, y: 0, z: 0}
 --- !u!23 &132129838
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -670,7 +648,7 @@ PrefabInstance:
     - target: {fileID: 425256272556984169, guid: 930ddec04aa014a119550fa4f465b528,
         type: 3}
       propertyPath: m_VersionIndex
-      value: 5868
+      value: 5874
       objectReference: {fileID: 0}
     - target: {fileID: 537901340193866903, guid: 930ddec04aa014a119550fa4f465b528,
         type: 3}
@@ -735,7 +713,7 @@ PrefabInstance:
     - target: {fileID: 1281942383325141405, guid: 930ddec04aa014a119550fa4f465b528,
         type: 3}
       propertyPath: m_VersionIndex
-      value: 5868
+      value: 5874
       objectReference: {fileID: 0}
     - target: {fileID: 1430396104222593327, guid: 930ddec04aa014a119550fa4f465b528,
         type: 3}
@@ -745,7 +723,7 @@ PrefabInstance:
     - target: {fileID: 1430396104222593327, guid: 930ddec04aa014a119550fa4f465b528,
         type: 3}
       propertyPath: m_VersionIndex
-      value: 5868
+      value: 5874
       objectReference: {fileID: 0}
     - target: {fileID: 1848654594297197827, guid: 930ddec04aa014a119550fa4f465b528,
         type: 3}
@@ -775,7 +753,7 @@ PrefabInstance:
     - target: {fileID: 3057612203842933591, guid: 930ddec04aa014a119550fa4f465b528,
         type: 3}
       propertyPath: m_VersionIndex
-      value: 7678
+      value: 7684
       objectReference: {fileID: 0}
     - target: {fileID: 3121828779979623961, guid: 930ddec04aa014a119550fa4f465b528,
         type: 3}
@@ -800,7 +778,7 @@ PrefabInstance:
     - target: {fileID: 4489084906504117669, guid: 930ddec04aa014a119550fa4f465b528,
         type: 3}
       propertyPath: m_VersionIndex
-      value: 7678
+      value: 7684
       objectReference: {fileID: 0}
     - target: {fileID: 4561876775673935622, guid: 930ddec04aa014a119550fa4f465b528,
         type: 3}
@@ -835,7 +813,7 @@ PrefabInstance:
     - target: {fileID: 5543595188343695410, guid: 930ddec04aa014a119550fa4f465b528,
         type: 3}
       propertyPath: m_VersionIndex
-      value: 5868
+      value: 5874
       objectReference: {fileID: 0}
     - target: {fileID: 6070134907305579860, guid: 930ddec04aa014a119550fa4f465b528,
         type: 3}
@@ -855,7 +833,7 @@ PrefabInstance:
     - target: {fileID: 6879375410797385881, guid: 930ddec04aa014a119550fa4f465b528,
         type: 3}
       propertyPath: m_VersionIndex
-      value: 7678
+      value: 7684
       objectReference: {fileID: 0}
     - target: {fileID: 6951320453934091803, guid: 930ddec04aa014a119550fa4f465b528,
         type: 3}
@@ -880,7 +858,7 @@ PrefabInstance:
     - target: {fileID: 7639927121813842487, guid: 930ddec04aa014a119550fa4f465b528,
         type: 3}
       propertyPath: m_VersionIndex
-      value: 5868
+      value: 5874
       objectReference: {fileID: 0}
     - target: {fileID: 7878839865909305903, guid: 930ddec04aa014a119550fa4f465b528,
         type: 3}
@@ -890,7 +868,7 @@ PrefabInstance:
     - target: {fileID: 7878839865909305903, guid: 930ddec04aa014a119550fa4f465b528,
         type: 3}
       propertyPath: m_VersionIndex
-      value: 5868
+      value: 5874
       objectReference: {fileID: 0}
     - target: {fileID: 8522803778580666461, guid: 930ddec04aa014a119550fa4f465b528,
         type: 3}
@@ -2775,9 +2753,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: eb72796a5bd54d3a8e18d3e9a0ed849d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  sizeX: 0
-  sizeY: 0
-  sizeZ: 0
+  sizeX: 28.24
+  sizeY: 20
+  sizeZ: 20
   velocityDirection:
     x: 20
     y: 3
@@ -2797,7 +2775,7 @@ BoxCollider:
     serializedVersion: 2
     m_Bits: 0
   m_LayerOverridePriority: 0
-  m_IsTrigger: 0
+  m_IsTrigger: 1
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
@@ -2949,6 +2927,41 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 1830474451134100864, guid: a5a9cf29011334c069385acce45967a5,
+        type: 3}
+      propertyPath: m_IsTrigger
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3584103909645441896, guid: a5a9cf29011334c069385acce45967a5,
+        type: 3}
+      propertyPath: sizeX
+      value: 28.24
+      objectReference: {fileID: 0}
+    - target: {fileID: 3584103909645441896, guid: a5a9cf29011334c069385acce45967a5,
+        type: 3}
+      propertyPath: sizeY
+      value: 20
+      objectReference: {fileID: 0}
+    - target: {fileID: 3584103909645441896, guid: a5a9cf29011334c069385acce45967a5,
+        type: 3}
+      propertyPath: sizeZ
+      value: 20
+      objectReference: {fileID: 0}
+    - target: {fileID: 3584103909645441896, guid: a5a9cf29011334c069385acce45967a5,
+        type: 3}
+      propertyPath: velocityDirection.x
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 3584103909645441896, guid: a5a9cf29011334c069385acce45967a5,
+        type: 3}
+      propertyPath: velocityDirection.y
+      value: 4
+      objectReference: {fileID: 0}
+    - target: {fileID: 3584103909645441896, guid: a5a9cf29011334c069385acce45967a5,
+        type: 3}
+      propertyPath: velocityDirection.z
+      value: 0.001
+      objectReference: {fileID: 0}
     - target: {fileID: 5780584691159555480, guid: a5a9cf29011334c069385acce45967a5,
         type: 3}
       propertyPath: m_LocalPosition.x

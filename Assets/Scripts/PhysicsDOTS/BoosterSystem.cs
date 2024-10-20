@@ -2,6 +2,7 @@ using Unity.Collections;
 using Unity.Entities;
 using Unity.Mathematics;
 using Unity.Physics;
+using Unity.Physics.Extensions;
 using Unity.Transforms;
 using UnityEngine;
 
@@ -41,6 +42,7 @@ namespace PhysicsDOTS
 
                     foreach (ColliderCastHit hit in hits)
                     {
+
                         RefRW<PhysicsVelocity> physicsVelocity = SystemAPI.GetComponentRW<PhysicsVelocity>(hit.Entity);
                         physicsVelocity.ValueRW.Linear += new float3(cpm.velocityDirection.x * SystemAPI.Time.DeltaTime,
                             cpm.velocityDirection.y * SystemAPI.Time.DeltaTime,
