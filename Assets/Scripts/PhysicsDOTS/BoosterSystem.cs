@@ -13,6 +13,8 @@ namespace PhysicsDOTS
         private NativeList<Entity> _boosterEntities;
         private EntityManager _entityManager;
 
+        private const bool CenterLineUsesY = false;
+
         public void OnCreate(ref SystemState state)
         {
             _boosterEntities = new NativeList<Entity>(Allocator.Persistent);
@@ -34,20 +36,18 @@ namespace PhysicsDOTS
             {
                 BoostersSetUp();
             }
-            
+
             foreach (Entity entity in _boosterEntities)
             {
                 RefRW<LocalToWorld> boosterTransform = SystemAPI.GetComponentRW<LocalToWorld>(entity);
                 RefRO<BoosterComponent> boosterComponent = SystemAPI.GetComponentRO<BoosterComponent>(entity);
-                
+
                 var cpm = boosterComponent.ValueRO;
-                
 
                 PhysicsWorldSingleton physicsWorldSingleton = SystemAPI.GetSingleton<PhysicsWorldSingleton>();
 
                 NativeList<ColliderCastHit> hits = new NativeList<ColliderCastHit>(Allocator.Temp);
-                
-                
+
                 physicsWorldSingleton.BoxCastAll(boosterTransform.ValueRO.Position,
                     boosterTransform.ValueRO.Rotation,
                     new float3(cpm.sizeX / 2, cpm.sizeY / 2,
@@ -59,12 +59,13 @@ namespace PhysicsDOTS
                 foreach (ColliderCastHit hit in hits)
                 {
                     var enemy = hit.Entity;
-                    
+
                     RefRW<PhysicsVelocity> physicsVelocity = SystemAPI.GetComponentRW<PhysicsVelocity>(enemy);
-                    
+
                     RefRW<LocalToWorld> enemyTrans = SystemAPI.GetComponentRW<LocalToWorld>(enemy);
 
-                    var localEntityPosRelativeToBoxCenter = enemyTrans.ValueRO.Position - boosterTransform.ValueRO.Position;
+                    var localEntityPosRelativeToBoxCenter =
+                        enemyTrans.ValueRO.Position - boosterTransform.ValueRO.Position;
 
                     var normCenterLine = math.normalize(cpm.velocityDirection);
                     var projMag = math.dot(localEntityPosRelativeToBoxCenter, normCenterLine);
@@ -72,9 +73,21 @@ namespace PhysicsDOTS
                     var projectedPointOnCenterLine = normCenterLine * math.abs(projMag);
                     var vecTowardsCenterLine = projectedPointOnCenterLine - localEntityPosRelativeToBoxCenter;
 
-                    physicsVelocity.ValueRW.Linear += new float3((cpm.velocityDirection.x + vecTowardsCenterLine.x) * SystemAPI.Time.DeltaTime,
-                        (cpm.velocityDirection.y + vecTowardsCenterLine.y) * SystemAPI.Time.DeltaTime,
-                        (cpm.velocityDirection.z + vecTowardsCenterLine.z) * SystemAPI.Time.DeltaTime);
+                    if (!CenterLineUsesY) //Sorry I had to. Const value at top of file. x
+                    {
+                        vecTowardsCenterLine = new float3(vecTowardsCenterLine.x, 0, vecTowardsCenterLine.z);
+                    }
+
+                    physicsVelocity.ValueRW.Linear += new float3(
+                        (cpm.velocityDirection.x * cpm.BoosterStrength +
+                         vecTowardsCenterLine.x * cpm.CorrallingMultiplier) *
+                        SystemAPI.Time.DeltaTime,
+                        (cpm.velocityDirection.y * cpm.BoosterStrength +
+                         vecTowardsCenterLine.y * cpm.CorrallingMultiplier) * cpm.BoosterStrength *
+                        SystemAPI.Time.DeltaTime,
+                        (cpm.velocityDirection.z * cpm.BoosterStrength +
+                         vecTowardsCenterLine.z * cpm.CorrallingMultiplier) * cpm.BoosterStrength *
+                        SystemAPI.Time.DeltaTime);
                 }
             }
         }

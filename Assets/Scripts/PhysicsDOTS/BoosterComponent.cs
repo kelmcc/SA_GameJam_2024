@@ -9,5 +9,7 @@ namespace PhysicsDOTS
         public float sizeY;
         public float sizeZ;
         public float3 velocityDirection;
+        public float BoosterStrength;
+        public float CorrallingMultiplier;
     }
 }
