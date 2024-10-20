@@ -13,6 +13,11 @@ PrefabInstance:
       propertyPath: m_Mass
       value: 5
       objectReference: {fileID: 0}
+    - target: {fileID: 1495453353972057095, guid: 1603dcd38a47042ea9d86f0a228d7bc0,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 5608514889499292958, guid: 1603dcd38a47042ea9d86f0a228d7bc0,
         type: 3}
       propertyPath: m_LocalScale.x
