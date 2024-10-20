@@ -95,7 +95,7 @@ Material:
     - _DetailNormalMapScale: 1
     - _DstBlend: 0
     - _DstBlendAlpha: 0
-    - _EmissionStrength: 1
+    - _EmissionStrength: 0.621
     - _EnvironmentReflections: 1
     - _ExcludeShadowsOnTop: 0
     - _GlossMapScale: 1
