@@ -133,7 +133,6 @@ GameObject:
   - component: {fileID: 47375242}
   - component: {fileID: 47375246}
   - component: {fileID: 47375245}
-  - component: {fileID: 47375244}
   - component: {fileID: 47375243}
   m_Layer: 7
   m_Name: The Abyss
@@ -172,27 +171,6 @@ MonoBehaviour:
   sizeX: 1000
   sizeY: 25
   sizeZ: 1000
---- !u!65 &47375244
-BoxCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 47375241}
-  m_Material: {fileID: 0}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_LayerOverridePriority: 0
-  m_IsTrigger: 1
-  m_ProvidesContacts: 0
-  m_Enabled: 1
-  serializedVersion: 3
-  m_Size: {x: 1, y: 1, z: 1}
-  m_Center: {x: 0, y: 0, z: 0}
 --- !u!23 &47375245
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -357,7 +335,6 @@ GameObject:
   - component: {fileID: 175880864}
   - component: {fileID: 175880868}
   - component: {fileID: 175880867}
-  - component: {fileID: 175880866}
   - component: {fileID: 175880865}
   m_Layer: 7
   m_Name: The Abyss (1)
@@ -396,27 +373,6 @@ MonoBehaviour:
   sizeX: 1000
   sizeY: 25
   sizeZ: 1000
---- !u!65 &175880866
-BoxCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 175880863}
-  m_Material: {fileID: 0}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_LayerOverridePriority: 0
-  m_IsTrigger: 1
-  m_ProvidesContacts: 0
-  m_Enabled: 1
-  serializedVersion: 3
-  m_Size: {x: 1, y: 1, z: 1}
-  m_Center: {x: 0, y: 0, z: 0}
 --- !u!23 &175880867
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -1175,7 +1131,6 @@ GameObject:
   - component: {fileID: 1435041781}
   - component: {fileID: 1435041785}
   - component: {fileID: 1435041784}
-  - component: {fileID: 1435041783}
   - component: {fileID: 1435041782}
   m_Layer: 7
   m_Name: The Abyss (1)
@@ -1214,27 +1169,6 @@ MonoBehaviour:
   sizeX: 1000
   sizeY: 25
   sizeZ: 1000
---- !u!65 &1435041783
-BoxCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1435041780}
-  m_Material: {fileID: 0}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_LayerOverridePriority: 0
-  m_IsTrigger: 1
-  m_ProvidesContacts: 0
-  m_Enabled: 1
-  serializedVersion: 3
-  m_Size: {x: 1, y: 1, z: 1}
-  m_Center: {x: 0, y: 0, z: 0}
 --- !u!23 &1435041784
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -1296,7 +1230,6 @@ GameObject:
   - component: {fileID: 1437205730}
   - component: {fileID: 1437205734}
   - component: {fileID: 1437205733}
-  - component: {fileID: 1437205732}
   - component: {fileID: 1437205731}
   m_Layer: 7
   m_Name: The Abyss (1)
@@ -1335,27 +1268,6 @@ MonoBehaviour:
   sizeX: 1000
   sizeY: 25
   sizeZ: 1000
---- !u!65 &1437205732
-BoxCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1437205729}
-  m_Material: {fileID: 0}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_LayerOverridePriority: 0
-  m_IsTrigger: 1
-  m_ProvidesContacts: 0
-  m_Enabled: 1
-  serializedVersion: 3
-  m_Size: {x: 1, y: 1, z: 1}
-  m_Center: {x: 0, y: 0, z: 0}
 --- !u!23 &1437205733
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -2077,7 +1989,6 @@ GameObject:
   - component: {fileID: 1846264734}
   - component: {fileID: 1846264738}
   - component: {fileID: 1846264737}
-  - component: {fileID: 1846264736}
   - component: {fileID: 1846264735}
   m_Layer: 7
   m_Name: The Abyss (1)
@@ -2116,27 +2027,6 @@ MonoBehaviour:
   sizeX: 1000
   sizeY: 25
   sizeZ: 1000
---- !u!65 &1846264736
-BoxCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1846264733}
-  m_Material: {fileID: 0}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_LayerOverridePriority: 0
-  m_IsTrigger: 1
-  m_ProvidesContacts: 0
-  m_Enabled: 1
-  serializedVersion: 3
-  m_Size: {x: 1, y: 1, z: 1}
-  m_Center: {x: 0, y: 0, z: 0}
 --- !u!23 &1846264737
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -2198,7 +2088,6 @@ GameObject:
   - component: {fileID: 1918445694}
   - component: {fileID: 1918445698}
   - component: {fileID: 1918445697}
-  - component: {fileID: 1918445696}
   - component: {fileID: 1918445695}
   m_Layer: 7
   m_Name: The Abyss (1)
@@ -2237,27 +2126,6 @@ MonoBehaviour:
   sizeX: 1000
   sizeY: 25
   sizeZ: 1000
---- !u!65 &1918445696
-BoxCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1918445693}
-  m_Material: {fileID: 0}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_LayerOverridePriority: 0
-  m_IsTrigger: 1
-  m_ProvidesContacts: 0
-  m_Enabled: 1
-  serializedVersion: 3
-  m_Size: {x: 1, y: 1, z: 1}
-  m_Center: {x: 0, y: 0, z: 0}
 --- !u!23 &1918445697
 MeshRenderer:
   m_ObjectHideFlags: 0
