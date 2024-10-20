@@ -7,8 +7,8 @@ Material:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: Shirt
-  m_Shader: {fileID: 4800000, guid: 77e497a80e47b4672ab683b98550db62, type: 3}
+  m_Name: Pole
+  m_Shader: {fileID: 4800000, guid: a7de5682de555ef48a6d1c8da157bd77, type: 3}
   m_Parent: {fileID: 0}
   m_ModifiedSerializedProperties: 0
   m_ValidKeywords: []
@@ -96,42 +96,44 @@ Material:
     - _DstBlend: 0
     - _DstBlendAlpha: 0
     - _EnvironmentReflections: 1
-    - _GlossMapScale: 1
-    - _Glossiness: 0.5
-    - _GlossyReflections: 1
+    - _GlossMapScale: 0
+    - _Glossiness: 0
+    - _GlossyReflections: 0
     - _Metallic: 0
-    - _Mode: 0
-    - _NoiseScale: 0
-    - _NoiseStrength: 11.4
+    - _NoiseScale: 28.47
+    - _NoiseStrength: 1.22
     - _OcclusionStrength: 1
-    - _Parallax: 0.02
+    - _Parallax: 0.005
     - _QueueControl: 0
     - _QueueOffset: 0
     - _ReceiveShadows: 1
-    - _ShadingFreq: 50
-    - _ShadingNoiseScale: 12.9
-    - _ShadingThreshold: 0.54
-    - _ShadowThreshold: 0.178
+    - _ShadingFreq: 5
+    - _ShadingNoiseScale: 2.39
+    - _ShadingThreshold: 0.36
     - _Smoothness: 0.5
     - _SmoothnessTextureChannel: 0
     - _SpecularHighlights: 1
     - _SrcBlend: 1
     - _SrcBlendAlpha: 1
     - _Surface: 0
-    - _UVSec: 0
     - _WorkflowMode: 1
+    - _ZStep: 0.078
     - _ZWrite: 1
     m_Colors:
-    - _BaseColor: {r: 0.9068248, g: 0.54792625, b: 0.78224665, a: 1}
-    - _Color: {r: 0.9068248, g: 0.5479262, b: 0.78224665, a: 1}
-    - _EmissionColor: {r: 0, g: 0, b: 0, a: 0}
-    - _MesaXY1: {r: 1, g: 0.48584908, b: 0.9309352, a: 0}
-    - _MesaXY2: {r: 0.87350845, g: 0.4292453, b: 1, a: 0}
-    - _MesaZ: {r: 1, g: 0, b: 0.83552647, a: 0}
-    - _ShadingColor: {r: 0.447, g: 0.27010214, b: 0.43748936, a: 1}
+    - _BaseColor: {r: 1, g: 1, b: 1, a: 1}
+    - _Color: {r: 1, g: 1, b: 1, a: 1}
+    - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
+    - _MesaXY1: {r: 1, g: 0.47641504, b: 0.92947674, a: 0}
+    - _MesaXY2: {r: 0.9433962, g: 0.21804905, b: 0.21804905, a: 0}
+    - _MesaXY3: {r: 0.31132078, g: 0.2321454, b: 0, a: 0}
+    - _MesaXY4: {r: 1, g: 1, b: 1, a: 0}
+    - _MesaXY5: {r: 0.9056604, g: 0.8244927, b: 0.17515129, a: 0}
+    - _MesaZ: {r: 0.9433962, g: 0.21804905, b: 0.21804905, a: 0}
+    - _MesaZ1: {r: 1, g: 0, b: 0, a: 0}
+    - _ShadingColor: {r: 1, g: 0.89114195, b: 0.5707547, a: 0}
     - _SpecColor: {r: 0.19999996, g: 0.19999996, b: 0.19999996, a: 1}
   m_BuildTextureStacks: []
---- !u!114 &1126571665302257661
+--- !u!114 &931735764598660095
 MonoBehaviour:
   m_ObjectHideFlags: 11
   m_CorrespondingSourceObject: {fileID: 0}

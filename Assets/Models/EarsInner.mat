@@ -21,7 +21,7 @@ Material:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_Name: EarsInner
-  m_Shader: {fileID: 4800000, guid: 77e497a80e47b4672ab683b98550db62, type: 3}
+  m_Shader: {fileID: 4800000, guid: a7de5682de555ef48a6d1c8da157bd77, type: 3}
   m_Parent: {fileID: 0}
   m_ModifiedSerializedProperties: 0
   m_ValidKeywords: []
@@ -121,9 +121,9 @@ Material:
     - _QueueControl: 0
     - _QueueOffset: 0
     - _ReceiveShadows: 1
-    - _ShadingFreq: 0
-    - _ShadingNoiseScale: 0
-    - _ShadingThreshold: 0
+    - _ShadingFreq: 139
+    - _ShadingNoiseScale: 4.88
+    - _ShadingThreshold: 0.405
     - _ShadowThreshold: 0
     - _Smoothness: 0.5
     - _SmoothnessTextureChannel: 0
@@ -140,7 +140,7 @@ Material:
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 0}
     - _MesaXY1: {r: 1, g: 0.47641504, b: 0.92947674, a: 0}
     - _MesaXY2: {r: 1, g: 0.5990566, b: 0.5990566, a: 0}
-    - _MesaZ: {r: 1, g: 0.6273585, b: 0.6273585, a: 0}
-    - _ShadingColor: {r: 0, g: 0, b: 0, a: 0}
+    - _MesaZ: {r: 1, g: 0.23113209, b: 0.23113209, a: 0}
+    - _ShadingColor: {r: 0.8962264, g: 0.5030705, b: 0.5030705, a: 0}
     - _SpecColor: {r: 0.19999996, g: 0.19999996, b: 0.19999996, a: 1}
   m_BuildTextureStacks: []

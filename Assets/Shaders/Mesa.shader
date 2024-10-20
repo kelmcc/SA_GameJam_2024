@@ -7,15 +7,18 @@ Shader "Mesa"
 		[HideInInspector] _AlphaCutoff("Alpha Cutoff ", Range(0, 1)) = 0.5
 		[HideInInspector] _EmissionColor("Emission Color", Color) = (1,1,1,1)
 		_MesaXY1("MesaXY1", Color) = (1,0.4764151,0.9294767,0)
+		_MesaXY3("MesaXY3", Color) = (1,0.4764151,0.9294767,0)
 		_MesaXY2("MesaXY2", Color) = (0.9433962,0.2180491,0.2180491,0)
 		_MesaZ("MesaZ", Color) = (0.9433962,0.2180491,0.2180491,0)
 		_NoiseScale("NoiseScale", Float) = 0
 		_NoiseStrength("NoiseStrength", Float) = 0
-		_ShadingFreq("ShadingFreq", Range( 0 , 10)) = 0
+		_ShadingFreq("ShadingFreq", Range( 0 , 1000)) = 0
 		_ShadingColor("ShadingColor", Color) = (0,0,0,0)
 		_ShadingThreshold("ShadingThreshold", Range( 0 , 1)) = 0
 		_ShadowThreshold("ShadowThreshold", Range( 0 , 1)) = 0
 		_ShadingNoiseScale("ShadingNoiseScale", Float) = 0
+		_ZStep("ZStep", Range( -1 , 1)) = 0
+		[Toggle(_EXCLUDESHADOWSONTOP_ON)] _ExcludeShadowsOnTop("ExcludeShadowsOnTop", Float) = 0
 
 
 		//_TransmissionShadow( "Transmission Shadow", Range( 0, 1 ) ) = 0.5
@@ -289,14 +292,16 @@ Shader "Mesa"
 				#define ENABLE_TERRAIN_PERPIXEL_NORMAL
 			#endif
 
-			#define ASE_NEEDS_FRAG_WORLD_NORMAL
-			#define ASE_NEEDS_FRAG_SCREEN_POSITION
-			#define ASE_NEEDS_FRAG_WORLD_POSITION
-			#define ASE_NEEDS_FRAG_SHADOWCOORDS
 			#define ASE_NEEDS_FRAG_WORLD_TANGENT
+			#define ASE_NEEDS_FRAG_WORLD_NORMAL
 			#define ASE_NEEDS_FRAG_WORLD_BITANGENT
+			#define ASE_NEEDS_FRAG_WORLD_POSITION
+			#define ASE_NEEDS_FRAG_SCREEN_POSITION
+			#define ASE_NEEDS_FRAG_SHADOWCOORDS
+			#define ASE_NEEDS_FRAG_NORMAL
 			#define ASE_NEEDS_VERT_TEXTURE_COORDINATES1
 			#define ASE_NEEDS_FRAG_WORLD_VIEW_DIR
+			#pragma shader_feature_local _EXCLUDESHADOWSONTOP_ON
 
 
 			#if defined(ASE_EARLY_Z_DEPTH_OPTIMIZE) && (SHADER_TARGET >= 45)
@@ -343,7 +348,9 @@ Shader "Mesa"
 			float4 _MesaZ;
 			float4 _MesaXY2;
 			float4 _MesaXY1;
+			float4 _MesaXY3;
 			float4 _ShadingColor;
+			float _ZStep;
 			float _ShadingNoiseScale;
 			float _ShadingFreq;
 			float _ShadingThreshold;
@@ -382,6 +389,12 @@ Shader "Mesa"
 
 			
 
+			float3 ASESafeNormalize(float3 inVec)
+			{
+				float dp3 = max(1.175494351e-38, dot(inVec, inVec));
+				return inVec* rsqrt(dp3);
+			}
+			
 			float3 mod2D289( float3 x ) { return x - floor( x * ( 1.0 / 289.0 ) ) * 289.0; }
 			float2 mod2D289( float2 x ) { return x - floor( x * ( 1.0 / 289.0 ) ) * 289.0; }
 			float3 permute( float3 x ) { return mod2D289( ( ( x * 34.0 ) + 1.0 ) * x ); }
@@ -623,10 +636,21 @@ Shader "Mesa"
 
 				WorldViewDirection = SafeNormalize( WorldViewDirection );
 
-				float dotResult13 = dot( WorldNormal , float3(1,0,0) );
-				float4 lerpResult20 = lerp( _MesaXY2 , _MesaXY1 , dotResult13);
-				float dotResult46 = dot( WorldNormal , float3(0,0,-1) );
-				float4 lerpResult98 = lerp( _MesaZ , lerpResult20 , saturate( dotResult46 ));
+				float3 tanToWorld0 = float3( WorldTangent.x, WorldBiTangent.x, WorldNormal.x );
+				float3 tanToWorld1 = float3( WorldTangent.y, WorldBiTangent.y, WorldNormal.y );
+				float3 tanToWorld2 = float3( WorldTangent.z, WorldBiTangent.z, WorldNormal.z );
+				float3 tanNormal99 = IN.ase_normal;
+				float3 worldNormal99 = float3(dot(tanToWorld0,tanNormal99), dot(tanToWorld1,tanNormal99), dot(tanToWorld2,tanNormal99));
+				float dotResult13 = dot( worldNormal99 , float3(1,0,0) );
+				float4 lerpResult20 = lerp( _MesaXY2 , _MesaXY1 , abs( dotResult13 ));
+				float dotResult149 = dot( worldNormal99 , float3(0,1,0) );
+				float4 lerpResult144 = lerp( lerpResult20 , _MesaXY3 , abs( dotResult149 ));
+				float3 temp_output_82_0_g10 = ( WorldPosition - _WorldSpaceCameraPos );
+				float3 temp_output_78_0_g10 = cross( ddy( temp_output_82_0_g10 ) , ddx( temp_output_82_0_g10 ) );
+				float3 normalizeResult87_g10 = ASESafeNormalize( temp_output_78_0_g10 );
+				float dotResult46 = dot( normalizeResult87_g10 , float3(0,-1,0) );
+				float temp_output_151_0 = step( saturate( -dotResult46 ) , _ZStep );
+				float4 lerpResult98 = lerp( _MesaZ , lerpResult144 , temp_output_151_0);
 				float4 ase_screenPosNorm = ScreenPos / ScreenPos.w;
 				ase_screenPosNorm.z = ( UNITY_NEAR_CLIP_VALUE >= 0 ) ? ase_screenPosNorm.z : ase_screenPosNorm.z * 0.5 + 0.5;
 				float2 appendResult62 = (float2(1.0 , ( _ScreenParams.y / _ScreenParams.x )));
@@ -650,9 +674,6 @@ Shader "Mesa"
 				float ase_lightAtten = 0;
 				Light ase_mainLight = GetMainLight( ShadowCoords );
 				ase_lightAtten = ase_mainLight.distanceAttenuation * ase_mainLight.shadowAttenuation;
-				float3 tanToWorld0 = float3( WorldTangent.x, WorldBiTangent.x, WorldNormal.x );
-				float3 tanToWorld1 = float3( WorldTangent.y, WorldBiTangent.y, WorldNormal.y );
-				float3 tanToWorld2 = float3( WorldTangent.z, WorldBiTangent.z, WorldNormal.z );
 				float3 tanNormal12_g8 = IN.ase_normal;
 				float3 worldNormal12_g8 = float3(dot(tanToWorld0,tanNormal12_g8), dot(tanToWorld1,tanNormal12_g8), dot(tanToWorld2,tanNormal12_g8));
 				float3 normalizeResult64_g8 = normalize( worldNormal12_g8 );
@@ -661,8 +682,13 @@ Shader "Mesa"
 				MixRealtimeAndBakedGI(ase_mainLight, normalizeResult64_g8, bakedGI34_g8, half4(0,0,0,0));
 				float4 color126 = IsGammaSpace() ? float4(1,1,1,0) : float4(1,1,1,0);
 				float4 temp_output_42_0_g8 = color126;
-				float temp_output_111_0 = (( ( ( ( ase_lightColor * ase_lightAtten ) * max( dotResult14_g8 , 0.0 ) ) + float4( bakedGI34_g8 , 0.0 ) ) * float4( (temp_output_42_0_g8).rgb , 0.0 ) )).r;
-				float4 lerpResult113 = lerp( lerpResult98 , ( temp_output_132_0 * lerpResult130 ) , step( temp_output_111_0 , ( temp_output_132_0 * _ShadowThreshold ) ));
+				float4 lerpResult113 = lerp( lerpResult98 , ( temp_output_132_0 * lerpResult130 ) , step( (( ( ( ( ase_lightColor * ase_lightAtten ) * max( dotResult14_g8 , 0.0 ) ) + float4( bakedGI34_g8 , 0.0 ) ) * float4( (temp_output_42_0_g8).rgb , 0.0 ) )).r , ( temp_output_132_0 * _ShadowThreshold ) ));
+				float4 lerpResult156 = lerp( lerpResult98 , lerpResult113 , temp_output_151_0);
+				#ifdef _EXCLUDESHADOWSONTOP_ON
+				float4 staticSwitch157 = lerpResult156;
+				#else
+				float4 staticSwitch157 = lerpResult113;
+				#endif
 				
 				float simplePerlin2D51 = snoise( texCoord77.xy*_NoiseScale );
 				simplePerlin2D51 = simplePerlin2D51*0.5 + 0.5;
@@ -670,10 +696,10 @@ Shader "Mesa"
 				float fresnelNode50 = ( (-_NoiseStrength + (simplePerlin2D51 - 0.0) * (_NoiseStrength - -_NoiseStrength) / (1.0 - 0.0)) + 0.4 * pow( 1.0 - fresnelNdotV50, 4.0 ) );
 				
 
-				float3 BaseColor = lerpResult113.rgb;
+				float3 BaseColor = staticSwitch157.rgb;
 				float3 Normal = float3(0, 0, 1);
-				float3 Emission = lerpResult113.rgb;
-				float3 Specular = 0.5;
+				float3 Emission = staticSwitch157.rgb;
+				float3 Specular = lerpResult98.rgb;
 				float Metallic = 0;
 				float Smoothness = 0.0;
 				float Occlusion = 1;
@@ -1022,7 +1048,9 @@ Shader "Mesa"
 			float4 _MesaZ;
 			float4 _MesaXY2;
 			float4 _MesaXY1;
+			float4 _MesaXY3;
 			float4 _ShadingColor;
+			float _ZStep;
 			float _ShadingNoiseScale;
 			float _ShadingFreq;
 			float _ShadingThreshold;
@@ -1413,7 +1441,9 @@ Shader "Mesa"
 			float4 _MesaZ;
 			float4 _MesaXY2;
 			float4 _MesaXY1;
+			float4 _MesaXY3;
 			float4 _ShadingColor;
+			float _ZStep;
 			float _ShadingNoiseScale;
 			float _ShadingFreq;
 			float _ShadingThreshold;
@@ -1724,7 +1754,9 @@ Shader "Mesa"
 			#define ASE_NEEDS_VERT_NORMAL
 			#define ASE_NEEDS_FRAG_WORLD_POSITION
 			#define ASE_NEEDS_FRAG_SHADOWCOORDS
+			#define ASE_NEEDS_FRAG_NORMAL
 			#define ASE_NEEDS_VERT_TEXTURE_COORDINATES1
+			#pragma shader_feature_local _EXCLUDESHADOWSONTOP_ON
 			#pragma multi_compile _ DIRLIGHTMAP_COMBINED
 			#pragma multi_compile _ LIGHTMAP_ON
 			#pragma multi_compile _ _MIXED_LIGHTING_SUBTRACTIVE
@@ -1757,9 +1789,9 @@ Shader "Mesa"
 					float4 VizUV : TEXCOORD2;
 					float4 LightCoord : TEXCOORD3;
 				#endif
+				float3 ase_normal : NORMAL;
 				float4 ase_texcoord4 : TEXCOORD4;
 				float4 ase_texcoord5 : TEXCOORD5;
-				float3 ase_normal : NORMAL;
 				float4 ase_texcoord6 : TEXCOORD6;
 				float4 ase_texcoord7 : TEXCOORD7;
 				float4 lightmapUVOrVertexSH : TEXCOORD8;
@@ -1771,7 +1803,9 @@ Shader "Mesa"
 			float4 _MesaZ;
 			float4 _MesaXY2;
 			float4 _MesaXY1;
+			float4 _MesaXY3;
 			float4 _ShadingColor;
+			float _ZStep;
 			float _ShadingNoiseScale;
 			float _ShadingFreq;
 			float _ShadingThreshold;
@@ -1810,6 +1844,12 @@ Shader "Mesa"
 
 			
 
+			float3 ASESafeNormalize(float3 inVec)
+			{
+				float dp3 = max(1.175494351e-38, dot(inVec, inVec));
+				return inVec* rsqrt(dp3);
+			}
+			
 			float3 mod2D289( float3 x ) { return x - floor( x * ( 1.0 / 289.0 ) ) * 289.0; }
 			float2 mod2D289( float2 x ) { return x - floor( x * ( 1.0 / 289.0 ) ) * 289.0; }
 			float3 permute( float3 x ) { return mod2D289( ( ( x * 34.0 ) + 1.0 ) * x ); }
@@ -1855,16 +1895,16 @@ Shader "Mesa"
 				UNITY_TRANSFER_INSTANCE_ID(v, o);
 				UNITY_INITIALIZE_VERTEX_OUTPUT_STEREO(o);
 
-				float3 ase_worldNormal = TransformObjectToWorldNormal(v.normalOS);
-				o.ase_texcoord4.xyz = ase_worldNormal;
-				float4 ase_clipPos = TransformObjectToHClip((v.positionOS).xyz);
-				float4 screenPos = ComputeScreenPos(ase_clipPos);
-				o.ase_texcoord5 = screenPos;
 				float3 ase_worldTangent = TransformObjectToWorldDir(v.ase_tangent.xyz);
-				o.ase_texcoord6.xyz = ase_worldTangent;
+				o.ase_texcoord4.xyz = ase_worldTangent;
+				float3 ase_worldNormal = TransformObjectToWorldNormal(v.normalOS);
+				o.ase_texcoord5.xyz = ase_worldNormal;
 				float ase_vertexTangentSign = v.ase_tangent.w * ( unity_WorldTransformParams.w >= 0.0 ? 1.0 : -1.0 );
 				float3 ase_worldBitangent = cross( ase_worldNormal, ase_worldTangent ) * ase_vertexTangentSign;
-				o.ase_texcoord7.xyz = ase_worldBitangent;
+				o.ase_texcoord6.xyz = ase_worldBitangent;
+				float4 ase_clipPos = TransformObjectToHClip((v.positionOS).xyz);
+				float4 screenPos = ComputeScreenPos(ase_clipPos);
+				o.ase_texcoord7 = screenPos;
 				OUTPUT_LIGHTMAP_UV( v.texcoord1, unity_LightmapST, o.lightmapUVOrVertexSH.xy );
 				OUTPUT_SH( ase_worldNormal, o.lightmapUVOrVertexSH.xyz );
 				
@@ -1872,8 +1912,8 @@ Shader "Mesa"
 				
 				//setting value to unused interpolator channels and avoid initialization warnings
 				o.ase_texcoord4.w = 0;
+				o.ase_texcoord5.w = 0;
 				o.ase_texcoord6.w = 0;
-				o.ase_texcoord7.w = 0;
 
 				#ifdef ASE_ABSOLUTE_VERTEX_POS
 					float3 defaultVertexValue = v.positionOS.xyz;
@@ -2025,12 +2065,25 @@ Shader "Mesa"
 					#endif
 				#endif
 
-				float3 ase_worldNormal = IN.ase_texcoord4.xyz;
-				float dotResult13 = dot( ase_worldNormal , float3(1,0,0) );
-				float4 lerpResult20 = lerp( _MesaXY2 , _MesaXY1 , dotResult13);
-				float dotResult46 = dot( ase_worldNormal , float3(0,0,-1) );
-				float4 lerpResult98 = lerp( _MesaZ , lerpResult20 , saturate( dotResult46 ));
-				float4 screenPos = IN.ase_texcoord5;
+				float3 ase_worldTangent = IN.ase_texcoord4.xyz;
+				float3 ase_worldNormal = IN.ase_texcoord5.xyz;
+				float3 ase_worldBitangent = IN.ase_texcoord6.xyz;
+				float3 tanToWorld0 = float3( ase_worldTangent.x, ase_worldBitangent.x, ase_worldNormal.x );
+				float3 tanToWorld1 = float3( ase_worldTangent.y, ase_worldBitangent.y, ase_worldNormal.y );
+				float3 tanToWorld2 = float3( ase_worldTangent.z, ase_worldBitangent.z, ase_worldNormal.z );
+				float3 tanNormal99 = IN.ase_normal;
+				float3 worldNormal99 = float3(dot(tanToWorld0,tanNormal99), dot(tanToWorld1,tanNormal99), dot(tanToWorld2,tanNormal99));
+				float dotResult13 = dot( worldNormal99 , float3(1,0,0) );
+				float4 lerpResult20 = lerp( _MesaXY2 , _MesaXY1 , abs( dotResult13 ));
+				float dotResult149 = dot( worldNormal99 , float3(0,1,0) );
+				float4 lerpResult144 = lerp( lerpResult20 , _MesaXY3 , abs( dotResult149 ));
+				float3 temp_output_82_0_g10 = ( WorldPosition - _WorldSpaceCameraPos );
+				float3 temp_output_78_0_g10 = cross( ddy( temp_output_82_0_g10 ) , ddx( temp_output_82_0_g10 ) );
+				float3 normalizeResult87_g10 = ASESafeNormalize( temp_output_78_0_g10 );
+				float dotResult46 = dot( normalizeResult87_g10 , float3(0,-1,0) );
+				float temp_output_151_0 = step( saturate( -dotResult46 ) , _ZStep );
+				float4 lerpResult98 = lerp( _MesaZ , lerpResult144 , temp_output_151_0);
+				float4 screenPos = IN.ase_texcoord7;
 				float4 ase_screenPosNorm = screenPos / screenPos.w;
 				ase_screenPosNorm.z = ( UNITY_NEAR_CLIP_VALUE >= 0 ) ? ase_screenPosNorm.z : ase_screenPosNorm.z * 0.5 + 0.5;
 				float2 appendResult62 = (float2(1.0 , ( _ScreenParams.y / _ScreenParams.x )));
@@ -2054,11 +2107,6 @@ Shader "Mesa"
 				float ase_lightAtten = 0;
 				Light ase_mainLight = GetMainLight( ShadowCoords );
 				ase_lightAtten = ase_mainLight.distanceAttenuation * ase_mainLight.shadowAttenuation;
-				float3 ase_worldTangent = IN.ase_texcoord6.xyz;
-				float3 ase_worldBitangent = IN.ase_texcoord7.xyz;
-				float3 tanToWorld0 = float3( ase_worldTangent.x, ase_worldBitangent.x, ase_worldNormal.x );
-				float3 tanToWorld1 = float3( ase_worldTangent.y, ase_worldBitangent.y, ase_worldNormal.y );
-				float3 tanToWorld2 = float3( ase_worldTangent.z, ase_worldBitangent.z, ase_worldNormal.z );
 				float3 tanNormal12_g8 = IN.ase_normal;
 				float3 worldNormal12_g8 = float3(dot(tanToWorld0,tanNormal12_g8), dot(tanToWorld1,tanNormal12_g8), dot(tanToWorld2,tanNormal12_g8));
 				float3 normalizeResult64_g8 = normalize( worldNormal12_g8 );
@@ -2067,8 +2115,13 @@ Shader "Mesa"
 				MixRealtimeAndBakedGI(ase_mainLight, normalizeResult64_g8, bakedGI34_g8, half4(0,0,0,0));
 				float4 color126 = IsGammaSpace() ? float4(1,1,1,0) : float4(1,1,1,0);
 				float4 temp_output_42_0_g8 = color126;
-				float temp_output_111_0 = (( ( ( ( ase_lightColor * ase_lightAtten ) * max( dotResult14_g8 , 0.0 ) ) + float4( bakedGI34_g8 , 0.0 ) ) * float4( (temp_output_42_0_g8).rgb , 0.0 ) )).r;
-				float4 lerpResult113 = lerp( lerpResult98 , ( temp_output_132_0 * lerpResult130 ) , step( temp_output_111_0 , ( temp_output_132_0 * _ShadowThreshold ) ));
+				float4 lerpResult113 = lerp( lerpResult98 , ( temp_output_132_0 * lerpResult130 ) , step( (( ( ( ( ase_lightColor * ase_lightAtten ) * max( dotResult14_g8 , 0.0 ) ) + float4( bakedGI34_g8 , 0.0 ) ) * float4( (temp_output_42_0_g8).rgb , 0.0 ) )).r , ( temp_output_132_0 * _ShadowThreshold ) ));
+				float4 lerpResult156 = lerp( lerpResult98 , lerpResult113 , temp_output_151_0);
+				#ifdef _EXCLUDESHADOWSONTOP_ON
+				float4 staticSwitch157 = lerpResult156;
+				#else
+				float4 staticSwitch157 = lerpResult113;
+				#endif
 				
 				float3 ase_worldViewDir = ( _WorldSpaceCameraPos.xyz - WorldPosition );
 				ase_worldViewDir = normalize(ase_worldViewDir);
@@ -2078,8 +2131,8 @@ Shader "Mesa"
 				float fresnelNode50 = ( (-_NoiseStrength + (simplePerlin2D51 - 0.0) * (_NoiseStrength - -_NoiseStrength) / (1.0 - 0.0)) + 0.4 * pow( 1.0 - fresnelNdotV50, 4.0 ) );
 				
 
-				float3 BaseColor = lerpResult113.rgb;
-				float3 Emission = lerpResult113.rgb;
+				float3 BaseColor = staticSwitch157.rgb;
+				float3 Emission = staticSwitch157.rgb;
 				float Alpha = 1;
 				float AlphaClipThreshold = fresnelNode50;
 
@@ -2155,6 +2208,8 @@ Shader "Mesa"
 			#define ASE_NEEDS_VERT_NORMAL
 			#define ASE_NEEDS_FRAG_WORLD_POSITION
 			#define ASE_NEEDS_FRAG_SHADOWCOORDS
+			#define ASE_NEEDS_FRAG_NORMAL
+			#pragma shader_feature_local _EXCLUDESHADOWSONTOP_ON
 			#pragma multi_compile _ DIRLIGHTMAP_COMBINED
 			#pragma multi_compile _ LIGHTMAP_ON
 			#pragma multi_compile _ _MIXED_LIGHTING_SUBTRACTIVE
@@ -2181,9 +2236,9 @@ Shader "Mesa"
 				#if defined(REQUIRES_VERTEX_SHADOW_COORD_INTERPOLATOR) && defined(ASE_NEEDS_FRAG_SHADOWCOORDS)
 					float4 shadowCoord : TEXCOORD1;
 				#endif
+				float3 ase_normal : NORMAL;
 				float4 ase_texcoord2 : TEXCOORD2;
 				float4 ase_texcoord3 : TEXCOORD3;
-				float3 ase_normal : NORMAL;
 				float4 ase_texcoord4 : TEXCOORD4;
 				float4 ase_texcoord5 : TEXCOORD5;
 				float4 lightmapUVOrVertexSH : TEXCOORD6;
@@ -2195,7 +2250,9 @@ Shader "Mesa"
 			float4 _MesaZ;
 			float4 _MesaXY2;
 			float4 _MesaXY1;
+			float4 _MesaXY3;
 			float4 _ShadingColor;
+			float _ZStep;
 			float _ShadingNoiseScale;
 			float _ShadingFreq;
 			float _ShadingThreshold;
@@ -2234,6 +2291,12 @@ Shader "Mesa"
 
 			
 
+			float3 ASESafeNormalize(float3 inVec)
+			{
+				float dp3 = max(1.175494351e-38, dot(inVec, inVec));
+				return inVec* rsqrt(dp3);
+			}
+			
 			float3 mod2D289( float3 x ) { return x - floor( x * ( 1.0 / 289.0 ) ) * 289.0; }
 			float2 mod2D289( float2 x ) { return x - floor( x * ( 1.0 / 289.0 ) ) * 289.0; }
 			float3 permute( float3 x ) { return mod2D289( ( ( x * 34.0 ) + 1.0 ) * x ); }
@@ -2279,16 +2342,16 @@ Shader "Mesa"
 				UNITY_TRANSFER_INSTANCE_ID( v, o );
 				UNITY_INITIALIZE_VERTEX_OUTPUT_STEREO( o );
 
-				float3 ase_worldNormal = TransformObjectToWorldNormal(v.normalOS);
-				o.ase_texcoord2.xyz = ase_worldNormal;
-				float4 ase_clipPos = TransformObjectToHClip((v.positionOS).xyz);
-				float4 screenPos = ComputeScreenPos(ase_clipPos);
-				o.ase_texcoord3 = screenPos;
 				float3 ase_worldTangent = TransformObjectToWorldDir(v.ase_tangent.xyz);
-				o.ase_texcoord4.xyz = ase_worldTangent;
+				o.ase_texcoord2.xyz = ase_worldTangent;
+				float3 ase_worldNormal = TransformObjectToWorldNormal(v.normalOS);
+				o.ase_texcoord3.xyz = ase_worldNormal;
 				float ase_vertexTangentSign = v.ase_tangent.w * ( unity_WorldTransformParams.w >= 0.0 ? 1.0 : -1.0 );
 				float3 ase_worldBitangent = cross( ase_worldNormal, ase_worldTangent ) * ase_vertexTangentSign;
-				o.ase_texcoord5.xyz = ase_worldBitangent;
+				o.ase_texcoord4.xyz = ase_worldBitangent;
+				float4 ase_clipPos = TransformObjectToHClip((v.positionOS).xyz);
+				float4 screenPos = ComputeScreenPos(ase_clipPos);
+				o.ase_texcoord5 = screenPos;
 				OUTPUT_LIGHTMAP_UV( v.texcoord1, unity_LightmapST, o.lightmapUVOrVertexSH.xy );
 				OUTPUT_SH( ase_worldNormal, o.lightmapUVOrVertexSH.xyz );
 				
@@ -2296,8 +2359,8 @@ Shader "Mesa"
 				
 				//setting value to unused interpolator channels and avoid initialization warnings
 				o.ase_texcoord2.w = 0;
+				o.ase_texcoord3.w = 0;
 				o.ase_texcoord4.w = 0;
-				o.ase_texcoord5.w = 0;
 
 				#ifdef ASE_ABSOLUTE_VERTEX_POS
 					float3 defaultVertexValue = v.positionOS.xyz;
@@ -2432,12 +2495,25 @@ Shader "Mesa"
 					#endif
 				#endif
 
-				float3 ase_worldNormal = IN.ase_texcoord2.xyz;
-				float dotResult13 = dot( ase_worldNormal , float3(1,0,0) );
-				float4 lerpResult20 = lerp( _MesaXY2 , _MesaXY1 , dotResult13);
-				float dotResult46 = dot( ase_worldNormal , float3(0,0,-1) );
-				float4 lerpResult98 = lerp( _MesaZ , lerpResult20 , saturate( dotResult46 ));
-				float4 screenPos = IN.ase_texcoord3;
+				float3 ase_worldTangent = IN.ase_texcoord2.xyz;
+				float3 ase_worldNormal = IN.ase_texcoord3.xyz;
+				float3 ase_worldBitangent = IN.ase_texcoord4.xyz;
+				float3 tanToWorld0 = float3( ase_worldTangent.x, ase_worldBitangent.x, ase_worldNormal.x );
+				float3 tanToWorld1 = float3( ase_worldTangent.y, ase_worldBitangent.y, ase_worldNormal.y );
+				float3 tanToWorld2 = float3( ase_worldTangent.z, ase_worldBitangent.z, ase_worldNormal.z );
+				float3 tanNormal99 = IN.ase_normal;
+				float3 worldNormal99 = float3(dot(tanToWorld0,tanNormal99), dot(tanToWorld1,tanNormal99), dot(tanToWorld2,tanNormal99));
+				float dotResult13 = dot( worldNormal99 , float3(1,0,0) );
+				float4 lerpResult20 = lerp( _MesaXY2 , _MesaXY1 , abs( dotResult13 ));
+				float dotResult149 = dot( worldNormal99 , float3(0,1,0) );
+				float4 lerpResult144 = lerp( lerpResult20 , _MesaXY3 , abs( dotResult149 ));
+				float3 temp_output_82_0_g10 = ( WorldPosition - _WorldSpaceCameraPos );
+				float3 temp_output_78_0_g10 = cross( ddy( temp_output_82_0_g10 ) , ddx( temp_output_82_0_g10 ) );
+				float3 normalizeResult87_g10 = ASESafeNormalize( temp_output_78_0_g10 );
+				float dotResult46 = dot( normalizeResult87_g10 , float3(0,-1,0) );
+				float temp_output_151_0 = step( saturate( -dotResult46 ) , _ZStep );
+				float4 lerpResult98 = lerp( _MesaZ , lerpResult144 , temp_output_151_0);
+				float4 screenPos = IN.ase_texcoord5;
 				float4 ase_screenPosNorm = screenPos / screenPos.w;
 				ase_screenPosNorm.z = ( UNITY_NEAR_CLIP_VALUE >= 0 ) ? ase_screenPosNorm.z : ase_screenPosNorm.z * 0.5 + 0.5;
 				float2 appendResult62 = (float2(1.0 , ( _ScreenParams.y / _ScreenParams.x )));
@@ -2461,11 +2537,6 @@ Shader "Mesa"
 				float ase_lightAtten = 0;
 				Light ase_mainLight = GetMainLight( ShadowCoords );
 				ase_lightAtten = ase_mainLight.distanceAttenuation * ase_mainLight.shadowAttenuation;
-				float3 ase_worldTangent = IN.ase_texcoord4.xyz;
-				float3 ase_worldBitangent = IN.ase_texcoord5.xyz;
-				float3 tanToWorld0 = float3( ase_worldTangent.x, ase_worldBitangent.x, ase_worldNormal.x );
-				float3 tanToWorld1 = float3( ase_worldTangent.y, ase_worldBitangent.y, ase_worldNormal.y );
-				float3 tanToWorld2 = float3( ase_worldTangent.z, ase_worldBitangent.z, ase_worldNormal.z );
 				float3 tanNormal12_g8 = IN.ase_normal;
 				float3 worldNormal12_g8 = float3(dot(tanToWorld0,tanNormal12_g8), dot(tanToWorld1,tanNormal12_g8), dot(tanToWorld2,tanNormal12_g8));
 				float3 normalizeResult64_g8 = normalize( worldNormal12_g8 );
@@ -2474,8 +2545,13 @@ Shader "Mesa"
 				MixRealtimeAndBakedGI(ase_mainLight, normalizeResult64_g8, bakedGI34_g8, half4(0,0,0,0));
 				float4 color126 = IsGammaSpace() ? float4(1,1,1,0) : float4(1,1,1,0);
 				float4 temp_output_42_0_g8 = color126;
-				float temp_output_111_0 = (( ( ( ( ase_lightColor * ase_lightAtten ) * max( dotResult14_g8 , 0.0 ) ) + float4( bakedGI34_g8 , 0.0 ) ) * float4( (temp_output_42_0_g8).rgb , 0.0 ) )).r;
-				float4 lerpResult113 = lerp( lerpResult98 , ( temp_output_132_0 * lerpResult130 ) , step( temp_output_111_0 , ( temp_output_132_0 * _ShadowThreshold ) ));
+				float4 lerpResult113 = lerp( lerpResult98 , ( temp_output_132_0 * lerpResult130 ) , step( (( ( ( ( ase_lightColor * ase_lightAtten ) * max( dotResult14_g8 , 0.0 ) ) + float4( bakedGI34_g8 , 0.0 ) ) * float4( (temp_output_42_0_g8).rgb , 0.0 ) )).r , ( temp_output_132_0 * _ShadowThreshold ) ));
+				float4 lerpResult156 = lerp( lerpResult98 , lerpResult113 , temp_output_151_0);
+				#ifdef _EXCLUDESHADOWSONTOP_ON
+				float4 staticSwitch157 = lerpResult156;
+				#else
+				float4 staticSwitch157 = lerpResult113;
+				#endif
 				
 				float3 ase_worldViewDir = ( _WorldSpaceCameraPos.xyz - WorldPosition );
 				ase_worldViewDir = normalize(ase_worldViewDir);
@@ -2485,7 +2561,7 @@ Shader "Mesa"
 				float fresnelNode50 = ( (-_NoiseStrength + (simplePerlin2D51 - 0.0) * (_NoiseStrength - -_NoiseStrength) / (1.0 - 0.0)) + 0.4 * pow( 1.0 - fresnelNdotV50, 4.0 ) );
 				
 
-				float3 BaseColor = lerpResult113.rgb;
+				float3 BaseColor = staticSwitch157.rgb;
 				float Alpha = 1;
 				float AlphaClipThreshold = fresnelNode50;
 
@@ -2621,7 +2697,9 @@ Shader "Mesa"
 			float4 _MesaZ;
 			float4 _MesaXY2;
 			float4 _MesaXY1;
+			float4 _MesaXY3;
 			float4 _ShadingColor;
+			float _ZStep;
 			float _ShadingNoiseScale;
 			float _ShadingFreq;
 			float _ShadingThreshold;
@@ -3025,14 +3103,16 @@ Shader "Mesa"
 				#define ENABLE_TERRAIN_PERPIXEL_NORMAL
 			#endif
 
-			#define ASE_NEEDS_FRAG_WORLD_NORMAL
-			#define ASE_NEEDS_FRAG_SCREEN_POSITION
-			#define ASE_NEEDS_FRAG_WORLD_POSITION
-			#define ASE_NEEDS_FRAG_SHADOWCOORDS
 			#define ASE_NEEDS_FRAG_WORLD_TANGENT
+			#define ASE_NEEDS_FRAG_WORLD_NORMAL
 			#define ASE_NEEDS_FRAG_WORLD_BITANGENT
+			#define ASE_NEEDS_FRAG_WORLD_POSITION
+			#define ASE_NEEDS_FRAG_SCREEN_POSITION
+			#define ASE_NEEDS_FRAG_SHADOWCOORDS
+			#define ASE_NEEDS_FRAG_NORMAL
 			#define ASE_NEEDS_VERT_TEXTURE_COORDINATES1
 			#define ASE_NEEDS_FRAG_WORLD_VIEW_DIR
+			#pragma shader_feature_local _EXCLUDESHADOWSONTOP_ON
 
 
 			#if defined(ASE_EARLY_Z_DEPTH_OPTIMIZE) && (SHADER_TARGET >= 45)
@@ -3079,7 +3159,9 @@ Shader "Mesa"
 			float4 _MesaZ;
 			float4 _MesaXY2;
 			float4 _MesaXY1;
+			float4 _MesaXY3;
 			float4 _ShadingColor;
+			float _ZStep;
 			float _ShadingNoiseScale;
 			float _ShadingFreq;
 			float _ShadingThreshold;
@@ -3120,6 +3202,12 @@ Shader "Mesa"
 
 			#include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/UnityGBuffer.hlsl"
 
+			float3 ASESafeNormalize(float3 inVec)
+			{
+				float dp3 = max(1.175494351e-38, dot(inVec, inVec));
+				return inVec* rsqrt(dp3);
+			}
+			
 			float3 mod2D289( float3 x ) { return x - floor( x * ( 1.0 / 289.0 ) ) * 289.0; }
 			float2 mod2D289( float2 x ) { return x - floor( x * ( 1.0 / 289.0 ) ) * 289.0; }
 			float3 permute( float3 x ) { return mod2D289( ( ( x * 34.0 ) + 1.0 ) * x ); }
@@ -3354,10 +3442,21 @@ Shader "Mesa"
 
 				WorldViewDirection = SafeNormalize( WorldViewDirection );
 
-				float dotResult13 = dot( WorldNormal , float3(1,0,0) );
-				float4 lerpResult20 = lerp( _MesaXY2 , _MesaXY1 , dotResult13);
-				float dotResult46 = dot( WorldNormal , float3(0,0,-1) );
-				float4 lerpResult98 = lerp( _MesaZ , lerpResult20 , saturate( dotResult46 ));
+				float3 tanToWorld0 = float3( WorldTangent.x, WorldBiTangent.x, WorldNormal.x );
+				float3 tanToWorld1 = float3( WorldTangent.y, WorldBiTangent.y, WorldNormal.y );
+				float3 tanToWorld2 = float3( WorldTangent.z, WorldBiTangent.z, WorldNormal.z );
+				float3 tanNormal99 = IN.ase_normal;
+				float3 worldNormal99 = float3(dot(tanToWorld0,tanNormal99), dot(tanToWorld1,tanNormal99), dot(tanToWorld2,tanNormal99));
+				float dotResult13 = dot( worldNormal99 , float3(1,0,0) );
+				float4 lerpResult20 = lerp( _MesaXY2 , _MesaXY1 , abs( dotResult13 ));
+				float dotResult149 = dot( worldNormal99 , float3(0,1,0) );
+				float4 lerpResult144 = lerp( lerpResult20 , _MesaXY3 , abs( dotResult149 ));
+				float3 temp_output_82_0_g10 = ( WorldPosition - _WorldSpaceCameraPos );
+				float3 temp_output_78_0_g10 = cross( ddy( temp_output_82_0_g10 ) , ddx( temp_output_82_0_g10 ) );
+				float3 normalizeResult87_g10 = ASESafeNormalize( temp_output_78_0_g10 );
+				float dotResult46 = dot( normalizeResult87_g10 , float3(0,-1,0) );
+				float temp_output_151_0 = step( saturate( -dotResult46 ) , _ZStep );
+				float4 lerpResult98 = lerp( _MesaZ , lerpResult144 , temp_output_151_0);
 				float4 ase_screenPosNorm = ScreenPos / ScreenPos.w;
 				ase_screenPosNorm.z = ( UNITY_NEAR_CLIP_VALUE >= 0 ) ? ase_screenPosNorm.z : ase_screenPosNorm.z * 0.5 + 0.5;
 				float2 appendResult62 = (float2(1.0 , ( _ScreenParams.y / _ScreenParams.x )));
@@ -3381,9 +3480,6 @@ Shader "Mesa"
 				float ase_lightAtten = 0;
 				Light ase_mainLight = GetMainLight( ShadowCoords );
 				ase_lightAtten = ase_mainLight.distanceAttenuation * ase_mainLight.shadowAttenuation;
-				float3 tanToWorld0 = float3( WorldTangent.x, WorldBiTangent.x, WorldNormal.x );
-				float3 tanToWorld1 = float3( WorldTangent.y, WorldBiTangent.y, WorldNormal.y );
-				float3 tanToWorld2 = float3( WorldTangent.z, WorldBiTangent.z, WorldNormal.z );
 				float3 tanNormal12_g8 = IN.ase_normal;
 				float3 worldNormal12_g8 = float3(dot(tanToWorld0,tanNormal12_g8), dot(tanToWorld1,tanNormal12_g8), dot(tanToWorld2,tanNormal12_g8));
 				float3 normalizeResult64_g8 = normalize( worldNormal12_g8 );
@@ -3392,8 +3488,13 @@ Shader "Mesa"
 				MixRealtimeAndBakedGI(ase_mainLight, normalizeResult64_g8, bakedGI34_g8, half4(0,0,0,0));
 				float4 color126 = IsGammaSpace() ? float4(1,1,1,0) : float4(1,1,1,0);
 				float4 temp_output_42_0_g8 = color126;
-				float temp_output_111_0 = (( ( ( ( ase_lightColor * ase_lightAtten ) * max( dotResult14_g8 , 0.0 ) ) + float4( bakedGI34_g8 , 0.0 ) ) * float4( (temp_output_42_0_g8).rgb , 0.0 ) )).r;
-				float4 lerpResult113 = lerp( lerpResult98 , ( temp_output_132_0 * lerpResult130 ) , step( temp_output_111_0 , ( temp_output_132_0 * _ShadowThreshold ) ));
+				float4 lerpResult113 = lerp( lerpResult98 , ( temp_output_132_0 * lerpResult130 ) , step( (( ( ( ( ase_lightColor * ase_lightAtten ) * max( dotResult14_g8 , 0.0 ) ) + float4( bakedGI34_g8 , 0.0 ) ) * float4( (temp_output_42_0_g8).rgb , 0.0 ) )).r , ( temp_output_132_0 * _ShadowThreshold ) ));
+				float4 lerpResult156 = lerp( lerpResult98 , lerpResult113 , temp_output_151_0);
+				#ifdef _EXCLUDESHADOWSONTOP_ON
+				float4 staticSwitch157 = lerpResult156;
+				#else
+				float4 staticSwitch157 = lerpResult113;
+				#endif
 				
 				float simplePerlin2D51 = snoise( texCoord77.xy*_NoiseScale );
 				simplePerlin2D51 = simplePerlin2D51*0.5 + 0.5;
@@ -3401,10 +3502,10 @@ Shader "Mesa"
 				float fresnelNode50 = ( (-_NoiseStrength + (simplePerlin2D51 - 0.0) * (_NoiseStrength - -_NoiseStrength) / (1.0 - 0.0)) + 0.4 * pow( 1.0 - fresnelNdotV50, 4.0 ) );
 				
 
-				float3 BaseColor = lerpResult113.rgb;
+				float3 BaseColor = staticSwitch157.rgb;
 				float3 Normal = float3(0, 0, 1);
-				float3 Emission = lerpResult113.rgb;
-				float3 Specular = 0.5;
+				float3 Emission = staticSwitch157.rgb;
+				float3 Specular = lerpResult98.rgb;
 				float Metallic = 0;
 				float Smoothness = 0.0;
 				float Occlusion = 1;
@@ -3600,7 +3701,9 @@ Shader "Mesa"
 			float4 _MesaZ;
 			float4 _MesaXY2;
 			float4 _MesaXY1;
+			float4 _MesaXY3;
 			float4 _ShadingColor;
+			float _ZStep;
 			float _ShadingNoiseScale;
 			float _ShadingFreq;
 			float _ShadingThreshold;
@@ -3935,7 +4038,9 @@ Shader "Mesa"
 			float4 _MesaZ;
 			float4 _MesaXY2;
 			float4 _MesaXY1;
+			float4 _MesaXY3;
 			float4 _ShadingColor;
+			float _ZStep;
 			float _ShadingNoiseScale;
 			float _ShadingFreq;
 			float _ShadingThreshold;
@@ -4216,53 +4321,64 @@ Node;AmplifyShaderEditor.TransformPositionNode;74;171.5394,953.6172;Inherit;Fals
 Node;AmplifyShaderEditor.SimpleMultiplyOpNode;75;1947.539,41.61719;Inherit;False;2;2;0;FLOAT4;0,0,0,0;False;1;FLOAT;0;False;1;FLOAT4;0
 Node;AmplifyShaderEditor.TFHCRemapNode;76;2134.203,111.5782;Inherit;False;5;0;FLOAT4;0,0,0,0;False;1;FLOAT4;-1,-1,0,0;False;2;FLOAT4;1,1,1,1;False;3;FLOAT4;0,0,0,0;False;4;FLOAT4;1,1,1,1;False;1;FLOAT4;0
 Node;AmplifyShaderEditor.RegisterLocalVarNode;77;2376.124,79.06213;Inherit;False;texCoord;-1;True;1;0;FLOAT4;0,0,0,0;False;1;FLOAT4;0
+Node;AmplifyShaderEditor.RangedFloatNode;82;992,-656;Inherit;False;Property;_NoiseStrength;NoiseStrength;7;0;Create;True;0;0;0;False;0;False;0;0.31;0;0;0;1;FLOAT;0
 Node;AmplifyShaderEditor.GetLocalVarNode;78;864,-880;Inherit;False;77;texCoord;1;0;OBJECT;;False;1;FLOAT4;0
-Node;AmplifyShaderEditor.RangedFloatNode;79;896,-736;Inherit;False;Property;_NoiseScale;NoiseScale;5;0;Create;True;0;0;0;False;0;False;0;5.63;0;0;0;1;FLOAT;0
-Node;AmplifyShaderEditor.RangedFloatNode;82;992,-656;Inherit;False;Property;_NoiseStrength;NoiseStrength;6;0;Create;True;0;0;0;False;0;False;0;0.31;0;0;0;1;FLOAT;0
+Node;AmplifyShaderEditor.RangedFloatNode;79;896,-736;Inherit;False;Property;_NoiseScale;NoiseScale;6;0;Create;True;0;0;0;False;0;False;0;5.63;0;0;0;1;FLOAT;0
 Node;AmplifyShaderEditor.NoiseGeneratorNode;51;1104,-896;Inherit;False;Simplex2D;True;False;2;0;FLOAT2;0,0;False;1;FLOAT;1;False;1;FLOAT;0
 Node;AmplifyShaderEditor.NegateNode;81;1232,-768;Inherit;False;1;0;FLOAT;0;False;1;FLOAT;0
 Node;AmplifyShaderEditor.TFHCRemapNode;80;1392,-912;Inherit;False;5;0;FLOAT;0;False;1;FLOAT;0;False;2;FLOAT;1;False;3;FLOAT;-1;False;4;FLOAT;1;False;1;FLOAT;0
 Node;AmplifyShaderEditor.WorldNormalVector;83;1216,-1424;Inherit;False;False;1;0;FLOAT3;0,0,1;False;4;FLOAT3;0;FLOAT;1;FLOAT;2;FLOAT;3
 Node;AmplifyShaderEditor.ViewDirInputsCoordNode;84;1216,-1136;Inherit;False;World;False;0;4;FLOAT3;0;FLOAT;1;FLOAT;2;FLOAT;3
-Node;AmplifyShaderEditor.LerpOp;20;-64,-528;Inherit;False;3;0;COLOR;0,0,0,0;False;1;COLOR;0,0,0,0;False;2;FLOAT;0;False;1;COLOR;0
-Node;AmplifyShaderEditor.ColorNode;21;-560,-560;Inherit;False;Property;_MesaXY1;MesaXY1;0;0;Create;True;0;0;0;False;0;False;1,0.4764151,0.9294767,0;1,0.9524046,0,0;True;True;0;6;COLOR;0;FLOAT;1;FLOAT;2;FLOAT;3;FLOAT;4;FLOAT3;5
-Node;AmplifyShaderEditor.DotProductOpNode;13;-352,-272;Inherit;False;2;0;FLOAT3;0,0,0;False;1;FLOAT3;0,0,0;False;1;FLOAT;0
-Node;AmplifyShaderEditor.ColorNode;19;-544,-768;Inherit;False;Property;_MesaXY2;MesaXY2;3;0;Create;True;0;0;0;False;0;False;0.9433962,0.2180491,0.2180491,0;0.2196077,0.945098,0.8411337,0;True;True;0;6;COLOR;0;FLOAT;1;FLOAT;2;FLOAT;3;FLOAT;4;FLOAT3;5
-Node;AmplifyShaderEditor.FresnelNode;50;1680,-1424;Inherit;False;Standard;WorldNormal;ViewDir;False;False;5;0;FLOAT3;0,0,1;False;4;FLOAT3;0,0,0;False;1;FLOAT;0;False;2;FLOAT;0.4;False;3;FLOAT;4;False;1;FLOAT;0
-Node;AmplifyShaderEditor.LerpOp;98;588.4789,-456.332;Inherit;False;3;0;COLOR;0,0,0,0;False;1;COLOR;0,0,0,0;False;2;FLOAT;0;False;1;COLOR;0
-Node;AmplifyShaderEditor.ColorNode;47;256,-656;Inherit;False;Property;_MesaZ;MesaZ;4;0;Create;True;0;0;0;False;0;False;0.9433962,0.2180491,0.2180491,0;0,0.06301299,1,0;True;True;0;6;COLOR;0;FLOAT;1;FLOAT;2;FLOAT;3;FLOAT;4;FLOAT3;5
-Node;AmplifyShaderEditor.WorldNormalVector;99;-704,-368;Inherit;False;False;1;0;FLOAT3;0,0,1;False;4;FLOAT3;0;FLOAT;1;FLOAT;2;FLOAT;3
-Node;AmplifyShaderEditor.Vector3Node;15;-720,-112;Inherit;False;Constant;_Vector0;Vector 0;0;0;Create;True;0;0;0;False;0;False;1,0,0;0,0,0;0;4;FLOAT3;0;FLOAT;1;FLOAT;2;FLOAT;3
-Node;AmplifyShaderEditor.DotProductOpNode;46;176,-352;Inherit;False;2;0;FLOAT3;0,0,0;False;1;FLOAT3;0,0,0;False;1;FLOAT;0
-Node;AmplifyShaderEditor.SaturateNode;49;368,-368;Inherit;False;1;0;FLOAT;0;False;1;FLOAT;0
-Node;AmplifyShaderEditor.Vector3Node;45;-176,-288;Inherit;False;Constant;_Vector1;Vector 0;0;0;Create;True;0;0;0;False;0;False;0,0,-1;0,0,0;0;4;FLOAT3;0;FLOAT;1;FLOAT;2;FLOAT;3
-Node;AmplifyShaderEditor.SimpleSubtractOpNode;105;2238.291,-1618.006;Inherit;False;2;0;FLOAT;0;False;1;FLOAT;0;False;1;FLOAT;0
-Node;AmplifyShaderEditor.RangedFloatNode;96;1712,-1792;Inherit;False;Constant;_Float0;Float 0;5;0;Create;True;0;0;0;False;0;False;0;0;0;0;0;1;FLOAT;0
-Node;AmplifyShaderEditor.SimpleMaxOpNode;107;2688,-1696;Inherit;False;2;0;FLOAT;0;False;1;FLOAT;0;False;1;FLOAT;0
 Node;AmplifyShaderEditor.SwizzleNode;111;2656,-1328;Inherit;False;FLOAT;0;1;2;3;1;0;COLOR;0,0,0,0;False;1;FLOAT;0
-Node;AmplifyShaderEditor.LerpOp;113;2992,-1664;Inherit;False;3;0;COLOR;0,0,0,0;False;1;COLOR;0,0,0,0;False;2;FLOAT;0;False;1;COLOR;0
 Node;AmplifyShaderEditor.GetLocalVarNode;116;2576,-1168;Inherit;False;77;texCoord;1;0;OBJECT;;False;1;FLOAT4;0
 Node;AmplifyShaderEditor.BreakToComponentsNode;124;3168,-1408;Inherit;False;FLOAT2;1;0;FLOAT2;0,0;False;16;FLOAT;0;FLOAT;1;FLOAT;2;FLOAT;3;FLOAT;4;FLOAT;5;FLOAT;6;FLOAT;7;FLOAT;8;FLOAT;9;FLOAT;10;FLOAT;11;FLOAT;12;FLOAT;13;FLOAT;14;FLOAT;15
 Node;AmplifyShaderEditor.SimpleAddOpNode;125;3328,-1392;Inherit;False;2;2;0;FLOAT;0;False;1;FLOAT;0;False;1;FLOAT;0
 Node;AmplifyShaderEditor.NormalVertexDataNode;129;2009.333,-908.1431;Inherit;False;0;5;FLOAT3;0;FLOAT;1;FLOAT;2;FLOAT;3;FLOAT;4
-Node;AmplifyShaderEditor.FunctionNode;109;2288,-1200;Inherit;False;Lambert Light;1;;8;9be9b95d80559e74dac059ac0a4060cf;0;2;42;COLOR;0,0,0,0;False;52;FLOAT3;0,0,0;False;2;COLOR;0;FLOAT;57
-Node;AmplifyShaderEditor.ColorNode;120;3184,-1248;Inherit;False;Property;_ShadingColor;ShadingColor;8;0;Create;True;0;0;0;False;0;False;0,0,0,0;0.1754244,0.08232463,0.4716981,0;True;True;0;6;COLOR;0;FLOAT;1;FLOAT;2;FLOAT;3;FLOAT;4;FLOAT3;5
-Node;AmplifyShaderEditor.RangedFloatNode;133;2672,-1520;Inherit;False;Property;_ShadowThreshold;ShadowThreshold;10;0;Create;True;0;0;0;False;0;False;0;0.316;0;1;0;1;FLOAT;0
-Node;AmplifyShaderEditor.RangedFloatNode;122;3376,-1232;Inherit;False;Property;_ShadingThreshold;ShadingThreshold;9;0;Create;True;0;0;0;False;0;False;0;0.386;0;1;0;1;FLOAT;0
-Node;AmplifyShaderEditor.StepOpNode;121;2944,-1504;Inherit;False;2;0;FLOAT;0;False;1;FLOAT;0;False;1;FLOAT;0
+Node;AmplifyShaderEditor.FunctionNode;109;2288,-1200;Inherit;False;Lambert Light;2;;8;9be9b95d80559e74dac059ac0a4060cf;0;2;42;COLOR;0,0,0,0;False;52;FLOAT3;0,0,0;False;2;COLOR;0;FLOAT;57
+Node;AmplifyShaderEditor.ColorNode;120;3184,-1248;Inherit;False;Property;_ShadingColor;ShadingColor;9;0;Create;True;0;0;0;False;0;False;0,0,0,0;0.1754244,0.08232463,0.4716981,0;True;True;0;6;COLOR;0;FLOAT;1;FLOAT;2;FLOAT;3;FLOAT;4;FLOAT3;5
+Node;AmplifyShaderEditor.RangedFloatNode;133;2672,-1520;Inherit;False;Property;_ShadowThreshold;ShadowThreshold;11;0;Create;True;0;0;0;False;0;False;0;0.316;0;1;0;1;FLOAT;0
+Node;AmplifyShaderEditor.RangedFloatNode;122;3376,-1232;Inherit;False;Property;_ShadingThreshold;ShadingThreshold;10;0;Create;True;0;0;0;False;0;False;0;0.386;0;1;0;1;FLOAT;0
 Node;AmplifyShaderEditor.ColorNode;126;1984,-1120;Inherit;False;Constant;_Color0;Color 0;9;0;Create;True;0;0;0;False;0;False;1,1,1,0;0,0,0,0;True;True;0;6;COLOR;0;FLOAT;1;FLOAT;2;FLOAT;3;FLOAT;4;FLOAT3;5
 Node;AmplifyShaderEditor.SimpleMultiplyOpNode;119;3920,-1552;Inherit;False;2;2;0;FLOAT;0;False;1;COLOR;0,0,0,0;False;1;COLOR;0
 Node;AmplifyShaderEditor.LerpOp;130;3872,-1408;Inherit;False;3;0;COLOR;0,0,0,0;False;1;COLOR;0,0,0,0;False;2;FLOAT;0;False;1;COLOR;0
 Node;AmplifyShaderEditor.StepOpNode;132;3680,-1504;Inherit;False;2;0;FLOAT;0;False;1;FLOAT;0;False;1;FLOAT;0
-Node;AmplifyShaderEditor.SimpleMultiplyOpNode;134;3056,-1520;Inherit;False;2;2;0;FLOAT;0;False;1;FLOAT;0;False;1;FLOAT;0
 Node;AmplifyShaderEditor.FractNode;127;3408,-1472;Inherit;False;1;0;FLOAT;0;False;1;FLOAT;0
 Node;AmplifyShaderEditor.SimpleMultiplyOpNode;114;2896,-1328;Inherit;False;2;2;0;FLOAT2;0,0;False;1;FLOAT;0;False;1;FLOAT2;0
-Node;AmplifyShaderEditor.RangedFloatNode;117;2528,-1056;Inherit;False;Property;_ShadingFreq;ShadingFreq;7;0;Create;True;0;0;0;False;0;False;0;1;0;10;0;1;FLOAT;0
 Node;AmplifyShaderEditor.RotatorNode;136;2928,-944;Inherit;False;3;0;FLOAT2;0,0;False;1;FLOAT2;0.5,0.5;False;2;FLOAT;1;False;1;FLOAT2;0
 Node;AmplifyShaderEditor.SimpleAddOpNode;139;2836.898,-837.9017;Inherit;False;2;2;0;FLOAT;0;False;1;FLOAT;0;False;1;FLOAT;0
-Node;AmplifyShaderEditor.RangedFloatNode;141;2224,-720;Inherit;False;Property;_ShadingNoiseScale;ShadingNoiseScale;11;0;Create;True;0;0;0;False;0;False;0;0.28;0;0;0;1;FLOAT;0
+Node;AmplifyShaderEditor.RangedFloatNode;141;2224,-720;Inherit;False;Property;_ShadingNoiseScale;ShadingNoiseScale;12;0;Create;True;0;0;0;False;0;False;0;0.28;0;0;0;1;FLOAT;0
 Node;AmplifyShaderEditor.NoiseGeneratorNode;140;2528,-832;Inherit;False;Simplex2D;True;False;2;0;FLOAT2;0,0;False;1;FLOAT;1;False;1;FLOAT;0
 Node;AmplifyShaderEditor.ColorNode;131;3280,-1072;Inherit;False;Constant;_Color1;Color 1;10;0;Create;True;0;0;0;False;0;False;0,0,0,0;0,0,0,0;True;True;0;6;COLOR;0;FLOAT;1;FLOAT;2;FLOAT;3;FLOAT;4;FLOAT3;5
+Node;AmplifyShaderEditor.RangedFloatNode;117;2528,-1056;Inherit;False;Property;_ShadingFreq;ShadingFreq;8;0;Create;True;0;0;0;False;0;False;0;1;0;1000;0;1;FLOAT;0
+Node;AmplifyShaderEditor.SimpleMultiplyOpNode;134;3296,-1632;Inherit;False;2;2;0;FLOAT;0;False;1;FLOAT;0;False;1;FLOAT;0
+Node;AmplifyShaderEditor.FresnelNode;50;1744,-1472;Inherit;False;Standard;WorldNormal;ViewDir;False;False;5;0;FLOAT3;0,0,1;False;4;FLOAT3;0,0,0;False;1;FLOAT;0;False;2;FLOAT;0.4;False;3;FLOAT;4;False;1;FLOAT;0
+Node;AmplifyShaderEditor.StepOpNode;121;3200,-1584;Inherit;False;2;0;FLOAT;0;False;1;FLOAT;0;False;1;FLOAT;0
+Node;AmplifyShaderEditor.LerpOp;113;3248,-1840;Inherit;False;3;0;COLOR;0,0,0,0;False;1;COLOR;0,0,0,0;False;2;FLOAT;0;False;1;COLOR;0
+Node;AmplifyShaderEditor.NegateNode;142;304,-320;Inherit;False;1;0;FLOAT;0;False;1;FLOAT;0
+Node;AmplifyShaderEditor.RangedFloatNode;96;2448,-2096;Inherit;False;Constant;_Float0;Float 0;5;0;Create;True;0;0;0;False;0;False;0;0;0;0;0;1;FLOAT;0
+Node;AmplifyShaderEditor.LerpOp;156;3552,-1888;Inherit;False;3;0;COLOR;0,0,0,0;False;1;COLOR;0,0,0,0;False;2;FLOAT;0;False;1;COLOR;0
+Node;AmplifyShaderEditor.StaticSwitch;157;3248,-2048;Inherit;False;Property;_ExcludeShadowsOnTop;ExcludeShadowsOnTop;14;0;Create;True;0;0;0;False;0;False;0;0;0;True;;Toggle;2;Key0;Key1;Create;True;True;All;9;1;COLOR;0,0,0,0;False;0;COLOR;0,0,0,0;False;2;COLOR;0,0,0,0;False;3;COLOR;0,0,0,0;False;4;COLOR;0,0,0,0;False;5;COLOR;0,0,0,0;False;6;COLOR;0,0,0,0;False;7;COLOR;0,0,0,0;False;8;COLOR;0,0,0,0;False;1;COLOR;0
+Node;AmplifyShaderEditor.DotProductOpNode;46;176,-352;Inherit;False;2;0;FLOAT3;0,0,0;False;1;FLOAT3;0,0,0;False;1;FLOAT;0
+Node;AmplifyShaderEditor.LerpOp;20;-128,-848;Inherit;False;3;0;COLOR;0,0,0,0;False;1;COLOR;0,0,0,0;False;2;FLOAT;0;False;1;COLOR;0
+Node;AmplifyShaderEditor.LerpOp;144;48,-704;Inherit;False;3;0;COLOR;0,0,0,0;False;1;COLOR;0,0,0,0;False;2;FLOAT;0;False;1;COLOR;0
+Node;AmplifyShaderEditor.ColorNode;19;-496,-1008;Inherit;False;Property;_MesaXY2;MesaXY2;4;0;Create;True;0;0;0;False;0;False;0.9433962,0.2180491,0.2180491,0;0.2196077,0.945098,0.8411337,0;True;True;0;6;COLOR;0;FLOAT;1;FLOAT;2;FLOAT;3;FLOAT;4;FLOAT3;5
+Node;AmplifyShaderEditor.ColorNode;21;-464,-816;Inherit;False;Property;_MesaXY1;MesaXY1;0;0;Create;True;0;0;0;False;0;False;1,0.4764151,0.9294767,0;1,0.9524046,0,0;True;True;0;6;COLOR;0;FLOAT;1;FLOAT;2;FLOAT;3;FLOAT;4;FLOAT3;5
+Node;AmplifyShaderEditor.Vector3Node;148;-128,-480;Inherit;False;Constant;_Vector2;Vector 0;0;0;Create;True;0;0;0;False;0;False;0,1,0;0,0,0;0;4;FLOAT3;0;FLOAT;1;FLOAT;2;FLOAT;3
+Node;AmplifyShaderEditor.DotProductOpNode;149;64,-512;Inherit;False;2;0;FLOAT3;0,0,0;False;1;FLOAT3;0,0,0;False;1;FLOAT;0
+Node;AmplifyShaderEditor.AbsOpNode;150;240,-464;Inherit;False;1;0;FLOAT;0;False;1;FLOAT;0
+Node;AmplifyShaderEditor.ColorNode;47;336,-832;Inherit;False;Property;_MesaZ;MesaZ;5;0;Create;True;0;0;0;False;0;False;0.9433962,0.2180491,0.2180491,0;0,0.06301299,1,0;True;True;0;6;COLOR;0;FLOAT;1;FLOAT;2;FLOAT;3;FLOAT;4;FLOAT3;5
+Node;AmplifyShaderEditor.SaturateNode;49;464,-416;Inherit;False;1;0;FLOAT;0;False;1;FLOAT;0
+Node;AmplifyShaderEditor.NormalVertexDataNode;152;-1024,-416;Inherit;False;0;5;FLOAT3;0;FLOAT;1;FLOAT;2;FLOAT;3;FLOAT;4
+Node;AmplifyShaderEditor.WorldNormalVector;99;-704,-400;Inherit;False;False;1;0;FLOAT3;0,0,1;False;4;FLOAT3;0;FLOAT;1;FLOAT;2;FLOAT;3
+Node;AmplifyShaderEditor.FunctionNode;154;-752,-528;Inherit;False;World Normal Face;-1;;10;8ad4248928242e14ab87cd99e6913c33;1,86,1;0;1;FLOAT3;30
+Node;AmplifyShaderEditor.ColorNode;145;-448,-624;Inherit;False;Property;_MesaXY3;MesaXY3;1;0;Create;True;0;0;0;False;0;False;1,0.4764151,0.9294767,0;1,0.9524046,0,0;True;True;0;6;COLOR;0;FLOAT;1;FLOAT;2;FLOAT;3;FLOAT;4;FLOAT3;5
+Node;AmplifyShaderEditor.StepOpNode;151;656,-416;Inherit;False;2;0;FLOAT;0;False;1;FLOAT;0.1;False;1;FLOAT;0
+Node;AmplifyShaderEditor.LerpOp;98;848,-608;Inherit;False;3;0;COLOR;0,0,0,0;False;1;COLOR;0,0,0,0;False;2;FLOAT;0;False;1;COLOR;0
+Node;AmplifyShaderEditor.Vector3Node;15;-720,-112;Inherit;False;Constant;_Vector0;Vector 0;0;0;Create;True;0;0;0;False;0;False;1,0,0;0,0,0;0;4;FLOAT3;0;FLOAT;1;FLOAT;2;FLOAT;3
+Node;AmplifyShaderEditor.AbsOpNode;147;-336,-288;Inherit;False;1;0;FLOAT;0;False;1;FLOAT;0
+Node;AmplifyShaderEditor.DotProductOpNode;13;-480,-304;Inherit;False;2;0;FLOAT3;0,0,0;False;1;FLOAT3;0,0,0;False;1;FLOAT;0
+Node;AmplifyShaderEditor.Vector3Node;45;-48,-304;Inherit;False;Constant;_Vector1;Vector 0;0;0;Create;True;0;0;0;False;0;False;0,-1,0;0,0,0;0;4;FLOAT3;0;FLOAT;1;FLOAT;2;FLOAT;3
+Node;AmplifyShaderEditor.RangedFloatNode;155;448,-304;Inherit;False;Property;_ZStep;ZStep;13;0;Create;True;0;0;0;False;0;False;0;0;-1;1;0;1;FLOAT;0
 Node;AmplifyShaderEditor.TemplateMultiPassMasterNode;35;1280,-704;Float;False;False;-1;2;UnityEditor.ShaderGraphLitGUI;0;12;New Amplify Shader;94348b07e5e8bab40bd6c8a1e3df54cd;True;ExtraPrePass;0;0;ExtraPrePass;5;False;False;False;False;False;False;False;False;False;False;False;False;True;0;False;;False;True;0;False;;False;False;False;False;False;False;False;False;False;True;False;0;False;;255;False;;255;False;;0;False;;0;False;;0;False;;0;False;;0;False;;0;False;;0;False;;0;False;;False;True;1;False;;True;3;False;;True;True;0;False;;0;False;;True;4;RenderPipeline=UniversalPipeline;RenderType=Opaque=RenderType;Queue=Geometry=Queue=0;UniversalMaterialType=Lit;True;5;True;12;all;0;False;True;1;1;False;;0;False;;0;1;False;;0;False;;False;False;False;False;False;False;False;False;False;False;False;False;True;0;False;;False;True;True;True;True;True;0;False;;False;False;False;False;False;False;False;True;False;0;False;;255;False;;255;False;;0;False;;0;False;;0;False;;0;False;;0;False;;0;False;;0;False;;0;False;;False;True;1;False;;True;3;False;;True;True;0;False;;0;False;;True;0;False;False;0;;0;0;Standard;0;False;0
 Node;AmplifyShaderEditor.TemplateMultiPassMasterNode;37;1280,-704;Float;False;False;-1;2;UnityEditor.ShaderGraphLitGUI;0;12;New Amplify Shader;94348b07e5e8bab40bd6c8a1e3df54cd;True;ShadowCaster;0;2;ShadowCaster;0;False;False;False;False;False;False;False;False;False;False;False;False;True;0;False;;False;True;0;False;;False;False;False;False;False;False;False;False;False;True;False;0;False;;255;False;;255;False;;0;False;;0;False;;0;False;;0;False;;0;False;;0;False;;0;False;;0;False;;False;True;1;False;;True;3;False;;True;True;0;False;;0;False;;True;4;RenderPipeline=UniversalPipeline;RenderType=Opaque=RenderType;Queue=Geometry=Queue=0;UniversalMaterialType=Lit;True;5;True;12;all;0;False;False;False;False;False;False;False;False;False;False;False;False;True;0;False;;False;False;False;True;False;False;False;False;0;False;;False;False;False;False;False;False;False;False;False;True;1;False;;True;3;False;;False;True;1;LightMode=ShadowCaster;False;False;0;;0;0;Standard;0;False;0
 Node;AmplifyShaderEditor.TemplateMultiPassMasterNode;38;1280,-704;Float;False;False;-1;2;UnityEditor.ShaderGraphLitGUI;0;12;New Amplify Shader;94348b07e5e8bab40bd6c8a1e3df54cd;True;DepthOnly;0;3;DepthOnly;0;False;False;False;False;False;False;False;False;False;False;False;False;True;0;False;;False;True;0;False;;False;False;False;False;False;False;False;False;False;True;False;0;False;;255;False;;255;False;;0;False;;0;False;;0;False;;0;False;;0;False;;0;False;;0;False;;0;False;;False;True;1;False;;True;3;False;;True;True;0;False;;0;False;;True;4;RenderPipeline=UniversalPipeline;RenderType=Opaque=RenderType;Queue=Geometry=Queue=0;UniversalMaterialType=Lit;True;5;True;12;all;0;False;False;False;False;False;False;False;False;False;False;False;False;True;0;False;;False;False;False;True;True;False;False;False;0;False;;False;False;False;False;False;False;False;False;False;True;1;False;;False;False;True;1;LightMode=DepthOnly;False;False;0;;0;0;Standard;0;False;0
@@ -4272,7 +4388,7 @@ Node;AmplifyShaderEditor.TemplateMultiPassMasterNode;41;1280,-704;Float;False;Fa
 Node;AmplifyShaderEditor.TemplateMultiPassMasterNode;42;1280,-704;Float;False;False;-1;2;UnityEditor.ShaderGraphLitGUI;0;12;New Amplify Shader;94348b07e5e8bab40bd6c8a1e3df54cd;True;GBuffer;0;7;GBuffer;0;False;False;False;False;False;False;False;False;False;False;False;False;True;0;False;;False;True;0;False;;False;False;False;False;False;False;False;False;False;True;False;0;False;;255;False;;255;False;;0;False;;0;False;;0;False;;0;False;;0;False;;0;False;;0;False;;0;False;;False;True;1;False;;True;3;False;;True;True;0;False;;0;False;;True;4;RenderPipeline=UniversalPipeline;RenderType=Opaque=RenderType;Queue=Geometry=Queue=0;UniversalMaterialType=Lit;True;5;True;12;all;0;False;True;1;1;False;;0;False;;1;1;False;;0;False;;False;False;False;False;False;False;False;False;False;False;False;False;False;False;True;True;True;True;True;0;False;;False;False;False;False;False;False;False;True;False;0;False;;255;False;;255;False;;0;False;;0;False;;0;False;;0;False;;0;False;;0;False;;0;False;;0;False;;False;True;1;False;;True;3;False;;True;True;0;False;;0;False;;True;1;LightMode=UniversalGBuffer;False;False;0;;0;0;Standard;0;False;0
 Node;AmplifyShaderEditor.TemplateMultiPassMasterNode;43;1280,-704;Float;False;False;-1;2;UnityEditor.ShaderGraphLitGUI;0;12;New Amplify Shader;94348b07e5e8bab40bd6c8a1e3df54cd;True;SceneSelectionPass;0;8;SceneSelectionPass;0;False;False;False;False;False;False;False;False;False;False;False;False;True;0;False;;False;True;0;False;;False;False;False;False;False;False;False;False;False;True;False;0;False;;255;False;;255;False;;0;False;;0;False;;0;False;;0;False;;0;False;;0;False;;0;False;;0;False;;False;True;1;False;;True;3;False;;True;True;0;False;;0;False;;True;4;RenderPipeline=UniversalPipeline;RenderType=Opaque=RenderType;Queue=Geometry=Queue=0;UniversalMaterialType=Lit;True;5;True;12;all;0;False;False;False;False;False;False;False;False;False;False;False;False;True;0;False;;False;True;2;False;;False;False;False;False;False;False;False;False;False;False;False;False;False;False;True;1;LightMode=SceneSelectionPass;False;False;0;;0;0;Standard;0;False;0
 Node;AmplifyShaderEditor.TemplateMultiPassMasterNode;44;1280,-704;Float;False;False;-1;2;UnityEditor.ShaderGraphLitGUI;0;12;New Amplify Shader;94348b07e5e8bab40bd6c8a1e3df54cd;True;ScenePickingPass;0;9;ScenePickingPass;0;False;False;False;False;False;False;False;False;False;False;False;False;True;0;False;;False;True;0;False;;False;False;False;False;False;False;False;False;False;True;False;0;False;;255;False;;255;False;;0;False;;0;False;;0;False;;0;False;;0;False;;0;False;;0;False;;0;False;;False;True;1;False;;True;3;False;;True;True;0;False;;0;False;;True;4;RenderPipeline=UniversalPipeline;RenderType=Opaque=RenderType;Queue=Geometry=Queue=0;UniversalMaterialType=Lit;True;5;True;12;all;0;False;False;False;False;False;False;False;False;False;False;False;False;True;0;False;;False;False;False;False;False;False;False;False;False;False;False;False;False;False;False;False;True;1;LightMode=Picking;False;False;0;;0;0;Standard;0;False;0
-Node;AmplifyShaderEditor.TemplateMultiPassMasterNode;36;2544,-2096;Float;False;True;-1;2;UnityEditor.ShaderGraphLitGUI;0;12;Mesa;94348b07e5e8bab40bd6c8a1e3df54cd;True;Forward;0;1;Forward;21;False;False;False;False;False;False;False;False;False;False;False;False;True;0;False;;False;True;0;False;;False;False;False;False;False;False;False;False;False;True;False;0;False;;255;False;;255;False;;0;False;;0;False;;0;False;;0;False;;0;False;;0;False;;0;False;;0;False;;False;True;1;False;;True;3;False;;True;True;0;False;;0;False;;True;4;RenderPipeline=UniversalPipeline;RenderType=Opaque=RenderType;Queue=Geometry=Queue=0;UniversalMaterialType=SimpleLit;True;5;True;12;all;0;False;True;1;1;False;;0;False;;1;1;False;;0;False;;False;False;False;False;False;False;False;False;False;False;False;False;False;False;True;True;True;True;True;0;False;;False;False;False;False;False;False;False;True;False;0;False;;255;False;;255;False;;0;False;;0;False;;0;False;;0;False;;0;False;;0;False;;0;False;;0;False;;False;True;1;False;;True;3;False;;True;True;0;False;;0;False;;True;1;LightMode=UniversalForward;False;False;0;;0;0;Standard;42;Lighting Model;1;638648967592351970;Workflow;0;0;Surface;0;0;  Refraction Model;0;0;  Blend;0;0;Two Sided;1;0;Fragment Normal Space,InvertActionOnDeselection;0;0;Forward Only;0;0;Transmission;0;0;  Transmission Shadow;0.5,False,;0;Translucency;0;0;  Translucency Strength;1,False,;0;  Normal Distortion;0.5,False,;0;  Scattering;2,False,;0;  Direct;0.9,False,;0;  Ambient;0.1,False,;0;  Shadow;0.5,False,;0;Cast Shadows;1;0;  Use Shadow Threshold;0;0;Receive Shadows;1;0;Receive SSAO;1;0;GPU Instancing;1;0;LOD CrossFade;1;0;Built-in Fog;0;638648967415346410;_FinalColorxAlpha;0;0;Meta Pass;1;0;Override Baked GI;0;0;Extra Pre Pass;0;0;Tessellation;0;0;  Phong;0;0;  Strength;0.5,False,;0;  Type;0;0;  Tess;16,False,;0;  Min;10,False,;0;  Max;25,False,;0;  Edge Length;16,False,;0;  Max Displacement;25,False,;0;Write Depth;0;0;  Early Z;0;0;Vertex Position,InvertActionOnDeselection;1;0;Debug Display;0;0;Clear Coat;0;0;0;10;False;True;True;True;True;True;True;True;True;True;False;;False;0
+Node;AmplifyShaderEditor.TemplateMultiPassMasterNode;36;3824,-2208;Float;False;True;-1;2;UnityEditor.ShaderGraphLitGUI;0;12;Mesa;94348b07e5e8bab40bd6c8a1e3df54cd;True;Forward;0;1;Forward;21;False;False;False;False;False;False;False;False;False;False;False;False;True;0;False;;False;True;0;False;;False;False;False;False;False;False;False;False;False;True;False;0;False;;255;False;;255;False;;0;False;;0;False;;0;False;;0;False;;0;False;;0;False;;0;False;;0;False;;False;True;1;False;;True;3;False;;True;True;0;False;;0;False;;True;4;RenderPipeline=UniversalPipeline;RenderType=Opaque=RenderType;Queue=Geometry=Queue=0;UniversalMaterialType=SimpleLit;True;5;True;12;all;0;False;True;1;1;False;;0;False;;1;1;False;;0;False;;False;False;False;False;False;False;False;False;False;False;False;False;False;False;True;True;True;True;True;0;False;;False;False;False;False;False;False;False;True;False;0;False;;255;False;;255;False;;0;False;;0;False;;0;False;;0;False;;0;False;;0;False;;0;False;;0;False;;False;True;1;False;;True;3;False;;True;True;0;False;;0;False;;True;1;LightMode=UniversalForward;False;False;0;;0;0;Standard;42;Lighting Model;1;638648967592351970;Workflow;0;0;Surface;0;0;  Refraction Model;0;0;  Blend;0;0;Two Sided;1;0;Fragment Normal Space,InvertActionOnDeselection;0;0;Forward Only;0;0;Transmission;0;0;  Transmission Shadow;0.5,False,;0;Translucency;0;0;  Translucency Strength;1,False,;0;  Normal Distortion;0.5,False,;0;  Scattering;2,False,;0;  Direct;0.9,False,;0;  Ambient;0.1,False,;0;  Shadow;0.5,False,;0;Cast Shadows;1;0;  Use Shadow Threshold;0;0;Receive Shadows;1;0;Receive SSAO;1;0;GPU Instancing;1;0;LOD CrossFade;1;0;Built-in Fog;0;638648967415346410;_FinalColorxAlpha;0;0;Meta Pass;1;0;Override Baked GI;0;0;Extra Pre Pass;0;0;Tessellation;0;0;  Phong;0;0;  Strength;0.5,False,;0;  Type;0;0;  Tess;16,False,;0;  Min;10,False,;0;  Max;25,False,;0;  Edge Length;16,False,;0;  Max Displacement;25,False,;0;Write Depth;0;0;  Early Z;0;0;Vertex Position,InvertActionOnDeselection;1;0;Debug Display;0;0;Clear Coat;0;0;0;10;False;True;True;True;True;True;True;True;True;True;False;;False;0
 WireConnection;54;0;53;0
 WireConnection;58;0;54;0
 WireConnection;59;0;57;2
@@ -4302,33 +4418,12 @@ WireConnection;81;0;82;0
 WireConnection;80;0;51;0
 WireConnection;80;3;81;0
 WireConnection;80;4;82;0
-WireConnection;20;0;19;0
-WireConnection;20;1;21;0
-WireConnection;20;2;13;0
-WireConnection;13;0;99;0
-WireConnection;13;1;15;0
-WireConnection;50;0;83;0
-WireConnection;50;4;84;0
-WireConnection;50;1;80;0
-WireConnection;98;0;47;0
-WireConnection;98;1;20;0
-WireConnection;98;2;49;0
-WireConnection;46;0;99;0
-WireConnection;46;1;45;0
-WireConnection;49;0;46;0
-WireConnection;105;1;111;0
-WireConnection;107;0;105;0
 WireConnection;111;0;109;0
-WireConnection;113;0;98;0
-WireConnection;113;1;119;0
-WireConnection;113;2;121;0
 WireConnection;124;0;114;0
 WireConnection;125;0;124;0
 WireConnection;125;1;124;1
 WireConnection;109;42;126;0
 WireConnection;109;52;129;0
-WireConnection;121;0;111;0
-WireConnection;121;1;134;0
 WireConnection;119;0;132;0
 WireConnection;119;1;130;0
 WireConnection;130;0;131;0
@@ -4336,8 +4431,6 @@ WireConnection;130;1;120;0
 WireConnection;130;2;132;0
 WireConnection;132;0;127;0
 WireConnection;132;1;122;0
-WireConnection;134;0;132;0
-WireConnection;134;1;133;0
 WireConnection;127;0;125;0
 WireConnection;114;0;136;0
 WireConnection;114;1;117;0
@@ -4346,9 +4439,47 @@ WireConnection;136;2;139;0
 WireConnection;139;0;140;0
 WireConnection;140;0;116;0
 WireConnection;140;1;141;0
-WireConnection;36;0;113;0
-WireConnection;36;2;113;0
+WireConnection;134;0;132;0
+WireConnection;134;1;133;0
+WireConnection;50;0;83;0
+WireConnection;50;4;84;0
+WireConnection;50;1;80;0
+WireConnection;121;0;111;0
+WireConnection;121;1;134;0
+WireConnection;113;0;98;0
+WireConnection;113;1;119;0
+WireConnection;113;2;121;0
+WireConnection;142;0;46;0
+WireConnection;156;0;98;0
+WireConnection;156;1;113;0
+WireConnection;156;2;151;0
+WireConnection;157;1;113;0
+WireConnection;157;0;156;0
+WireConnection;46;0;154;30
+WireConnection;46;1;45;0
+WireConnection;20;0;19;0
+WireConnection;20;1;21;0
+WireConnection;20;2;147;0
+WireConnection;144;0;20;0
+WireConnection;144;1;145;0
+WireConnection;144;2;150;0
+WireConnection;149;0;99;0
+WireConnection;149;1;148;0
+WireConnection;150;0;149;0
+WireConnection;49;0;142;0
+WireConnection;99;0;152;0
+WireConnection;151;0;49;0
+WireConnection;151;1;155;0
+WireConnection;98;0;47;0
+WireConnection;98;1;144;0
+WireConnection;98;2;151;0
+WireConnection;147;0;13;0
+WireConnection;13;0;99;0
+WireConnection;13;1;15;0
+WireConnection;36;0;157;0
+WireConnection;36;2;157;0
+WireConnection;36;9;98;0
 WireConnection;36;4;96;0
 WireConnection;36;7;50;0
 ASEEND*/
-//CHKSM=56A4A311DFA21B5DBB90FDF095462FB91F47DF5B
+//CHKSM=AED67FBC896EB4133863D3D2D4AE1BAB17331299

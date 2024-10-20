@@ -68,8 +68,8 @@ Camera:
     y: 0
     width: 1
     height: 1
-  near clip plane: 0.1
-  far clip plane: 5000
+  near clip plane: 0.01
+  far clip plane: 500
   field of view: 60
   orthographic: 0
   orthographic size: 10
@@ -169,25 +169,25 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6089276f0dab71e4d9b84574cf5d5d74, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  density: 1
+  density: 6.84
   fogColor: {r: 1, g: 0.93831813, b: 0.8632076, a: 1}
-  skyDistance: 500
-  scatteringCoefficient: 0.725
-  extinctionCoefficient: 0
+  skyDistance: 150
+  scatteringCoefficient: 0.776
+  extinctionCoefficient: 0.009
   blueNoise: {fileID: 2800000, guid: 280c74f3a1e52664fbd8684a5ccd9344, type: 3}
   anisotropy: 0.85
   heightFog: 1
   heightFogDensity: 19.3
   heightBase: -23.61
-  minMaxHeightFogNoise: {x: 0.11, y: 0.51}
-  heightFogNoiseScale: 0
+  minMaxHeightFogNoise: {x: 0.6, y: 1}
+  heightFogNoiseScale: 10
   heightTransitionSize: 65.9
   noiseTexture: {fileID: 9158691813545615370, guid: 53f780d00a5106b4ca371b925d333573,
     type: 2}
   noiseWeights: {x: 1, y: 1, z: 1, w: 1}
-  noiseSize: 5
+  noiseSize: 10
   noiseScrollSpeed: {x: 0, y: -0.025, z: 0}
-  minMaxNoiseValues: {x: 0.6, y: 1}
+  minMaxNoiseValues: {x: 0.58, y: 0.98}
   curlNoise: {fileID: -6434664791414598963, guid: 1948b8ce37f2678438ef0542957d4f5c,
     type: 2}
   curlSize: 10

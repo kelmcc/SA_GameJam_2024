@@ -6,15 +6,17 @@ Shader "Fur"
 	{
 		[HideInInspector] _AlphaCutoff("Alpha Cutoff ", Range(0, 1)) = 0.5
 		[HideInInspector] _EmissionColor("Emission Color", Color) = (1,1,1,1)
-		_MesaXY1("MesaXY1", Color) = (1,0.4764151,0.9294767,0)
-		_MesaXY2("MesaXY2", Color) = (0.9433962,0.2180491,0.2180491,0)
-		_MesaZ("MesaZ", Color) = (0.9433962,0.2180491,0.2180491,0)
+		_MesaXY4("MesaXY1", Color) = (1,0.4764151,0.9294767,0)
+		_MesaXY5("MesaXY3", Color) = (1,0.4764151,0.9294767,0)
 		_NoiseScale("NoiseScale", Float) = 0
 		_NoiseStrength("NoiseStrength", Float) = 0
-		_ShadingFreq("ShadingFreq", Range( 0 , 10)) = 0
+		_MesaXY3("MesaXY2", Color) = (0.9433962,0.2180491,0.2180491,0)
+		_ShadingFreq("ShadingFreq", Range( 0 , 1000)) = 0
+		_MesaZ1("MesaZ", Color) = (0.9433962,0.2180491,0.2180491,0)
 		_ShadingColor("ShadingColor", Color) = (0,0,0,0)
 		_ShadingThreshold("ShadingThreshold", Range( 0 , 1)) = 0
 		_ShadingNoiseScale("ShadingNoiseScale", Float) = 0
+		_ZStep("ZStep", Range( -1 , 1)) = 0
 
 
 		//_TransmissionShadow( "Transmission Shadow", Range( 0, 1 ) ) = 0.5
@@ -288,7 +290,9 @@ Shader "Fur"
 				#define ENABLE_TERRAIN_PERPIXEL_NORMAL
 			#endif
 
+			#define ASE_NEEDS_FRAG_WORLD_TANGENT
 			#define ASE_NEEDS_FRAG_WORLD_NORMAL
+			#define ASE_NEEDS_FRAG_WORLD_BITANGENT
 			#define ASE_NEEDS_FRAG_WORLD_VIEW_DIR
 
 
@@ -327,16 +331,19 @@ Shader "Fur"
 				#if defined(DYNAMICLIGHTMAP_ON)
 					float2 dynamicLightmapUV : TEXCOORD7;
 				#endif
+				float3 ase_normal : NORMAL;
 				float4 ase_texcoord8 : TEXCOORD8;
 				UNITY_VERTEX_INPUT_INSTANCE_ID
 				UNITY_VERTEX_OUTPUT_STEREO
 			};
 
 			CBUFFER_START(UnityPerMaterial)
-			float4 _MesaZ;
-			float4 _MesaXY2;
-			float4 _MesaXY1;
+			float4 _MesaZ1;
+			float4 _MesaXY3;
+			float4 _MesaXY4;
+			float4 _MesaXY5;
 			float4 _ShadingColor;
+			float _ZStep;
 			float _ShadingNoiseScale;
 			float _ShadingFreq;
 			float _ShadingThreshold;
@@ -410,6 +417,7 @@ Shader "Fur"
 				UNITY_TRANSFER_INSTANCE_ID(v, o);
 				UNITY_INITIALIZE_VERTEX_OUTPUT_STEREO(o);
 
+				o.ase_normal = v.normalOS;
 				o.ase_texcoord8.xy = v.texcoord.xy;
 				
 				//setting value to unused interpolator channels and avoid initialization warnings
@@ -609,10 +617,16 @@ Shader "Fur"
 
 				WorldViewDirection = SafeNormalize( WorldViewDirection );
 
-				float dotResult13 = dot( WorldNormal , float3(1,0,0) );
-				float4 lerpResult20 = lerp( _MesaXY2 , _MesaXY1 , dotResult13);
-				float dotResult46 = dot( WorldNormal , float3(0,0,-1) );
-				float4 lerpResult98 = lerp( _MesaZ , lerpResult20 , saturate( dotResult46 ));
+				float3 tanToWorld0 = float3( WorldTangent.x, WorldBiTangent.x, WorldNormal.x );
+				float3 tanToWorld1 = float3( WorldTangent.y, WorldBiTangent.y, WorldNormal.y );
+				float3 tanToWorld2 = float3( WorldTangent.z, WorldBiTangent.z, WorldNormal.z );
+				float3 tanNormal157 = IN.ase_normal;
+				float3 worldNormal157 = float3(dot(tanToWorld0,tanNormal157), dot(tanToWorld1,tanNormal157), dot(tanToWorld2,tanNormal157));
+				float dotResult164 = dot( worldNormal157 , float3(1,0,0) );
+				float4 lerpResult147 = lerp( _MesaXY3 , _MesaXY4 , abs( dotResult164 ));
+				float dotResult152 = dot( worldNormal157 , float3(0,1,0) );
+				float4 lerpResult148 = lerp( lerpResult147 , _MesaXY5 , abs( dotResult152 ));
+				float4 lerpResult161 = lerp( _MesaZ1 , lerpResult148 , step( saturate( 0.0 ) , _ZStep ));
 				float2 texCoord142 = IN.ase_texcoord8.xy * float2( 1,1 ) + float2( 0,0 );
 				float simplePerlin2D140 = snoise( texCoord142*_ShadingNoiseScale );
 				simplePerlin2D140 = simplePerlin2D140*0.5 + 0.5;
@@ -623,7 +637,7 @@ Shader "Fur"
 				float temp_output_132_0 = step( frac( ( break124.x + break124.y ) ) , _ShadingThreshold );
 				float4 color131 = IsGammaSpace() ? float4(0,0,0,0) : float4(0,0,0,0);
 				float4 lerpResult130 = lerp( color131 , _ShadingColor , temp_output_132_0);
-				float4 lerpResult113 = lerp( lerpResult98 , ( temp_output_132_0 * lerpResult130 ) , temp_output_132_0);
+				float4 lerpResult113 = lerp( lerpResult161 , ( temp_output_132_0 * lerpResult130 ) , temp_output_132_0);
 				
 				float2 texCoord143 = IN.ase_texcoord8.xy * float2( 1,1 ) + float2( 0,0 );
 				float simplePerlin2D51 = snoise( texCoord143*_NoiseScale );
@@ -981,10 +995,12 @@ Shader "Fur"
 			};
 
 			CBUFFER_START(UnityPerMaterial)
-			float4 _MesaZ;
-			float4 _MesaXY2;
-			float4 _MesaXY1;
+			float4 _MesaZ1;
+			float4 _MesaXY3;
+			float4 _MesaXY4;
+			float4 _MesaXY5;
 			float4 _ShadingColor;
+			float _ZStep;
 			float _ShadingNoiseScale;
 			float _ShadingFreq;
 			float _ShadingThreshold;
@@ -1366,10 +1382,12 @@ Shader "Fur"
 			};
 
 			CBUFFER_START(UnityPerMaterial)
-			float4 _MesaZ;
-			float4 _MesaXY2;
-			float4 _MesaXY1;
+			float4 _MesaZ1;
+			float4 _MesaXY3;
+			float4 _MesaXY4;
+			float4 _MesaXY5;
 			float4 _ShadingColor;
+			float _ZStep;
 			float _ShadingNoiseScale;
 			float _ShadingFreq;
 			float _ShadingThreshold;
@@ -1682,7 +1700,7 @@ Shader "Fur"
 				float4 texcoord0 : TEXCOORD0;
 				float4 texcoord1 : TEXCOORD1;
 				float4 texcoord2 : TEXCOORD2;
-				
+				float4 ase_tangent : TANGENT;
 				UNITY_VERTEX_INPUT_INSTANCE_ID
 			};
 
@@ -1699,17 +1717,22 @@ Shader "Fur"
 					float4 VizUV : TEXCOORD2;
 					float4 LightCoord : TEXCOORD3;
 				#endif
+				float3 ase_normal : NORMAL;
 				float4 ase_texcoord4 : TEXCOORD4;
 				float4 ase_texcoord5 : TEXCOORD5;
+				float4 ase_texcoord6 : TEXCOORD6;
+				float4 ase_texcoord7 : TEXCOORD7;
 				UNITY_VERTEX_INPUT_INSTANCE_ID
 				UNITY_VERTEX_OUTPUT_STEREO
 			};
 
 			CBUFFER_START(UnityPerMaterial)
-			float4 _MesaZ;
-			float4 _MesaXY2;
-			float4 _MesaXY1;
+			float4 _MesaZ1;
+			float4 _MesaXY3;
+			float4 _MesaXY4;
+			float4 _MesaXY5;
 			float4 _ShadingColor;
+			float _ZStep;
 			float _ShadingNoiseScale;
 			float _ShadingFreq;
 			float _ShadingThreshold;
@@ -1783,14 +1806,22 @@ Shader "Fur"
 				UNITY_TRANSFER_INSTANCE_ID(v, o);
 				UNITY_INITIALIZE_VERTEX_OUTPUT_STEREO(o);
 
+				float3 ase_worldTangent = TransformObjectToWorldDir(v.ase_tangent.xyz);
+				o.ase_texcoord4.xyz = ase_worldTangent;
 				float3 ase_worldNormal = TransformObjectToWorldNormal(v.normalOS);
-				o.ase_texcoord4.xyz = ase_worldNormal;
+				o.ase_texcoord5.xyz = ase_worldNormal;
+				float ase_vertexTangentSign = v.ase_tangent.w * ( unity_WorldTransformParams.w >= 0.0 ? 1.0 : -1.0 );
+				float3 ase_worldBitangent = cross( ase_worldNormal, ase_worldTangent ) * ase_vertexTangentSign;
+				o.ase_texcoord6.xyz = ase_worldBitangent;
 				
-				o.ase_texcoord5.xy = v.texcoord0.xy;
+				o.ase_normal = v.normalOS;
+				o.ase_texcoord7.xy = v.texcoord0.xy;
 				
 				//setting value to unused interpolator channels and avoid initialization warnings
 				o.ase_texcoord4.w = 0;
-				o.ase_texcoord5.zw = 0;
+				o.ase_texcoord5.w = 0;
+				o.ase_texcoord6.w = 0;
+				o.ase_texcoord7.zw = 0;
 
 				#ifdef ASE_ABSOLUTE_VERTEX_POS
 					float3 defaultVertexValue = v.positionOS.xyz;
@@ -1842,7 +1873,8 @@ Shader "Fur"
 				float4 texcoord0 : TEXCOORD0;
 				float4 texcoord1 : TEXCOORD1;
 				float4 texcoord2 : TEXCOORD2;
-				
+				float4 ase_tangent : TANGENT;
+
 				UNITY_VERTEX_INPUT_INSTANCE_ID
 			};
 
@@ -1862,7 +1894,7 @@ Shader "Fur"
 				o.texcoord0 = v.texcoord0;
 				o.texcoord1 = v.texcoord1;
 				o.texcoord2 = v.texcoord2;
-				
+				o.ase_tangent = v.ase_tangent;
 				return o;
 			}
 
@@ -1904,7 +1936,7 @@ Shader "Fur"
 				o.texcoord0 = patch[0].texcoord0 * bary.x + patch[1].texcoord0 * bary.y + patch[2].texcoord0 * bary.z;
 				o.texcoord1 = patch[0].texcoord1 * bary.x + patch[1].texcoord1 * bary.y + patch[2].texcoord1 * bary.z;
 				o.texcoord2 = patch[0].texcoord2 * bary.x + patch[1].texcoord2 * bary.y + patch[2].texcoord2 * bary.z;
-				
+				o.ase_tangent = patch[0].ase_tangent * bary.x + patch[1].ase_tangent * bary.y + patch[2].ase_tangent * bary.z;
 				#if defined(ASE_PHONG_TESSELLATION)
 				float3 pp[3];
 				for (int i = 0; i < 3; ++i)
@@ -1941,12 +1973,20 @@ Shader "Fur"
 					#endif
 				#endif
 
-				float3 ase_worldNormal = IN.ase_texcoord4.xyz;
-				float dotResult13 = dot( ase_worldNormal , float3(1,0,0) );
-				float4 lerpResult20 = lerp( _MesaXY2 , _MesaXY1 , dotResult13);
-				float dotResult46 = dot( ase_worldNormal , float3(0,0,-1) );
-				float4 lerpResult98 = lerp( _MesaZ , lerpResult20 , saturate( dotResult46 ));
-				float2 texCoord142 = IN.ase_texcoord5.xy * float2( 1,1 ) + float2( 0,0 );
+				float3 ase_worldTangent = IN.ase_texcoord4.xyz;
+				float3 ase_worldNormal = IN.ase_texcoord5.xyz;
+				float3 ase_worldBitangent = IN.ase_texcoord6.xyz;
+				float3 tanToWorld0 = float3( ase_worldTangent.x, ase_worldBitangent.x, ase_worldNormal.x );
+				float3 tanToWorld1 = float3( ase_worldTangent.y, ase_worldBitangent.y, ase_worldNormal.y );
+				float3 tanToWorld2 = float3( ase_worldTangent.z, ase_worldBitangent.z, ase_worldNormal.z );
+				float3 tanNormal157 = IN.ase_normal;
+				float3 worldNormal157 = float3(dot(tanToWorld0,tanNormal157), dot(tanToWorld1,tanNormal157), dot(tanToWorld2,tanNormal157));
+				float dotResult164 = dot( worldNormal157 , float3(1,0,0) );
+				float4 lerpResult147 = lerp( _MesaXY3 , _MesaXY4 , abs( dotResult164 ));
+				float dotResult152 = dot( worldNormal157 , float3(0,1,0) );
+				float4 lerpResult148 = lerp( lerpResult147 , _MesaXY5 , abs( dotResult152 ));
+				float4 lerpResult161 = lerp( _MesaZ1 , lerpResult148 , step( saturate( 0.0 ) , _ZStep ));
+				float2 texCoord142 = IN.ase_texcoord7.xy * float2( 1,1 ) + float2( 0,0 );
 				float simplePerlin2D140 = snoise( texCoord142*_ShadingNoiseScale );
 				simplePerlin2D140 = simplePerlin2D140*0.5 + 0.5;
 				float cos136 = cos( ( simplePerlin2D140 + 0.0 ) );
@@ -1956,11 +1996,11 @@ Shader "Fur"
 				float temp_output_132_0 = step( frac( ( break124.x + break124.y ) ) , _ShadingThreshold );
 				float4 color131 = IsGammaSpace() ? float4(0,0,0,0) : float4(0,0,0,0);
 				float4 lerpResult130 = lerp( color131 , _ShadingColor , temp_output_132_0);
-				float4 lerpResult113 = lerp( lerpResult98 , ( temp_output_132_0 * lerpResult130 ) , temp_output_132_0);
+				float4 lerpResult113 = lerp( lerpResult161 , ( temp_output_132_0 * lerpResult130 ) , temp_output_132_0);
 				
 				float3 ase_worldViewDir = ( _WorldSpaceCameraPos.xyz - WorldPosition );
 				ase_worldViewDir = normalize(ase_worldViewDir);
-				float2 texCoord143 = IN.ase_texcoord5.xy * float2( 1,1 ) + float2( 0,0 );
+				float2 texCoord143 = IN.ase_texcoord7.xy * float2( 1,1 ) + float2( 0,0 );
 				float simplePerlin2D51 = snoise( texCoord143*_NoiseScale );
 				simplePerlin2D51 = simplePerlin2D51*0.5 + 0.5;
 				float fresnelNdotV50 = dot( ase_worldNormal, ase_worldViewDir );
@@ -2049,6 +2089,7 @@ Shader "Fur"
 			{
 				float4 positionOS : POSITION;
 				float3 normalOS : NORMAL;
+				float4 ase_tangent : TANGENT;
 				float4 ase_texcoord : TEXCOORD0;
 				UNITY_VERTEX_INPUT_INSTANCE_ID
 			};
@@ -2062,17 +2103,22 @@ Shader "Fur"
 				#if defined(REQUIRES_VERTEX_SHADOW_COORD_INTERPOLATOR) && defined(ASE_NEEDS_FRAG_SHADOWCOORDS)
 					float4 shadowCoord : TEXCOORD1;
 				#endif
+				float3 ase_normal : NORMAL;
 				float4 ase_texcoord2 : TEXCOORD2;
 				float4 ase_texcoord3 : TEXCOORD3;
+				float4 ase_texcoord4 : TEXCOORD4;
+				float4 ase_texcoord5 : TEXCOORD5;
 				UNITY_VERTEX_INPUT_INSTANCE_ID
 				UNITY_VERTEX_OUTPUT_STEREO
 			};
 
 			CBUFFER_START(UnityPerMaterial)
-			float4 _MesaZ;
-			float4 _MesaXY2;
-			float4 _MesaXY1;
+			float4 _MesaZ1;
+			float4 _MesaXY3;
+			float4 _MesaXY4;
+			float4 _MesaXY5;
 			float4 _ShadingColor;
+			float _ZStep;
 			float _ShadingNoiseScale;
 			float _ShadingFreq;
 			float _ShadingThreshold;
@@ -2146,14 +2192,22 @@ Shader "Fur"
 				UNITY_TRANSFER_INSTANCE_ID( v, o );
 				UNITY_INITIALIZE_VERTEX_OUTPUT_STEREO( o );
 
+				float3 ase_worldTangent = TransformObjectToWorldDir(v.ase_tangent.xyz);
+				o.ase_texcoord2.xyz = ase_worldTangent;
 				float3 ase_worldNormal = TransformObjectToWorldNormal(v.normalOS);
-				o.ase_texcoord2.xyz = ase_worldNormal;
+				o.ase_texcoord3.xyz = ase_worldNormal;
+				float ase_vertexTangentSign = v.ase_tangent.w * ( unity_WorldTransformParams.w >= 0.0 ? 1.0 : -1.0 );
+				float3 ase_worldBitangent = cross( ase_worldNormal, ase_worldTangent ) * ase_vertexTangentSign;
+				o.ase_texcoord4.xyz = ase_worldBitangent;
 				
-				o.ase_texcoord3.xy = v.ase_texcoord.xy;
+				o.ase_normal = v.normalOS;
+				o.ase_texcoord5.xy = v.ase_texcoord.xy;
 				
 				//setting value to unused interpolator channels and avoid initialization warnings
 				o.ase_texcoord2.w = 0;
-				o.ase_texcoord3.zw = 0;
+				o.ase_texcoord3.w = 0;
+				o.ase_texcoord4.w = 0;
+				o.ase_texcoord5.zw = 0;
 
 				#ifdef ASE_ABSOLUTE_VERTEX_POS
 					float3 defaultVertexValue = v.positionOS.xyz;
@@ -2191,6 +2245,7 @@ Shader "Fur"
 			{
 				float4 vertex : INTERNALTESSPOS;
 				float3 normalOS : NORMAL;
+				float4 ase_tangent : TANGENT;
 				float4 ase_texcoord : TEXCOORD0;
 
 				UNITY_VERTEX_INPUT_INSTANCE_ID
@@ -2209,6 +2264,7 @@ Shader "Fur"
 				UNITY_TRANSFER_INSTANCE_ID(v, o);
 				o.vertex = v.positionOS;
 				o.normalOS = v.normalOS;
+				o.ase_tangent = v.ase_tangent;
 				o.ase_texcoord = v.ase_texcoord;
 				return o;
 			}
@@ -2248,6 +2304,7 @@ Shader "Fur"
 				VertexInput o = (VertexInput) 0;
 				o.positionOS = patch[0].vertex * bary.x + patch[1].vertex * bary.y + patch[2].vertex * bary.z;
 				o.normalOS = patch[0].normalOS * bary.x + patch[1].normalOS * bary.y + patch[2].normalOS * bary.z;
+				o.ase_tangent = patch[0].ase_tangent * bary.x + patch[1].ase_tangent * bary.y + patch[2].ase_tangent * bary.z;
 				o.ase_texcoord = patch[0].ase_texcoord * bary.x + patch[1].ase_texcoord * bary.y + patch[2].ase_texcoord * bary.z;
 				#if defined(ASE_PHONG_TESSELLATION)
 				float3 pp[3];
@@ -2285,12 +2342,20 @@ Shader "Fur"
 					#endif
 				#endif
 
-				float3 ase_worldNormal = IN.ase_texcoord2.xyz;
-				float dotResult13 = dot( ase_worldNormal , float3(1,0,0) );
-				float4 lerpResult20 = lerp( _MesaXY2 , _MesaXY1 , dotResult13);
-				float dotResult46 = dot( ase_worldNormal , float3(0,0,-1) );
-				float4 lerpResult98 = lerp( _MesaZ , lerpResult20 , saturate( dotResult46 ));
-				float2 texCoord142 = IN.ase_texcoord3.xy * float2( 1,1 ) + float2( 0,0 );
+				float3 ase_worldTangent = IN.ase_texcoord2.xyz;
+				float3 ase_worldNormal = IN.ase_texcoord3.xyz;
+				float3 ase_worldBitangent = IN.ase_texcoord4.xyz;
+				float3 tanToWorld0 = float3( ase_worldTangent.x, ase_worldBitangent.x, ase_worldNormal.x );
+				float3 tanToWorld1 = float3( ase_worldTangent.y, ase_worldBitangent.y, ase_worldNormal.y );
+				float3 tanToWorld2 = float3( ase_worldTangent.z, ase_worldBitangent.z, ase_worldNormal.z );
+				float3 tanNormal157 = IN.ase_normal;
+				float3 worldNormal157 = float3(dot(tanToWorld0,tanNormal157), dot(tanToWorld1,tanNormal157), dot(tanToWorld2,tanNormal157));
+				float dotResult164 = dot( worldNormal157 , float3(1,0,0) );
+				float4 lerpResult147 = lerp( _MesaXY3 , _MesaXY4 , abs( dotResult164 ));
+				float dotResult152 = dot( worldNormal157 , float3(0,1,0) );
+				float4 lerpResult148 = lerp( lerpResult147 , _MesaXY5 , abs( dotResult152 ));
+				float4 lerpResult161 = lerp( _MesaZ1 , lerpResult148 , step( saturate( 0.0 ) , _ZStep ));
+				float2 texCoord142 = IN.ase_texcoord5.xy * float2( 1,1 ) + float2( 0,0 );
 				float simplePerlin2D140 = snoise( texCoord142*_ShadingNoiseScale );
 				simplePerlin2D140 = simplePerlin2D140*0.5 + 0.5;
 				float cos136 = cos( ( simplePerlin2D140 + 0.0 ) );
@@ -2300,11 +2365,11 @@ Shader "Fur"
 				float temp_output_132_0 = step( frac( ( break124.x + break124.y ) ) , _ShadingThreshold );
 				float4 color131 = IsGammaSpace() ? float4(0,0,0,0) : float4(0,0,0,0);
 				float4 lerpResult130 = lerp( color131 , _ShadingColor , temp_output_132_0);
-				float4 lerpResult113 = lerp( lerpResult98 , ( temp_output_132_0 * lerpResult130 ) , temp_output_132_0);
+				float4 lerpResult113 = lerp( lerpResult161 , ( temp_output_132_0 * lerpResult130 ) , temp_output_132_0);
 				
 				float3 ase_worldViewDir = ( _WorldSpaceCameraPos.xyz - WorldPosition );
 				ase_worldViewDir = normalize(ase_worldViewDir);
-				float2 texCoord143 = IN.ase_texcoord3.xy * float2( 1,1 ) + float2( 0,0 );
+				float2 texCoord143 = IN.ase_texcoord5.xy * float2( 1,1 ) + float2( 0,0 );
 				float simplePerlin2D51 = snoise( texCoord143*_NoiseScale );
 				simplePerlin2D51 = simplePerlin2D51*0.5 + 0.5;
 				float fresnelNdotV50 = dot( ase_worldNormal, ase_worldViewDir );
@@ -2443,10 +2508,12 @@ Shader "Fur"
 			};
 
 			CBUFFER_START(UnityPerMaterial)
-			float4 _MesaZ;
-			float4 _MesaXY2;
-			float4 _MesaXY1;
+			float4 _MesaZ1;
+			float4 _MesaXY3;
+			float4 _MesaXY4;
+			float4 _MesaXY5;
 			float4 _ShadingColor;
+			float _ZStep;
 			float _ShadingNoiseScale;
 			float _ShadingFreq;
 			float _ShadingThreshold;
@@ -2845,7 +2912,9 @@ Shader "Fur"
 				#define ENABLE_TERRAIN_PERPIXEL_NORMAL
 			#endif
 
+			#define ASE_NEEDS_FRAG_WORLD_TANGENT
 			#define ASE_NEEDS_FRAG_WORLD_NORMAL
+			#define ASE_NEEDS_FRAG_WORLD_BITANGENT
 			#define ASE_NEEDS_FRAG_WORLD_VIEW_DIR
 
 
@@ -2884,16 +2953,19 @@ Shader "Fur"
 				#if defined(DYNAMICLIGHTMAP_ON)
 				float2 dynamicLightmapUV : TEXCOORD7;
 				#endif
+				float3 ase_normal : NORMAL;
 				float4 ase_texcoord8 : TEXCOORD8;
 				UNITY_VERTEX_INPUT_INSTANCE_ID
 				UNITY_VERTEX_OUTPUT_STEREO
 			};
 
 			CBUFFER_START(UnityPerMaterial)
-			float4 _MesaZ;
-			float4 _MesaXY2;
-			float4 _MesaXY1;
+			float4 _MesaZ1;
+			float4 _MesaXY3;
+			float4 _MesaXY4;
+			float4 _MesaXY5;
 			float4 _ShadingColor;
+			float _ZStep;
 			float _ShadingNoiseScale;
 			float _ShadingFreq;
 			float _ShadingThreshold;
@@ -2969,6 +3041,7 @@ Shader "Fur"
 				UNITY_TRANSFER_INSTANCE_ID(v, o);
 				UNITY_INITIALIZE_VERTEX_OUTPUT_STEREO(o);
 
+				o.ase_normal = v.normalOS;
 				o.ase_texcoord8.xy = v.texcoord.xy;
 				
 				//setting value to unused interpolator channels and avoid initialization warnings
@@ -3161,10 +3234,16 @@ Shader "Fur"
 
 				WorldViewDirection = SafeNormalize( WorldViewDirection );
 
-				float dotResult13 = dot( WorldNormal , float3(1,0,0) );
-				float4 lerpResult20 = lerp( _MesaXY2 , _MesaXY1 , dotResult13);
-				float dotResult46 = dot( WorldNormal , float3(0,0,-1) );
-				float4 lerpResult98 = lerp( _MesaZ , lerpResult20 , saturate( dotResult46 ));
+				float3 tanToWorld0 = float3( WorldTangent.x, WorldBiTangent.x, WorldNormal.x );
+				float3 tanToWorld1 = float3( WorldTangent.y, WorldBiTangent.y, WorldNormal.y );
+				float3 tanToWorld2 = float3( WorldTangent.z, WorldBiTangent.z, WorldNormal.z );
+				float3 tanNormal157 = IN.ase_normal;
+				float3 worldNormal157 = float3(dot(tanToWorld0,tanNormal157), dot(tanToWorld1,tanNormal157), dot(tanToWorld2,tanNormal157));
+				float dotResult164 = dot( worldNormal157 , float3(1,0,0) );
+				float4 lerpResult147 = lerp( _MesaXY3 , _MesaXY4 , abs( dotResult164 ));
+				float dotResult152 = dot( worldNormal157 , float3(0,1,0) );
+				float4 lerpResult148 = lerp( lerpResult147 , _MesaXY5 , abs( dotResult152 ));
+				float4 lerpResult161 = lerp( _MesaZ1 , lerpResult148 , step( saturate( 0.0 ) , _ZStep ));
 				float2 texCoord142 = IN.ase_texcoord8.xy * float2( 1,1 ) + float2( 0,0 );
 				float simplePerlin2D140 = snoise( texCoord142*_ShadingNoiseScale );
 				simplePerlin2D140 = simplePerlin2D140*0.5 + 0.5;
@@ -3175,7 +3254,7 @@ Shader "Fur"
 				float temp_output_132_0 = step( frac( ( break124.x + break124.y ) ) , _ShadingThreshold );
 				float4 color131 = IsGammaSpace() ? float4(0,0,0,0) : float4(0,0,0,0);
 				float4 lerpResult130 = lerp( color131 , _ShadingColor , temp_output_132_0);
-				float4 lerpResult113 = lerp( lerpResult98 , ( temp_output_132_0 * lerpResult130 ) , temp_output_132_0);
+				float4 lerpResult113 = lerp( lerpResult161 , ( temp_output_132_0 * lerpResult130 ) , temp_output_132_0);
 				
 				float2 texCoord143 = IN.ase_texcoord8.xy * float2( 1,1 ) + float2( 0,0 );
 				float simplePerlin2D51 = snoise( texCoord143*_NoiseScale );
@@ -3380,10 +3459,12 @@ Shader "Fur"
 			};
 
 			CBUFFER_START(UnityPerMaterial)
-			float4 _MesaZ;
-			float4 _MesaXY2;
-			float4 _MesaXY1;
+			float4 _MesaZ1;
+			float4 _MesaXY3;
+			float4 _MesaXY4;
+			float4 _MesaXY5;
 			float4 _ShadingColor;
+			float _ZStep;
 			float _ShadingNoiseScale;
 			float _ShadingFreq;
 			float _ShadingThreshold;
@@ -3705,10 +3786,12 @@ Shader "Fur"
 			};
 
 			CBUFFER_START(UnityPerMaterial)
-			float4 _MesaZ;
-			float4 _MesaXY2;
-			float4 _MesaXY1;
+			float4 _MesaZ1;
+			float4 _MesaXY3;
+			float4 _MesaXY4;
+			float4 _MesaXY5;
 			float4 _ShadingColor;
+			float _ZStep;
 			float _ShadingNoiseScale;
 			float _ShadingFreq;
 			float _ShadingThreshold;
@@ -3953,8 +4036,8 @@ Shader "Fur"
 }
 /*ASEBEGIN
 Version=19603
-Node;AmplifyShaderEditor.RangedFloatNode;79;896,-736;Inherit;False;Property;_NoiseScale;NoiseScale;3;0;Create;True;0;0;0;False;0;False;0;5.63;0;0;0;1;FLOAT;0
-Node;AmplifyShaderEditor.RangedFloatNode;82;992,-656;Inherit;False;Property;_NoiseStrength;NoiseStrength;4;0;Create;True;0;0;0;False;0;False;0;0.31;0;0;0;1;FLOAT;0
+Node;AmplifyShaderEditor.RangedFloatNode;79;896,-736;Inherit;False;Property;_NoiseScale;NoiseScale;5;0;Create;True;0;0;0;False;0;False;0;5.63;0;0;0;1;FLOAT;0
+Node;AmplifyShaderEditor.RangedFloatNode;82;992,-656;Inherit;False;Property;_NoiseStrength;NoiseStrength;6;0;Create;True;0;0;0;False;0;False;0;0.31;0;0;0;1;FLOAT;0
 Node;AmplifyShaderEditor.TextureCoordinatesNode;143;832,-992;Inherit;False;0;-1;2;3;2;SAMPLER2D;;False;0;FLOAT2;1,1;False;1;FLOAT2;0,0;False;5;FLOAT2;0;FLOAT;1;FLOAT;2;FLOAT;3;FLOAT;4
 Node;AmplifyShaderEditor.NoiseGeneratorNode;51;1104,-896;Inherit;False;Simplex2D;True;False;2;0;FLOAT2;0,0;False;1;FLOAT;1;False;1;FLOAT;0
 Node;AmplifyShaderEditor.NegateNode;81;1232,-768;Inherit;False;1;0;FLOAT;0;False;1;FLOAT;0
@@ -3990,37 +4073,60 @@ Node;AmplifyShaderEditor.GetLocalVarNode;78;864,-880;Inherit;False;77;texCoord;1
 Node;AmplifyShaderEditor.LerpOp;20;-64,-528;Inherit;False;3;0;COLOR;0,0,0,0;False;1;COLOR;0,0,0,0;False;2;FLOAT;0;False;1;COLOR;0
 Node;AmplifyShaderEditor.ColorNode;21;-560,-560;Inherit;False;Property;_MesaXY1;MesaXY1;0;0;Create;True;0;0;0;False;0;False;1,0.4764151,0.9294767,0;1,0.9524046,0,0;True;True;0;6;COLOR;0;FLOAT;1;FLOAT;2;FLOAT;3;FLOAT;4;FLOAT3;5
 Node;AmplifyShaderEditor.DotProductOpNode;13;-352,-272;Inherit;False;2;0;FLOAT3;0,0,0;False;1;FLOAT3;0,0,0;False;1;FLOAT;0
-Node;AmplifyShaderEditor.ColorNode;19;-544,-768;Inherit;False;Property;_MesaXY2;MesaXY2;1;0;Create;True;0;0;0;False;0;False;0.9433962,0.2180491,0.2180491,0;0.2196077,0.945098,0.8411337,0;True;True;0;6;COLOR;0;FLOAT;1;FLOAT;2;FLOAT;3;FLOAT;4;FLOAT3;5
+Node;AmplifyShaderEditor.ColorNode;19;-544,-768;Inherit;False;Property;_MesaXY2;MesaXY2;2;0;Create;True;0;0;0;False;0;False;0.9433962,0.2180491,0.2180491,0;0.2196077,0.945098,0.8411337,0;True;True;0;6;COLOR;0;FLOAT;1;FLOAT;2;FLOAT;3;FLOAT;4;FLOAT3;5
 Node;AmplifyShaderEditor.FresnelNode;50;1680,-1424;Inherit;False;Standard;WorldNormal;ViewDir;False;False;5;0;FLOAT3;0,0,1;False;4;FLOAT3;0,0,0;False;1;FLOAT;0;False;2;FLOAT;0.4;False;3;FLOAT;4;False;1;FLOAT;0
 Node;AmplifyShaderEditor.LerpOp;98;588.4789,-456.332;Inherit;False;3;0;COLOR;0,0,0,0;False;1;COLOR;0,0,0,0;False;2;FLOAT;0;False;1;COLOR;0
-Node;AmplifyShaderEditor.ColorNode;47;256,-656;Inherit;False;Property;_MesaZ;MesaZ;2;0;Create;True;0;0;0;False;0;False;0.9433962,0.2180491,0.2180491,0;0,0.06301301,1,0;True;True;0;6;COLOR;0;FLOAT;1;FLOAT;2;FLOAT;3;FLOAT;4;FLOAT3;5
+Node;AmplifyShaderEditor.ColorNode;47;256,-656;Inherit;False;Property;_MesaZ;MesaZ;4;0;Create;True;0;0;0;False;0;False;0.9433962,0.2180491,0.2180491,0;0,0.06301301,1,0;True;True;0;6;COLOR;0;FLOAT;1;FLOAT;2;FLOAT;3;FLOAT;4;FLOAT3;5
 Node;AmplifyShaderEditor.WorldNormalVector;99;-704,-368;Inherit;False;False;1;0;FLOAT3;0,0,1;False;4;FLOAT3;0;FLOAT;1;FLOAT;2;FLOAT;3
 Node;AmplifyShaderEditor.Vector3Node;15;-720,-112;Inherit;False;Constant;_Vector0;Vector 0;0;0;Create;True;0;0;0;False;0;False;1,0,0;0,0,0;0;4;FLOAT3;0;FLOAT;1;FLOAT;2;FLOAT;3
 Node;AmplifyShaderEditor.DotProductOpNode;46;176,-352;Inherit;False;2;0;FLOAT3;0,0,0;False;1;FLOAT3;0,0,0;False;1;FLOAT;0
 Node;AmplifyShaderEditor.SaturateNode;49;368,-368;Inherit;False;1;0;FLOAT;0;False;1;FLOAT;0
-Node;AmplifyShaderEditor.Vector3Node;45;-176,-288;Inherit;False;Constant;_Vector1;Vector 0;0;0;Create;True;0;0;0;False;0;False;0,0,-1;0,0,0;0;4;FLOAT3;0;FLOAT;1;FLOAT;2;FLOAT;3
+Node;AmplifyShaderEditor.Vector3Node;45;-176,-288;Inherit;False;Constant;_Vector1;Vector 0;0;0;Create;True;0;0;0;False;0;False;0,-1,0;0,0,0;0;4;FLOAT3;0;FLOAT;1;FLOAT;2;FLOAT;3
 Node;AmplifyShaderEditor.SimpleSubtractOpNode;105;2238.291,-1618.006;Inherit;False;2;0;FLOAT;0;False;1;FLOAT;0;False;1;FLOAT;0
 Node;AmplifyShaderEditor.RangedFloatNode;96;1712,-1792;Inherit;False;Constant;_Float0;Float 0;5;0;Create;True;0;0;0;False;0;False;0;0;0;0;0;1;FLOAT;0
 Node;AmplifyShaderEditor.SimpleMaxOpNode;107;2688,-1696;Inherit;False;2;0;FLOAT;0;False;1;FLOAT;0;False;1;FLOAT;0
 Node;AmplifyShaderEditor.BreakToComponentsNode;124;3168,-1408;Inherit;False;FLOAT2;1;0;FLOAT2;0,0;False;16;FLOAT;0;FLOAT;1;FLOAT;2;FLOAT;3;FLOAT;4;FLOAT;5;FLOAT;6;FLOAT;7;FLOAT;8;FLOAT;9;FLOAT;10;FLOAT;11;FLOAT;12;FLOAT;13;FLOAT;14;FLOAT;15
 Node;AmplifyShaderEditor.SimpleAddOpNode;125;3328,-1392;Inherit;False;2;2;0;FLOAT;0;False;1;FLOAT;0;False;1;FLOAT;0
-Node;AmplifyShaderEditor.ColorNode;120;3184,-1248;Inherit;False;Property;_ShadingColor;ShadingColor;6;0;Create;True;0;0;0;False;0;False;0,0,0,0;0,0,0,0;True;True;0;6;COLOR;0;FLOAT;1;FLOAT;2;FLOAT;3;FLOAT;4;FLOAT3;5
+Node;AmplifyShaderEditor.ColorNode;120;3184,-1248;Inherit;False;Property;_ShadingColor;ShadingColor;10;0;Create;True;0;0;0;False;0;False;0,0,0,0;0,0,0,0;True;True;0;6;COLOR;0;FLOAT;1;FLOAT;2;FLOAT;3;FLOAT;4;FLOAT3;5
 Node;AmplifyShaderEditor.LerpOp;130;3872,-1408;Inherit;False;3;0;COLOR;0,0,0,0;False;1;COLOR;0,0,0,0;False;2;FLOAT;0;False;1;COLOR;0
 Node;AmplifyShaderEditor.FractNode;127;3408,-1472;Inherit;False;1;0;FLOAT;0;False;1;FLOAT;0
 Node;AmplifyShaderEditor.SimpleMultiplyOpNode;114;2896,-1328;Inherit;False;2;2;0;FLOAT2;0,0;False;1;FLOAT;0;False;1;FLOAT2;0
-Node;AmplifyShaderEditor.RangedFloatNode;117;2528,-1056;Inherit;False;Property;_ShadingFreq;ShadingFreq;5;0;Create;True;0;0;0;False;0;False;0;0.31;0;10;0;1;FLOAT;0
 Node;AmplifyShaderEditor.SimpleAddOpNode;139;2836.898,-837.9017;Inherit;False;2;2;0;FLOAT;0;False;1;FLOAT;0;False;1;FLOAT;0
-Node;AmplifyShaderEditor.RangedFloatNode;141;2224,-720;Inherit;False;Property;_ShadingNoiseScale;ShadingNoiseScale;8;0;Create;True;0;0;0;False;0;False;0;0;0;0;0;1;FLOAT;0
+Node;AmplifyShaderEditor.RangedFloatNode;141;2224,-720;Inherit;False;Property;_ShadingNoiseScale;ShadingNoiseScale;13;0;Create;True;0;0;0;False;0;False;0;0;0;0;0;1;FLOAT;0
 Node;AmplifyShaderEditor.NoiseGeneratorNode;140;2528,-832;Inherit;False;Simplex2D;True;False;2;0;FLOAT2;0,0;False;1;FLOAT;1;False;1;FLOAT;0
 Node;AmplifyShaderEditor.ColorNode;131;3280,-1072;Inherit;False;Constant;_Color1;Color 1;10;0;Create;True;0;0;0;False;0;False;0,0,0,0;0,0,0,0;True;True;0;6;COLOR;0;FLOAT;1;FLOAT;2;FLOAT;3;FLOAT;4;FLOAT3;5
 Node;AmplifyShaderEditor.SwizzleNode;111;2544,-1312;Inherit;False;FLOAT;0;1;2;3;1;0;COLOR;0,0,0,0;False;1;FLOAT;0
 Node;AmplifyShaderEditor.RotatorNode;136;2896,-976;Inherit;False;3;0;FLOAT2;0,0;False;1;FLOAT2;0.5,0.5;False;2;FLOAT;1;False;1;FLOAT2;0
 Node;AmplifyShaderEditor.LerpOp;113;3168,-1728;Inherit;False;3;0;COLOR;0,0,0,0;False;1;COLOR;0,0,0,0;False;2;FLOAT;0;False;1;COLOR;0
 Node;AmplifyShaderEditor.StepOpNode;132;3632,-1520;Inherit;False;2;0;FLOAT;0;False;1;FLOAT;0;False;1;FLOAT;0
-Node;AmplifyShaderEditor.RangedFloatNode;122;3392,-1264;Inherit;False;Property;_ShadingThreshold;ShadingThreshold;7;0;Create;True;0;0;0;False;0;False;0;0.632;0;1;0;1;FLOAT;0
+Node;AmplifyShaderEditor.RangedFloatNode;122;3392,-1264;Inherit;False;Property;_ShadingThreshold;ShadingThreshold;12;0;Create;True;0;0;0;False;0;False;0;0.632;0;1;0;1;FLOAT;0
 Node;AmplifyShaderEditor.SimpleMultiplyOpNode;119;3888,-1664;Inherit;False;2;2;0;FLOAT;0;False;1;COLOR;0,0,0,0;False;1;COLOR;0
 Node;AmplifyShaderEditor.TextureCoordinatesNode;142;2624,-1232;Inherit;False;0;-1;2;3;2;SAMPLER2D;;False;0;FLOAT2;1,1;False;1;FLOAT2;0,0;False;5;FLOAT2;0;FLOAT;1;FLOAT;2;FLOAT;3;FLOAT;4
 Node;AmplifyShaderEditor.RegisterLocalVarNode;77;2376.124,79.06213;Inherit;False;texCoord;-1;True;1;0;FLOAT4;0,0,0,0;False;1;FLOAT4;0
+Node;AmplifyShaderEditor.RangedFloatNode;117;2528,-1056;Inherit;False;Property;_ShadingFreq;ShadingFreq;8;0;Create;True;0;0;0;False;0;False;0;0.31;0;1000;0;1;FLOAT;0
+Node;AmplifyShaderEditor.GetLocalVarNode;144;742.3985,-1609.972;Inherit;False;77;texCoord;1;0;OBJECT;;False;1;FLOAT4;0
+Node;AmplifyShaderEditor.RangedFloatNode;145;774.3985,-1465.972;Inherit;False;Property;_NoiseScale1;NoiseScale;11;0;Create;True;0;0;0;False;0;False;0;5.63;0;0;0;1;FLOAT;0
+Node;AmplifyShaderEditor.DotProductOpNode;146;54.39851,-1081.972;Inherit;False;2;0;FLOAT3;0,0,0;False;1;FLOAT3;0,0,0;False;1;FLOAT;0
+Node;AmplifyShaderEditor.LerpOp;147;-249.6015,-1577.972;Inherit;False;3;0;COLOR;0,0,0,0;False;1;COLOR;0,0,0,0;False;2;FLOAT;0;False;1;COLOR;0
+Node;AmplifyShaderEditor.LerpOp;148;-73.60149,-1433.972;Inherit;False;3;0;COLOR;0,0,0,0;False;1;COLOR;0,0,0,0;False;2;FLOAT;0;False;1;COLOR;0
+Node;AmplifyShaderEditor.ColorNode;149;-617.6015,-1737.972;Inherit;False;Property;_MesaXY3;MesaXY2;7;0;Create;True;0;0;0;False;0;False;0.9433962,0.2180491,0.2180491,0;0.2196077,0.945098,0.8411337,0;True;True;0;6;COLOR;0;FLOAT;1;FLOAT;2;FLOAT;3;FLOAT;4;FLOAT3;5
+Node;AmplifyShaderEditor.ColorNode;150;-585.6015,-1545.972;Inherit;False;Property;_MesaXY4;MesaXY1;1;0;Create;True;0;0;0;False;0;False;1,0.4764151,0.9294767,0;1,0.9524046,0,0;True;True;0;6;COLOR;0;FLOAT;1;FLOAT;2;FLOAT;3;FLOAT;4;FLOAT3;5
+Node;AmplifyShaderEditor.Vector3Node;151;-249.6015,-1209.972;Inherit;False;Constant;_Vector2;Vector 0;0;0;Create;True;0;0;0;False;0;False;0,1,0;0,0,0;0;4;FLOAT3;0;FLOAT;1;FLOAT;2;FLOAT;3
+Node;AmplifyShaderEditor.DotProductOpNode;152;-57.60149,-1241.972;Inherit;False;2;0;FLOAT3;0,0,0;False;1;FLOAT3;0,0,0;False;1;FLOAT;0
+Node;AmplifyShaderEditor.AbsOpNode;153;118.3985,-1193.972;Inherit;False;1;0;FLOAT;0;False;1;FLOAT;0
+Node;AmplifyShaderEditor.ColorNode;154;214.3985,-1561.972;Inherit;False;Property;_MesaZ1;MesaZ;9;0;Create;True;0;0;0;False;0;False;0.9433962,0.2180491,0.2180491,0;0,0.06301299,1,0;True;True;0;6;COLOR;0;FLOAT;1;FLOAT;2;FLOAT;3;FLOAT;4;FLOAT3;5
+Node;AmplifyShaderEditor.SaturateNode;155;342.3985,-1145.972;Inherit;False;1;0;FLOAT;0;False;1;FLOAT;0
+Node;AmplifyShaderEditor.NormalVertexDataNode;156;-1145.601,-1145.972;Inherit;False;0;5;FLOAT3;0;FLOAT;1;FLOAT;2;FLOAT;3;FLOAT;4
+Node;AmplifyShaderEditor.WorldNormalVector;157;-825.6015,-1129.972;Inherit;False;False;1;0;FLOAT3;0,0,1;False;4;FLOAT3;0;FLOAT;1;FLOAT;2;FLOAT;3
+Node;AmplifyShaderEditor.FunctionNode;158;-873.6015,-1257.972;Inherit;False;World Normal Face;-1;;10;8ad4248928242e14ab87cd99e6913c33;1,86,1;0;1;FLOAT3;30
+Node;AmplifyShaderEditor.ColorNode;159;-569.6015,-1353.972;Inherit;False;Property;_MesaXY5;MesaXY3;3;0;Create;True;0;0;0;False;0;False;1,0.4764151,0.9294767,0;1,0.9524046,0,0;True;True;0;6;COLOR;0;FLOAT;1;FLOAT;2;FLOAT;3;FLOAT;4;FLOAT3;5
+Node;AmplifyShaderEditor.StepOpNode;160;534.3985,-1145.972;Inherit;False;2;0;FLOAT;0;False;1;FLOAT;0.1;False;1;FLOAT;0
+Node;AmplifyShaderEditor.LerpOp;161;726.3985,-1337.972;Inherit;False;3;0;COLOR;0,0,0,0;False;1;COLOR;0,0,0,0;False;2;FLOAT;0;False;1;COLOR;0
+Node;AmplifyShaderEditor.Vector3Node;162;-841.6015,-841.9724;Inherit;False;Constant;_Vector4;Vector 0;0;0;Create;True;0;0;0;False;0;False;1,0,0;0,0,0;0;4;FLOAT3;0;FLOAT;1;FLOAT;2;FLOAT;3
+Node;AmplifyShaderEditor.AbsOpNode;163;-457.6015,-1017.972;Inherit;False;1;0;FLOAT;0;False;1;FLOAT;0
+Node;AmplifyShaderEditor.DotProductOpNode;164;-601.6015,-1033.972;Inherit;False;2;0;FLOAT3;0,0,0;False;1;FLOAT3;0,0,0;False;1;FLOAT;0
+Node;AmplifyShaderEditor.Vector3Node;165;-169.6015,-1033.972;Inherit;False;Constant;_Vector5;Vector 0;0;0;Create;True;0;0;0;False;0;False;0,-1,0;0,0,0;0;4;FLOAT3;0;FLOAT;1;FLOAT;2;FLOAT;3
+Node;AmplifyShaderEditor.RangedFloatNode;166;326.3985,-1033.972;Inherit;False;Property;_ZStep;ZStep;14;0;Create;True;0;0;0;False;0;False;0;0;-1;1;0;1;FLOAT;0
 Node;AmplifyShaderEditor.TemplateMultiPassMasterNode;35;1280,-704;Float;False;False;-1;2;UnityEditor.ShaderGraphLitGUI;0;12;New Amplify Shader;94348b07e5e8bab40bd6c8a1e3df54cd;True;ExtraPrePass;0;0;ExtraPrePass;5;False;False;False;False;False;False;False;False;False;False;False;False;True;0;False;;False;True;0;False;;False;False;False;False;False;False;False;False;False;True;False;0;False;;255;False;;255;False;;0;False;;0;False;;0;False;;0;False;;0;False;;0;False;;0;False;;0;False;;False;True;1;False;;True;3;False;;True;True;0;False;;0;False;;True;4;RenderPipeline=UniversalPipeline;RenderType=Opaque=RenderType;Queue=Geometry=Queue=0;UniversalMaterialType=Lit;True;5;True;12;all;0;False;True;1;1;False;;0;False;;0;1;False;;0;False;;False;False;False;False;False;False;False;False;False;False;False;False;True;0;False;;False;True;True;True;True;True;0;False;;False;False;False;False;False;False;False;True;False;0;False;;255;False;;255;False;;0;False;;0;False;;0;False;;0;False;;0;False;;0;False;;0;False;;0;False;;False;True;1;False;;True;3;False;;True;True;0;False;;0;False;;True;0;False;False;0;;0;0;Standard;0;False;0
 Node;AmplifyShaderEditor.TemplateMultiPassMasterNode;37;1280,-704;Float;False;False;-1;2;UnityEditor.ShaderGraphLitGUI;0;12;New Amplify Shader;94348b07e5e8bab40bd6c8a1e3df54cd;True;ShadowCaster;0;2;ShadowCaster;0;False;False;False;False;False;False;False;False;False;False;False;False;True;0;False;;False;True;0;False;;False;False;False;False;False;False;False;False;False;True;False;0;False;;255;False;;255;False;;0;False;;0;False;;0;False;;0;False;;0;False;;0;False;;0;False;;0;False;;False;True;1;False;;True;3;False;;True;True;0;False;;0;False;;True;4;RenderPipeline=UniversalPipeline;RenderType=Opaque=RenderType;Queue=Geometry=Queue=0;UniversalMaterialType=Lit;True;5;True;12;all;0;False;False;False;False;False;False;False;False;False;False;False;False;True;0;False;;False;False;False;True;False;False;False;False;0;False;;False;False;False;False;False;False;False;False;False;True;1;False;;True;3;False;;False;True;1;LightMode=ShadowCaster;False;False;0;;0;0;Standard;0;False;0
 Node;AmplifyShaderEditor.TemplateMultiPassMasterNode;38;1280,-704;Float;False;False;-1;2;UnityEditor.ShaderGraphLitGUI;0;12;New Amplify Shader;94348b07e5e8bab40bd6c8a1e3df54cd;True;DepthOnly;0;3;DepthOnly;0;False;False;False;False;False;False;False;False;False;False;False;False;True;0;False;;False;True;0;False;;False;False;False;False;False;False;False;False;False;True;False;0;False;;255;False;;255;False;;0;False;;0;False;;0;False;;0;False;;0;False;;0;False;;0;False;;0;False;;False;True;1;False;;True;3;False;;True;True;0;False;;0;False;;True;4;RenderPipeline=UniversalPipeline;RenderType=Opaque=RenderType;Queue=Geometry=Queue=0;UniversalMaterialType=Lit;True;5;True;12;all;0;False;False;False;False;False;False;False;False;False;False;False;False;True;0;False;;False;False;False;True;True;False;False;False;0;False;;False;False;False;False;False;False;False;False;False;True;1;False;;False;False;True;1;LightMode=DepthOnly;False;False;0;;0;0;Standard;0;False;0
@@ -4089,7 +4195,7 @@ WireConnection;140;0;142;0
 WireConnection;140;1;141;0
 WireConnection;136;0;142;0
 WireConnection;136;2;139;0
-WireConnection;113;0;98;0
+WireConnection;113;0;161;0
 WireConnection;113;1;119;0
 WireConnection;113;2;132;0
 WireConnection;132;0;127;0
@@ -4097,9 +4203,29 @@ WireConnection;132;1;122;0
 WireConnection;119;0;132;0
 WireConnection;119;1;130;0
 WireConnection;77;0;76;0
+WireConnection;146;0;158;30
+WireConnection;146;1;165;0
+WireConnection;147;0;149;0
+WireConnection;147;1;150;0
+WireConnection;147;2;163;0
+WireConnection;148;0;147;0
+WireConnection;148;1;159;0
+WireConnection;148;2;153;0
+WireConnection;152;0;157;0
+WireConnection;152;1;151;0
+WireConnection;153;0;152;0
+WireConnection;157;0;156;0
+WireConnection;160;0;155;0
+WireConnection;160;1;166;0
+WireConnection;161;0;154;0
+WireConnection;161;1;148;0
+WireConnection;161;2;160;0
+WireConnection;163;0;164;0
+WireConnection;164;0;157;0
+WireConnection;164;1;162;0
 WireConnection;36;0;113;0
 WireConnection;36;2;113;0
 WireConnection;36;4;96;0
 WireConnection;36;7;50;0
 ASEEND*/
-//CHKSM=2AAF54EB45171DD188B33E0C87438CDC2C15FEB5
+//CHKSM=571A43EDC55BE6EF5FB52C20B6126E5BE5B3893C
