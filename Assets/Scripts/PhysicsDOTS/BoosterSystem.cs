@@ -10,16 +10,17 @@ namespace PhysicsDOTS
     public partial struct BoosterSystem : ISystem
     {
         private NativeList<Entity> _boosterEntities;
+        private EntityManager _entityManager;
 
         public void OnCreate(ref SystemState state)
         {
             _boosterEntities = new NativeList<Entity>(Allocator.Persistent);
-            EntityManager entityManager = state.EntityManager;
+            _entityManager = state.EntityManager;
 
-            NativeArray<Entity> entities = entityManager.GetAllEntities(Allocator.Temp);
+            NativeArray<Entity> entities = _entityManager.GetAllEntities(Allocator.Temp);
             foreach (Entity entity in entities)
             {
-                if (entityManager.HasComponent<BoosterComponent>(entity))
+                if (_entityManager.HasComponent<BoosterComponent>(entity))
                 {
                     _boosterEntities.Add(entity);
                 }
@@ -28,6 +29,11 @@ namespace PhysicsDOTS
 
         private void OnUpdate(ref SystemState state)
         {
+            if (_boosterEntities.Length == 0)
+            {
+                BoostersSetUp();
+            }
+            
             foreach (Entity entity in _boosterEntities)
             {
                 RefRW<LocalToWorld> boosterTransform = SystemAPI.GetComponentRW<LocalToWorld>(entity);
@@ -56,6 +62,18 @@ namespace PhysicsDOTS
                     physicsVelocity.ValueRW.Linear += new float3(cpm.velocityDirection.x * SystemAPI.Time.DeltaTime,
                         cpm.velocityDirection.y * SystemAPI.Time.DeltaTime,
                         cpm.velocityDirection.z * SystemAPI.Time.DeltaTime);
+                }
+            }
+        }
+
+        private void BoostersSetUp()
+        {
+            NativeArray<Entity> entities = _entityManager.GetAllEntities(Allocator.Temp);
+            foreach (Entity entity in entities)
+            {
+                if (_entityManager.HasComponent<BoosterComponent>(entity))
+                {
+                    _boosterEntities.Add(entity);
                 }
             }
         }

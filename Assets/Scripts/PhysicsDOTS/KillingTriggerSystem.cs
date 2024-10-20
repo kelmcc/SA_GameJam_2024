@@ -11,16 +11,17 @@ namespace PhysicsDOTS
     public partial struct KillingTriggerSystem : ISystem
     {
         private NativeList<Entity> _triggerEntities;
+        private EntityManager _entityManager;
 
         public void OnCreate(ref SystemState state)
         {
             _triggerEntities = new NativeList<Entity>(Allocator.Persistent);
-            EntityManager entityManager = state.EntityManager;
+            _entityManager = state.EntityManager;
 
-            NativeArray<Entity> entities = entityManager.GetAllEntities(Allocator.Temp);
+            NativeArray<Entity> entities = _entityManager.GetAllEntities(Allocator.Temp);
             foreach (Entity entity in entities)
             {
-                if (entityManager.HasComponent<KillingTriggerComponent>(entity))
+                if (_entityManager.HasComponent<KillingTriggerComponent>(entity))
                 {
                     _triggerEntities.Add(entity);
                 }
@@ -29,6 +30,11 @@ namespace PhysicsDOTS
 
         private void OnUpdate(ref SystemState state)
         {
+            if (_triggerEntities.Length == 0)
+            {
+                TriggerSetUp();
+            }
+            
             foreach (Entity entity in _triggerEntities)
             {
                 RefRW<LocalToWorld> killingTriggerTransform = SystemAPI.GetComponentRW<LocalToWorld>(entity);
@@ -58,5 +64,18 @@ namespace PhysicsDOTS
                 }
             }
         }
+        
+        private void TriggerSetUp()
+        {
+            NativeArray<Entity> entities = _entityManager.GetAllEntities(Allocator.Temp);
+            foreach (Entity entity in entities)
+            {
+                if (_entityManager.HasComponent<KillingTriggerComponent>(entity))
+                {
+                    _triggerEntities.Add(entity);
+                }
+            }
+        }
+
     }
 }

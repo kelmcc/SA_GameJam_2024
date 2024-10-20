@@ -10184,6 +10184,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: ZiplineConstructionZone
       objectReference: {fileID: 0}
+    - target: {fileID: 3647515528203738349, guid: 67587963d50adfd46b234d217f716cdd,
+        type: 3}
+      propertyPath: m_DrawDistance
+      value: 100
+      objectReference: {fileID: 0}
     - target: {fileID: 3989402554293216131, guid: 67587963d50adfd46b234d217f716cdd,
         type: 3}
       propertyPath: Building

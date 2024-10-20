@@ -13,7 +13,7 @@ namespace PhysicsDOTS
         {
             public override void Bake(KillingTriggerAuthoring authoring)
             {
-                Entity killingTriggerAuthoring = GetEntity(TransformUsageFlags.None);
+                Entity killingTriggerAuthoring = GetEntity(TransformUsageFlags.Dynamic);
 
                 AddComponent(killingTriggerAuthoring,
                     new KillingTriggerComponent()

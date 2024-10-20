@@ -113,8 +113,8 @@ MonoBehaviour:
   m_Active: 1
   m_Settings:
     technique: 0
-    maxDrawDistance: 1000
-    decalLayers: 0
+    maxDrawDistance: 100
+    decalLayers: 1
     dBufferSettings:
       surfaceData: 2
     screenSpaceSettings:

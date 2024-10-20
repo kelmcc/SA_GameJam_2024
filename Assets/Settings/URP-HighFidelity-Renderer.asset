@@ -83,7 +83,7 @@ MonoBehaviour:
   m_DepthPrimingMode: 0
   m_CopyDepthMode: 0
   m_AccurateGbufferNormals: 0
-  m_IntermediateTextureMode: 1
+  m_IntermediateTextureMode: 0
 --- !u!114 &840395294678344467
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -99,12 +99,12 @@ MonoBehaviour:
   m_Active: 1
   m_Settings:
     technique: 0
-    maxDrawDistance: 1000
+    maxDrawDistance: 100
     decalLayers: 0
     dBufferSettings:
       surfaceData: 2
     screenSpaceSettings:
-      normalBlend: 0
+      normalBlend: 2
   m_CopyDepthPS: {fileID: 4800000, guid: d6dae50ee9e1bfa4db75f19f99355220, type: 3}
   m_DBufferClear: {fileID: 4800000, guid: f056d8bd2a1c7e44e9729144b4c70395, type: 3}
 --- !u!114 &5667255642572934930
@@ -119,7 +119,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f62c9c65cf3354c93be831c8bc075510, type: 3}
   m_Name: ScreenSpaceAmbientOcclusion
   m_EditorClassIdentifier: 
-  m_Active: 1
+  m_Active: 0
   m_Settings:
     AOMethod: 0
     Downsample: 0
