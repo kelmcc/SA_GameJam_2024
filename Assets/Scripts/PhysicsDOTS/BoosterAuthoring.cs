@@ -6,25 +6,27 @@ namespace PhysicsDOTS
 {
     public class BoosterAuthoring : MonoBehaviour
     {
-        public float sizeX;
-        public float sizeY;
-        public float sizeZ;
-        
-        public float3 velocityDirection;
+        public float velocityStrength = 0f;
+        public Transform velocityDirection;
 
         public class BoosterBaker : Baker<BoosterAuthoring>
         {
             public override void Bake(BoosterAuthoring authoring)
             {
                 Entity boosterAuthoring = GetEntity(TransformUsageFlags.None);
-
+                Vector3 direction = authoring.velocityDirection.transform.position - authoring.transform.position;
+                direction.Normalize();
+                
+                float3 velocity = direction * authoring.velocityStrength;
+                
+                var localScale = authoring.transform.localScale;
                 AddComponent(boosterAuthoring,
                     new BoosterComponent()
                     {
-                        sizeX = authoring.sizeX,
-                        sizeY = authoring.sizeY,
-                        sizeZ = authoring.sizeZ,
-                        velocityDirection = authoring.velocityDirection
+                        sizeX = localScale.x,
+                        sizeY = localScale.y,
+                        sizeZ = localScale.z,
+                        velocityDirection = velocity
                     });
             }
         }
