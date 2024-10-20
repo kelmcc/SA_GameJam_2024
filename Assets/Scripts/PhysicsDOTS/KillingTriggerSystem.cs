@@ -70,7 +70,7 @@ namespace PhysicsDOTS
             NativeArray<Entity> entities = _entityManager.GetAllEntities(Allocator.Temp);
             foreach (Entity entity in entities)
             {
-                if (_entityManager.HasComponent<BoosterComponent>(entity))
+                if (_entityManager.HasComponent<KillingTriggerComponent>(entity))
                 {
                     _triggerEntities.Add(entity);
                 }
