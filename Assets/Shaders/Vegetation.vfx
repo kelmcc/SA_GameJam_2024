@@ -12134,7 +12134,7 @@ MonoBehaviour:
       m_Type:
         m_SerializableType: System.Single, mscorlib, Version=4.0.0.0, Culture=neutral,
           PublicKeyToken=b77a5c561934e089
-      m_SerializableObject: 0.96
+      m_SerializableObject: 0.97
     m_Space: 2147483647
   m_Property:
     name: newRangeMax
@@ -13164,7 +13164,7 @@ MonoBehaviour:
       m_Type:
         m_SerializableType: UnityEngine.AnimationCurve, UnityEngine.CoreModule, Version=0.0.0.0,
           Culture=neutral, PublicKeyToken=null
-      m_SerializableObject: '{"frames":[{"time":0.0,"value":1.0,"inTangent":0.44388440251350405,"outTangent":0.44388440251350405,"tangentMode":0,"leftTangentMode":0,"rightTangentMode":0,"broken":false},{"time":1.017120361328125,"value":0.40377044677734377,"inTangent":-0.4786543548107147,"outTangent":-0.4786543548107147,"tangentMode":0,"leftTangentMode":0,"rightTangentMode":0,"broken":false}],"preWrapMode":8,"postWrapMode":8,"version":1}'
+      m_SerializableObject: '{"frames":[{"time":0.0,"value":1.0,"inTangent":0.44388440251350405,"outTangent":0.44388440251350405,"tangentMode":0,"leftTangentMode":0,"rightTangentMode":0,"broken":false},{"time":1.00872802734375,"value":0.43041229248046877,"inTangent":-0.4786543548107147,"outTangent":-0.4786543548107147,"tangentMode":0,"leftTangentMode":0,"rightTangentMode":0,"broken":false}],"preWrapMode":8,"postWrapMode":8,"version":1}'
     m_Space: 2147483647
   m_Property:
     name: curve
