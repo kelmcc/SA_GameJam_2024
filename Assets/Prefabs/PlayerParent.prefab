@@ -162,8 +162,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1534723203913602554}
   serializedVersion: 2
-  m_LocalRotation: {x: 0.05304494, y: -0.53784734, z: 0.12932824, w: -0.83137286}
-  m_LocalPosition: {x: 0, y: -0.00000021116281, z: -0.00000068337476}
+  m_LocalRotation: {x: -0.017879779, y: -0.9331682, z: 0.22438529, w: 0.28022993}
+  m_LocalPosition: {x: 0.0000009536743, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -241,8 +241,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2476438111577166606}
   serializedVersion: 2
-  m_LocalRotation: {x: 0.005195958, y: -0.5295293, z: 0.16001332, w: -0.8330472}
-  m_LocalPosition: {x: 0.0000009536743, y: -0.00000035193804, z: -0.0000011389579}
+  m_LocalRotation: {x: -0.0017513931, y: -0.91873646, z: 0.27762407, w: 0.28079388}
+  m_LocalPosition: {x: 0.0000009536743, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -406,7 +406,7 @@ Transform:
   m_GameObject: {fileID: 4284448583010590741}
   serializedVersion: 2
   m_LocalRotation: {x: 0.1492864, y: -0, z: -0, w: 0.988794}
-  m_LocalPosition: {x: -8.333545, y: 5.980839, z: 2.681862}
+  m_LocalPosition: {x: 4.8735867, y: 5.980839, z: 13.805979}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -794,8 +794,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 6149162538972518045}
   serializedVersion: 2
-  m_LocalRotation: {x: 0.02921181, y: -0.53392255, z: 0.14467968, w: -0.8325511}
-  m_LocalPosition: {x: 0.0000009536743, y: -0.00000035193804, z: -0.0000011389579}
+  m_LocalRotation: {x: -0.009846364, y: -0.9263588, z: 0.25102016, w: 0.28062668}
+  m_LocalPosition: {x: 0.0000009536743, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -1363,6 +1363,8 @@ MonoBehaviour:
   ZipSyncSpeed: 20
   ZipAcceleration: 5
   MaxZipVelocity: 40
+  BreakMultiplier: 200
+  FrictionCoeff: 0.1
   _zoopForce: {x: 0, y: 0, z: 0}
   GroundRaycastMask:
     serializedVersion: 2
@@ -1401,7 +1403,8 @@ MonoBehaviour:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
-  MaxGroundedVelocity: 15
+  MaxGroundedVelocity: 20
+  ReasonableGroundedVelocity: 20
   Sliding: 0
   VCam: {fileID: 392789445336873560}
   Move: {fileID: -1680190386980627800, guid: beebc186c9198a5408aab7737b4d8c34, type: 3}

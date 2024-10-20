@@ -12,6 +12,8 @@ public class SkaterAnimator : MonoBehaviour
    public AnimationClip Frewheeling;
    public AnimationClip Grind;
    public AnimationClip Jump;
+   public AnimationClip Idle;
+   public AnimationClip Break;
 
    public float Speed
    {
@@ -19,6 +21,16 @@ public class SkaterAnimator : MonoBehaviour
       {
          Anim.SetSpeed(value);
       }
+   }
+
+   public void PlayIdle()
+   {
+      Anim.SetClip(Idle, true, false);
+   }
+   
+   public void PlayBreak()
+   {
+      Anim.SetClip(Break, true, false);
    }
    
    public void PlaySkate()

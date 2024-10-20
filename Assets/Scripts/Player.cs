@@ -21,6 +21,9 @@ public class Player : Damagable
     public float ZipAcceleration;
     public float MaxZipVelocity;
 
+    [Space]
+    public float FrictionCoeff = 0.1f;
+
     [FormerlySerializedAs("zoopForce")] public Vector3 _zoopForce;
 
 
@@ -30,7 +33,8 @@ public class Player : Damagable
 
     [FormerlySerializedAs("FrictionCurve")] public AnimationCurve FrictionInverseCurve;
     public float MaxGroundedVelocity = 20;
-
+    public float ReasonableGroundedVelocity = 5;
+    
     [Range(0, 1)]
     public float Sliding = 0;
 
@@ -164,19 +168,20 @@ public class Player : Damagable
         Debug.DrawLine(transform.position + u, transform.position + u + right * 5, Color.red);
         //
 
-        if (Grounded)
+       // if (Grounded)
         {
             _body.AddForce(((forward * movement.y) + (right * movement.x)) * Time.deltaTime * _currentSpeed, ForceMode.VelocityChange);
         }
         
         float mag = _body.velocity.magnitude;
         float maxSpeedNorm =  mag  / MaxGroundedVelocity;
+        float avSpeedNorm =  mag  / ReasonableGroundedVelocity;
         bool inJumpWindow = InJumpWindow();
         bool isZooping = Time.time - _lastZoopTime < 2;
         if (Grounded || _flailing && !isZooping)
         {
             //mag  *= FrictionInverseCurve.Evaluate(Mathf.Clamp01(maxSpeedNorm));
-            mag *= 1-(0.05f*Time.deltaTime);
+            mag *= 1-(FrictionCoeff*Time.deltaTime);
             mag  = Mathf.Min(MaxGroundedVelocity, mag);
         }
 
@@ -185,16 +190,30 @@ public class Player : Damagable
         if (Grounded)
         {
             //rotate v to facing dir
-            //Sliding = Mathf.Lerp(0, 1, maxSpeedNorm);
+         //   Sliding = Mathf.Lerp(1, 0, avSpeedNorm);
             _body.velocity = Vector3.Lerp(forward * mag, vNorm * mag, Sliding);
 
             if (_hasInput)
             {
-                Anim.PlaySkate();
+                if (movement.y < 0)
+                {
+                    Anim.PlayBreak();
+                }
+                else
+                {
+                    Anim.PlaySkate();
+                }
             }
             else
             {
-                Anim.PlayFreewheel();
+                if (mag < 0.1f)
+                {
+                    Anim.PlayIdle();
+                }
+                else
+                {
+                    Anim.PlayFreewheel();
+                }
             }
           
             Anim.Speed = mag * VelocityAnimSpeedMultiplier;
@@ -206,12 +225,33 @@ public class Player : Damagable
             //cant rotate to facing dir while falling.
             _body.velocity = vNorm * mag;
         }
+
+
+        if (Grounded)
+        {
+            if (Mathf.Abs(movement.x) > 0)
+            {
+                Vector3 dir =  right * movement.x;
+                _body.velocity = Vector3.Slerp(_body.velocity, dir * _body.velocity.magnitude, Time.deltaTime * 5);
+            }
+        }
+    
         
         Vector3 vDir = new Vector3(vNorm.x, 0, vNorm.z).normalized;
-
+        
         if (mag > 0.1)
         {
             _body.MoveRotation(Quaternion.LookRotation(vDir, Vector3.up));
+        }
+
+        if (movement.y < 0)
+        {
+            _currentBreakTime += Time.time;
+            _body.velocity = Vector3.Lerp(_body.velocity, Vector3.zero, Mathf.Clamp01(_currentBreakTime / BreakTime));
+        }
+        else
+        {
+            _currentBreakTime = 0;
         }
         
         _body.AddForce(_zoopForce);
@@ -256,6 +296,8 @@ public class Player : Damagable
         }
     }
 
+    public float BreakTime = 1.5f;
+
     public void OnFall()
     {
         // what happens when the player dies?
@@ -278,8 +320,14 @@ public class Player : Damagable
         }
     }
 
+    private bool reloading = false;
     public void Death()
     {
+        if (reloading)
+        {
+            return;
+        }
+        reloading = true;
         SceneManager.LoadScene(1);
     }
     
@@ -298,7 +346,8 @@ public class Player : Damagable
     private ZiplinePole _endZip;
     private Zipline _zipline;
     private float _startZipTime;
-    
+    private float _currentBreakTime;
+
     private void UpdateZip()
     {
         _body.velocity = Vector3.zero;

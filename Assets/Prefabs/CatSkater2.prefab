@@ -294,3 +294,5 @@ MonoBehaviour:
     type: 3}
   Grind: {fileID: 7269552264258842588, guid: 78219c40a7761a64eba4809a270d4b1a, type: 3}
   Jump: {fileID: 937064705682693857, guid: 78219c40a7761a64eba4809a270d4b1a, type: 3}
+  Idle: {fileID: -1870387970698118050, guid: 78219c40a7761a64eba4809a270d4b1a, type: 3}
+  Break: {fileID: -290620634580028923, guid: 78219c40a7761a64eba4809a270d4b1a, type: 3}
