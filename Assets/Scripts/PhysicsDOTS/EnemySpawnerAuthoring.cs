@@ -1,7 +1,6 @@
 using System.Collections.Generic;
 using Unity.Collections;
 using Unity.Entities;
-using Unity.Mathematics;
 using UnityEngine;
 
 namespace PhysicsDOTS
@@ -11,6 +10,7 @@ namespace PhysicsDOTS
         public float SpawnInterval = 1f;
         public List<EnemySO> EnemyDataSO;
         public List<Transform> SpawnPoints;
+        public int SpawnCountPerTick = 1;
 
         public class EnemySpawnerBaker : Baker<EnemySpawnerAuthoring>
         {
@@ -37,6 +37,7 @@ namespace PhysicsDOTS
                     AddComponent(enemySpawnerAuthor, new EnemySpawnerComponent
                     {
                         SpawnInterval = authoring.SpawnInterval,
+                        SpawnCountPerTick = authoring.SpawnCountPerTick,
                         SpawnPositions = blobReference
                     });
                 }

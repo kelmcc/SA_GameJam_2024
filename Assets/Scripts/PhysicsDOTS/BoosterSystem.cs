@@ -1,119 +1,124 @@
 using System;
-using System.Collections.Generic;
+using Unity.Burst;
 using Unity.Collections;
 using Unity.Entities;
 using Unity.Mathematics;
 using Unity.Physics;
 using Unity.Transforms;
-using UnityEngine;
 
 namespace PhysicsDOTS
 {
+    [BurstCompile]
     public partial struct BoosterSystem : ISystem
     {
-        private NativeList<Entity> _boosterEntities;
-        private EntityManager _entityManager;
-
         private const bool CenterLineUsesY = false;
 
+        [BurstCompile]
         public void OnCreate(ref SystemState state)
         {
-            _boosterEntities = new NativeList<Entity>(Allocator.Persistent);
-            _entityManager = state.EntityManager;
-
-            NativeArray<Entity> entities = _entityManager.GetAllEntities(Allocator.Temp);
-            foreach (Entity entity in entities)
-            {
-                if (_entityManager.HasComponent<BoosterComponent>(entity))
-                {
-                    _boosterEntities.Add(entity);
-                }
-            }
+            // No need to do anything here since we'll use queries in OnUpdate
         }
 
-        private void OnUpdate(ref SystemState state)
+        [BurstCompile]
+        public void OnUpdate(ref SystemState state)
         {
-            if (_boosterEntities.Length == 0)
+            var physicsWorldSingleton = SystemAPI.GetSingleton<PhysicsWorldSingleton>();
+            var deltaTime = SystemAPI.Time.DeltaTime;
+
+            // Create ComponentLookups for accessing components on other entities
+            var physicsVelocityLookup = state.GetComponentLookup<PhysicsVelocity>();
+            var localToWorldLookup = state.GetComponentLookup<LocalToWorld>(true);
+
+            // Update the lookups to ensure they are current
+            physicsVelocityLookup.Update(ref state);
+            localToWorldLookup.Update(ref state);
+
+            // Schedule a job that processes all entities with BoosterComponent and LocalToWorld
+            var boosterJob = new BoosterJob
             {
-                BoostersSetUp();
-            }
+                PhysicsWorld = physicsWorldSingleton,
+                DeltaTime = deltaTime,
+                CenterLineUsesY = CenterLineUsesY,
+                PhysicsVelocityLookup = physicsVelocityLookup,
+                LocalToWorldLookup = localToWorldLookup
+            };
+            boosterJob.Schedule();
+        }
 
-            foreach (Entity entity in _boosterEntities)
+        [BurstCompile]
+        private partial struct BoosterJob : IJobEntity
+        {
+            public PhysicsWorldSingleton PhysicsWorld;
+            public float DeltaTime;
+            public bool CenterLineUsesY;
+
+            // Component lookups to access components on other entities
+            public ComponentLookup<PhysicsVelocity> PhysicsVelocityLookup;
+            [ReadOnly] public ComponentLookup<LocalToWorld> LocalToWorldLookup;
+
+            public void Execute(ref BoosterComponent boosterComponent, in LocalToWorld boosterTransform)
             {
-                RefRW<LocalToWorld> boosterTransform = SystemAPI.GetComponentRW<LocalToWorld>(entity);
-                RefRO<BoosterComponent> boosterComponent = SystemAPI.GetComponentRO<BoosterComponent>(entity);
+                BoosterComponent cpm = boosterComponent;
 
-                var cpm = boosterComponent.ValueRO;
+                // Prepare collision filter
+                CollisionFilter collisionFilter = new CollisionFilter
+                {
+                    BelongsTo = (uint)EnemiesLayer.Triggers,
+                    CollidesWith = (uint)EnemiesLayer.Enemies,
+                    GroupIndex = 0
+                };
 
-                PhysicsWorldSingleton physicsWorldSingleton = SystemAPI.GetSingleton<PhysicsWorldSingleton>();
-
+                // Perform the box cast
                 NativeList<ColliderCastHit> hits = new NativeList<ColliderCastHit>(Allocator.Temp);
+                PhysicsWorld.BoxCastAll(
+                    boosterTransform.Position,
+                    boosterTransform.Rotation,
+                    new float3(cpm.sizeX / 2, cpm.sizeY / 2, cpm.sizeZ / 2),
+                    float3.zero,
+                    1,
+                    ref hits,
+                    collisionFilter);
 
-                
-                physicsWorldSingleton.BoxCastAll(boosterTransform.ValueRO.Position,
-                    boosterTransform.ValueRO.Rotation,
-                    new float3(cpm.sizeX / 2, cpm.sizeY / 2,
-                        cpm.sizeZ / 2),
-                    float3.zero, 1, ref hits,
-                    new CollisionFilter
-                        { BelongsTo = (uint)EnemiesLayer.Triggers, CollidesWith = (uint)EnemiesLayer.Enemies });
+                float3 normCenterLine = math.normalize(cpm.velocityDirection);
 
+                // Process each hit
                 foreach (ColliderCastHit hit in hits)
                 {
-                    var enemy = hit.Entity;
+                    Entity enemy = hit.Entity;
 
-                    RefRW<PhysicsVelocity> physicsVelocity = SystemAPI.GetComponentRW<PhysicsVelocity>(enemy);
+                    // Check if the enemy has the required components
+                    if (!PhysicsVelocityLookup.HasComponent(enemy) || !LocalToWorldLookup.HasComponent(enemy))
+                        continue;
 
-                    RefRW<LocalToWorld> enemyTrans = SystemAPI.GetComponentRW<LocalToWorld>(enemy);
+                    PhysicsVelocity physicsVelocity = PhysicsVelocityLookup[enemy];
+                    LocalToWorld enemyTrans = LocalToWorldLookup[enemy];
 
-                    var localEntityPosRelativeToBoxCenter =
-                        enemyTrans.ValueRO.Position - boosterTransform.ValueRO.Position;
+                    float3 localEntityPosRelativeToBoxCenter = enemyTrans.Position - boosterTransform.Position;
+                    float projMag = math.dot(localEntityPosRelativeToBoxCenter, normCenterLine);
+                    float3 projectedPointOnCenterLine = normCenterLine * math.abs(projMag);
+                    float3 vecTowardsCenterLine = projectedPointOnCenterLine - localEntityPosRelativeToBoxCenter;
 
-                    var normCenterLine = math.normalize(cpm.velocityDirection);
-                    var projMag = math.dot(localEntityPosRelativeToBoxCenter, normCenterLine);
-
-                    var projectedPointOnCenterLine = normCenterLine * math.abs(projMag);
-                    var vecTowardsCenterLine = projectedPointOnCenterLine - localEntityPosRelativeToBoxCenter;
-
-                    if (!CenterLineUsesY) //Sorry I had to. Const value at top of file. x
+                    if (!CenterLineUsesY)
                     {
                         vecTowardsCenterLine = new float3(vecTowardsCenterLine.x, 0, vecTowardsCenterLine.z);
                     }
 
-                    physicsVelocity.ValueRW.Linear += new float3(
-                        (cpm.velocityDirection.x * cpm.BoosterStrength +
-                         vecTowardsCenterLine.x * cpm.CorrallingMultiplier) *
-                        SystemAPI.Time.DeltaTime,
-                        (cpm.velocityDirection.y * cpm.BoosterStrength +
-                         vecTowardsCenterLine.y * cpm.CorrallingMultiplier) * cpm.BoosterStrength *
-                        SystemAPI.Time.DeltaTime,
-                        (cpm.velocityDirection.z * cpm.BoosterStrength +
-                         vecTowardsCenterLine.z * cpm.CorrallingMultiplier) * cpm.BoosterStrength *
-                        SystemAPI.Time.DeltaTime);
-                }
-            }
-        }
+                    float3 velocityChange = new float3(
+                        (cpm.velocityDirection.x * cpm.BoosterStrength + vecTowardsCenterLine.x * cpm.CorrallingMultiplier) * DeltaTime,
+                        (cpm.velocityDirection.y * cpm.BoosterStrength + vecTowardsCenterLine.y * cpm.CorrallingMultiplier) * DeltaTime,
+                        (cpm.velocityDirection.z * cpm.BoosterStrength + vecTowardsCenterLine.z * cpm.CorrallingMultiplier) * DeltaTime
+                    );
 
-        private void BoostersSetUp()
-        {
-            NativeArray<Entity> entities = _entityManager.GetAllEntities(Allocator.Temp);
-            foreach (Entity entity in entities)
-            {
-                if (_entityManager.HasComponent<BoosterComponent>(entity))
-                {
-                    _boosterEntities.Add(entity);
-                }
-            }
-        }
-        
-        public void OnDestroy(ref SystemState state)
-        {
-            if (_boosterEntities.IsCreated)
-            {
-                _boosterEntities.Dispose();
-            }
-        }
+                    // Update the physics velocity
+                    physicsVelocity.Linear += velocityChange;
 
+                    // Write back the updated velocity
+                    PhysicsVelocityLookup[enemy] = physicsVelocity;
+                }
+
+                hits.Dispose();
+            }
+        }
     }
 }
 
@@ -125,3 +130,4 @@ public enum EnemiesLayer
     Triggers = 1 << 7,
     Buildings = 1 << 10
 }
+

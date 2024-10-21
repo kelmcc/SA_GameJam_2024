@@ -1,4 +1,6 @@
 using System.Collections.Generic;
+using Unity.Burst;
+using Unity.Collections;
 using Unity.Entities;
 using Unity.Mathematics;
 using Unity.Transforms;
@@ -7,8 +9,6 @@ namespace PhysicsDOTS
 {
     public partial class EnemySpawnerSystem : SystemBase
     {
-        private EnemySpawnerComponent enemySpawnerComponent;
-        private EnemyDataContainer enemyDataContainer;
         private Entity enemySpawnerEntity;
         private float nextSpawnTime;
         private Random random;
@@ -16,66 +16,89 @@ namespace PhysicsDOTS
         protected override void OnCreate()
         {
             base.OnCreate();
-            random = Random.CreateFromIndex((uint)enemySpawnerComponent.GetHashCode());
+            random = new Random(1); // Initialize with a fixed seed
         }
 
         protected override void OnUpdate()
         {
+            // Check if the singleton entity exists
             if (!SystemAPI.TryGetSingletonEntity<EnemySpawnerComponent>(out enemySpawnerEntity))
             {
                 return;
             }
 
-            enemySpawnerComponent = EntityManager.GetComponentData<EnemySpawnerComponent>(enemySpawnerEntity);
-            enemyDataContainer = EntityManager.GetComponentData<EnemyDataContainer>(enemySpawnerEntity);
-
-            if (SystemAPI.Time.ElapsedTime > nextSpawnTime)
+            // Initialize random with a unique seed if not already initialized
+            if (random.state == 0)
             {
-                SpawnEnemy();
+                random = new Random((uint)(enemySpawnerEntity.Index + 1));
             }
-        }
 
-        private void SpawnEnemy()
-        {
-            int level = 1;
-            List<EnemyData> availableEnemies = new List<EnemyData>();
-
-            foreach (var enemyData in enemyDataContainer.enemyData)
+            // Check if it's time to spawn enemies
+            if (SystemAPI.Time.ElapsedTime < nextSpawnTime)
             {
-                if (enemyData.Level <= level)
+                return;
+            }
+
+            // Retrieve components
+            EnemySpawnerComponent enemySpawnerComponent = EntityManager.GetComponentData<EnemySpawnerComponent>(enemySpawnerEntity);
+            EnemyDataContainer enemyDataContainer = EntityManager.GetComponentData<EnemyDataContainer>(enemySpawnerEntity);
+
+            List<EnemyData> availableEnemies = enemyDataContainer.enemyData;
+            int enemyCount = availableEnemies.Count;
+
+            // Calculate cumulative weights
+            int totalWeight = 0;
+            NativeArray<int> cumulativeWeights = new NativeArray<int>(enemyCount, Allocator.Temp);
+            for (int i = 0; i < enemyCount; i++)
+            {
+                totalWeight += availableEnemies[i].Level;
+                cumulativeWeights[i] = totalWeight;
+            }
+
+            // Select an enemy based on weighted probability
+            int randomValue = random.NextInt(0, totalWeight);
+            EnemyData selectedEnemy = availableEnemies[0];
+            for (int i = 0; i < enemyCount; i++)
+            {
+                if (randomValue < cumulativeWeights[i])
                 {
-                    availableEnemies.Add(enemyData);
+                    selectedEnemy = availableEnemies[i];
+                    break;
                 }
             }
 
-            int index = random.NextInt(0, enemySpawnerComponent.SpawnPositions.Value.SpawnPositions.Length);
+            cumulativeWeights.Dispose();
 
-            Entity newEnemy = EntityManager.Instantiate((availableEnemies[1].Prefab));
-            EntityManager.SetComponentData(newEnemy, new LocalTransform()
+            // Spawn enemies
+            ref BlobArray<float3> spawnPositions = ref enemySpawnerComponent.SpawnPositions.Value.SpawnPositions;
+            int spawnPositionsCount = spawnPositions.Length;
+            for (int i = 0; i < spawnPositionsCount; i++)
             {
-                Position = AddJitter(enemySpawnerComponent.SpawnPositions.Value.SpawnPositions[index]),
-                Rotation = quaternion.identity,
-                Scale = availableEnemies[1].Scale
-            });
-            
-            EntityManager.AddComponent<EnemyTag>(newEnemy);
-            
+                for (int j = 0; j < enemySpawnerComponent.SpawnCountPerTick; j++)
+                {
+                    SpawnEnemy(spawnPositions[i], selectedEnemy);
+                }
+            }
+
+            // Update next spawn time
             nextSpawnTime = (float)SystemAPI.Time.ElapsedTime + enemySpawnerComponent.SpawnInterval;
+        }
+
+        private void SpawnEnemy(float3 position, EnemyData enemyData)
+        {
+            Entity newEnemy = EntityManager.Instantiate(enemyData.Prefab);
+            EntityManager.SetComponentData(newEnemy, new LocalTransform
+            {
+                Position = AddJitter(position),
+                Rotation = quaternion.identity,
+                Scale = enemyData.Scale
+            });
+            EntityManager.AddComponent<EnemyTag>(newEnemy);
         }
 
         private float3 AddJitter(float3 position)
         {
-            float3 jitter = new float3(random.NextFloat(-2, 2) + position.x, random.NextFloat(-2, 2) + position.y,
-                random.NextFloat(-2, 2) + position.z);
-            return jitter;
-        }
-
-        private void Scale(Entity entity, float scale)
-        {
-            RefRW<LocalToWorld> transform = SystemAPI.GetComponentRW<LocalToWorld>(entity);
-            transform.ValueRW.Value.c0 = new float4(scale, 0, 0, 0);
-            transform.ValueRW.Value.c1 = new float4(0, scale, 0, 0);
-            transform.ValueRW.Value.c2 = new float4(0, 0, scale, 0);
+            return position + random.NextFloat3(new float3(-2f), new float3(2f));
         }
     }
 }

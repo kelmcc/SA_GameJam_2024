@@ -16,11 +16,11 @@ MonoBehaviour:
 --- !u!21 &2100000
 Material:
   serializedVersion: 8
-  m_ObjectHideFlags: 0
+  m_ObjectHideFlags: 32
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: SpiderMouth 1
+  m_Name: SpiderMouth Heavy
   m_Shader: {fileID: 4800000, guid: 6865eb20be653499899fa63e20b0fd56, type: 3}
   m_Parent: {fileID: 0}
   m_ModifiedSerializedProperties: 0
@@ -63,7 +63,7 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _Flipbook:
-        m_Texture: {fileID: 2800000, guid: 9453fd284ea6c4d2e8219cbd9ca11dee, type: 3}
+        m_Texture: {fileID: 2800000, guid: 11b9161dec94a49a68e90f36a8bcb534, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _MainTex:

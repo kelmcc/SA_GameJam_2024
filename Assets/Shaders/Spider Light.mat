@@ -7,7 +7,7 @@ Material:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: Spider
+  m_Name: Spider Light
   m_Shader: {fileID: 4800000, guid: b7bcc88ba23a14cb5a1e006c2560da0f, type: 3}
   m_Parent: {fileID: 0}
   m_ModifiedSerializedProperties: 0
@@ -102,16 +102,16 @@ Material:
     - _GlossyReflections: 0
     - _LineNoiseScale: 4.3
     - _LineNoiseWeight: 0.115
-    - _LineRotationNoiseScale: 3.02
+    - _LineRotationNoiseScale: 9.26
     - _LineRotationNoiseWeight: 0.38
-    - _LineRotationScale: 1.1
+    - _LineRotationScale: 1.32
     - _LineRotationTimeScale: 12
-    - _LineScale: 5.46
+    - _LineScale: 14.3
     - _LineSpeed: 4
-    - _LineStep: 0.175
+    - _LineStep: 0.169
     - _Metallic: 0
     - _NoiseOffset: 0.15
-    - _NoiseScale: 389
+    - _NoiseScale: 478
     - _OcclusionStrength: 1
     - _Parallax: 0.005
     - _QueueControl: 0
@@ -127,7 +127,7 @@ Material:
     - _ZWrite: 1
     m_Colors:
     - _BaseColor: {r: 1, g: 1, b: 1, a: 1}
-    - _Color: {r: 0, g: 0, b: 0, a: 1}
+    - _Color: {r: 0.031, g: 0.0041849995, b: 0.006276776, a: 1}
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
     - _FresnelColor: {r: 0, g: 0, b: 0, a: 1}
     - _SpecColor: {r: 0.19999996, g: 0.19999996, b: 0.19999996, a: 1}
