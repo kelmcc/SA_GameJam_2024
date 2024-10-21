@@ -45,6 +45,7 @@ namespace UI
                 else
                 {
                     SceneManager.LoadScene(1);
+                    SceneManager.LoadScene(2, LoadSceneMode.Additive);
                 }
                
                 return;
