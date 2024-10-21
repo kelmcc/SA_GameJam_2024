@@ -13,10 +13,16 @@ namespace PhysicsDOTS
         private float nextSpawnTime;
         private Random random;
 
+        private double spawnRateIncreaseInterval = 60f * 5;
+        private double lastSpawnRateIncrease;
+
+        private int extraSpawns = 0;
+
         protected override void OnCreate()
         {
             base.OnCreate();
             random = new Random(1); // Initialize with a fixed seed
+            lastSpawnRateIncrease = SystemAPI.Time.ElapsedTime;
         }
 
         protected override void OnUpdate()
@@ -72,9 +78,16 @@ namespace PhysicsDOTS
             // Spawn enemies
             ref BlobArray<float3> spawnPositions = ref enemySpawnerComponent.SpawnPositions.Value.SpawnPositions;
             int spawnPositionsCount = spawnPositions.Length;
+
+            if (SystemAPI.Time.ElapsedTime - lastSpawnRateIncrease > spawnRateIncreaseInterval)
+            {
+                extraSpawns++;
+                lastSpawnRateIncrease = SystemAPI.Time.ElapsedTime;
+            }
+            
             for (int i = 0; i < spawnPositionsCount; i++)
             {
-                for (int j = 0; j < enemySpawnerComponent.SpawnCountPerTick; j++)
+                for (int j = 0; j < enemySpawnerComponent.SpawnCountPerTick + extraSpawns; j++)
                 {
                     SpawnEnemy(spawnPositions[i], selectedEnemy);
                 }

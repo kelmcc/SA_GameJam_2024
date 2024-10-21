@@ -20,9 +20,13 @@ public class CoinUIController : MonoBehaviour
 
     private Tween t;
 
+    private float _lastSpiderTime = 0;
+    private float _spiderUpdateInterval = 60 * 5;
+
     private void Awake()
     {
         Instance = this;
+        _lastSpiderTime = Time.time;
     }
 
     public void PopObjective()
@@ -34,6 +38,22 @@ public class CoinUIController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        float t = Time.time - _lastSpiderTime;
+        if (t > _spiderUpdateInterval)
+        {
+            _lastSpiderTime = Time.time;
+            t = 0;
+            Player.Instance.SpidersHaveIncreased();
+        }
+
+        int seconds = (int) (t % 60f);
+        int minutes = (int)(t / 60f);
+
+        spiderText.text = $"Spiders increasing in: {minutes:0}:{seconds:00}";
+
+        float scale = Mathf.Max(0.01f,Mathf.Clamp01(t / _spiderUpdateInterval));
+        spiderText.transform.parent.localScale = new Vector3(scale, scale, scale);
+
         if (Tower.Crib != null)
         {
             if (Tower.Crib.IsBought)

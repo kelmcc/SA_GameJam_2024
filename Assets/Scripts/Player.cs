@@ -2,6 +2,7 @@ using Cinemachine;
 using System;
 using System.Collections.Generic;
 using Agents;
+using Andicraft.VolumetricFog;
 using Framework;
 using SoundManager;
 using System.Collections;
@@ -14,6 +15,19 @@ using UnityEngine.VFX;
 
 public class Player : Damagable
 {
+    [Serializable]
+    public class FogSetting
+    {
+        public float Density;
+        public Color Color;
+    }
+
+    private int _currentFogSetting = 0;
+    
+    public VolumetricFog Fog;
+    public List<FogSetting> FogSettings;
+    
+    
     public EffectSoundBank GrindSFX;
     private EffectSoundInstance _grindInstance;
     public EffectSoundBank JumpSFX;
@@ -545,5 +559,21 @@ public class Player : Damagable
     public void Buy(int cost)
     {
         _coinz -= cost;
+    }
+
+    public void SpidersHaveIncreased()
+    {
+        _currentFogSetting++;
+
+        if (_currentFogSetting >= FogSettings.Count)
+        {
+            _currentFogSetting--;
+        }
+
+
+        Fog.density = FogSettings[_currentFogSetting].Density;
+        Fog.fogColor = FogSettings[_currentFogSetting].Color;
+
+        //TODO: some effect?
     }
 }
