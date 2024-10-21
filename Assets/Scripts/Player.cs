@@ -112,9 +112,8 @@ public class Player : Damagable
         };
     }
 
-    private new IEnumerator Start()
+    private IEnumerator Start()
     {
-        base.Start();
         int i = 0;
         int startingC = (int)_coinz;
         LastStableGroundPosition.position = transform.position;

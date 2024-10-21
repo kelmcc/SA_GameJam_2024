@@ -17,9 +17,14 @@ namespace Agents
         public float TakeDamageRadius = 3;
         List<EnemyBase> _enemiesInRange = new List<EnemyBase>();
 
-        protected void Start()
+        protected void OnEnable()
         {
             TimeTicker.OnTick += OnTick;
+        }
+
+        protected void OnDisable()
+        {
+            TimeTicker.OnTick -= OnTick;
         }
         
         (bool, Vector3, Action) PerformSphereQuery(Vector3 pos, float radius)

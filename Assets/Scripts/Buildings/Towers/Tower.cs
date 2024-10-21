@@ -33,9 +33,8 @@ public class Tower : Building
         }
     }
 
-    private new void Start()
+    private void Start()
     {
-        base.Start();
         if (!Application.isPlaying)
         {
             _active = true;
