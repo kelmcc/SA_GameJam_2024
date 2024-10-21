@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using Unity.Collections;
 using Unity.Entities;
 using Unity.Mathematics;
 using UnityEngine;
@@ -9,7 +10,7 @@ namespace PhysicsDOTS
     {
         public float SpawnInterval = 1f;
         public List<EnemySO> EnemyDataSO;
-        public List<float3> SpawnPoints;
+        public List<Transform> SpawnPoints;
 
         public class EnemySpawnerBaker : Baker<EnemySpawnerAuthoring>
         {
@@ -17,14 +18,30 @@ namespace PhysicsDOTS
             {
                 Entity enemySpawnerAuthor = GetEntity(TransformUsageFlags.None);
 
-                AddComponent(enemySpawnerAuthor, new EnemySpawnerComponent
+                // Convert SpawnPoints into a BlobAssetReference<BlobArray<float3>>
+                using (BlobBuilder builder = new BlobBuilder(Allocator.Temp))
                 {
-                    SpawnInterval = authoring.SpawnInterval,
-                    SpawnPosition_1 = authoring.SpawnPoints[0],
-                    SpawnPosition_2 = authoring.SpawnPoints[1],
-                    SpawnPosition_3 = authoring.SpawnPoints[2],
-                });
+                    ref var blobAsset = ref builder.ConstructRoot<EnemySpawnerBlob>();
+                    var spawnPositionsArray =
+                        builder.Allocate(ref blobAsset.SpawnPositions, authoring.SpawnPoints.Count);
 
+                    for (int i = 0; i < authoring.SpawnPoints.Count; i++)
+                    {
+                        spawnPositionsArray[i] = authoring.SpawnPoints[i].position;
+                    }
+
+                    BlobAssetReference<EnemySpawnerBlob> blobReference =
+                        builder.CreateBlobAssetReference<EnemySpawnerBlob>(Allocator.Persistent);
+
+                    // Add the EnemySpawnerComponent with the BlobAssetReference to the entity
+                    AddComponent(enemySpawnerAuthor, new EnemySpawnerComponent
+                    {
+                        SpawnInterval = authoring.SpawnInterval,
+                        SpawnPositions = blobReference
+                    });
+                }
+
+                // Create EnemyData list
                 List<EnemyData> enemyData = new List<EnemyData>();
 
                 foreach (var enemySO in authoring.EnemyDataSO)
@@ -41,6 +58,7 @@ namespace PhysicsDOTS
                     });
                 }
 
+                // Add EnemyDataContainer to the entity as a managed component
                 AddComponentObject(enemySpawnerAuthor, new EnemyDataContainer { enemyData = enemyData });
             }
         }

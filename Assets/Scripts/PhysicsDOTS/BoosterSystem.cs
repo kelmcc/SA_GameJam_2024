@@ -48,6 +48,7 @@ namespace PhysicsDOTS
 
                 NativeList<ColliderCastHit> hits = new NativeList<ColliderCastHit>(Allocator.Temp);
 
+                
                 physicsWorldSingleton.BoxCastAll(boosterTransform.ValueRO.Position,
                     boosterTransform.ValueRO.Rotation,
                     new float3(cpm.sizeX / 2, cpm.sizeY / 2,
@@ -108,6 +109,7 @@ namespace PhysicsDOTS
 
 public enum EnemiesLayer
 {
+    Player = 1 << 4,
     Enemies = 1 << 6,
     Triggers = 1 << 7
 }
