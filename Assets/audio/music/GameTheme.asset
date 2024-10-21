@@ -10,7 +10,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: c97d9cc3c2f807d4e930250d8e644db8, type: 3}
-  m_Name: Main 1
+  m_Name: GameTheme
   m_EditorClassIdentifier: 
   _ignoreListenerSettings: 0
   _outOfSightVolumeMultiplier: 1
@@ -173,8 +173,8 @@ MonoBehaviour:
       m_PostInfinity: 2
       m_RotationOrder: 4
   _volumeRange:
-    _min: 0.5
-    _max: 0.5
+    _min: 1
+    _max: 1
   _pitchRange:
     _min: 1
     _max: 1

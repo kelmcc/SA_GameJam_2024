@@ -60,8 +60,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1534723203913602554}
   serializedVersion: 2
-  m_LocalRotation: {x: -0.4935962, y: -0.64003843, z: -0.36632717, w: 0.46099684}
-  m_LocalPosition: {x: -0.00000047683716, y: -0.00000028155043, z: -0.00000091116635}
+  m_LocalRotation: {x: -0.48111987, y: -0.6532989, z: -0.37391672, w: 0.44934458}
+  m_LocalPosition: {x: 0.00000023841858, y: -0.00000014077521, z: -0.00000045558318}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -139,8 +139,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2476438111577166606}
   serializedVersion: 2
-  m_LocalRotation: {x: -0.46629718, y: -0.6600265, z: -0.3289528, w: 0.48859185}
-  m_LocalPosition: {x: 0.00000023841858, y: 0, z: 0}
+  m_LocalRotation: {x: -0.45451105, y: -0.6737009, z: -0.33576795, w: 0.4762423}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -306,7 +306,7 @@ Transform:
   m_GameObject: {fileID: 4284448583010590741}
   serializedVersion: 2
   m_LocalRotation: {x: 0.1492864, y: -0, z: -0, w: 0.988794}
-  m_LocalPosition: {x: 3.561822, y: -6.5965576, z: 6.503542}
+  m_LocalPosition: {x: 3.5437214, y: -6.5965576, z: 6.6663613}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -659,8 +659,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 6149162538972518045}
   serializedVersion: 2
-  m_LocalRotation: {x: -0.4801904, y: -0.6502677, z: -0.34784552, w: 0.47494483}
-  m_LocalPosition: {x: -0.00000047683716, y: -0.00000028155043, z: -0.00000091116635}
+  m_LocalRotation: {x: -0.46805286, y: -0.66374016, z: -0.35505217, w: 0.46294004}
+  m_LocalPosition: {x: 0.00000023841858, y: -0.00000014077521, z: -0.00000045558318}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -1219,6 +1219,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   TakeDamageRadius: 1.62
+  GrindSFX: {fileID: 11400000, guid: 9e74c00e9ebf9a144bb97840ddffe9b2, type: 2}
+  JumpSFX: {fileID: 11400000, guid: d611368d799261c4581ae526fba3ebb3, type: 2}
   LastStableGroundPosition: {fileID: 1656201151308733207}
   WalkSpeed: 12
   SprintSpeed: 12

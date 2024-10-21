@@ -6,14 +6,20 @@ EditorBuildSettings:
   serializedVersion: 2
   m_Scenes:
   - enabled: 1
-    path: Assets/Scenes/StartScreen.unity
+    path: Assets/Scenes/Actual/StartScreen.unity
     guid: 315a632f84bb643ccb5741f7738cea19
   - enabled: 1
-    path: Assets/Scenes/GameLevel.unity
+    path: Assets/Scenes/Actual/GameLevel.unity
     guid: cbf11dfafb03d48ee8ba497f8a4da1eb
   - enabled: 1
     path: Assets/Scenes/GameLevel/ECS_MainSub.unity
     guid: 9d32eda874aa9460095a884f22d45ddf
+  - enabled: 1
+    path: Assets/Scenes/Actual/WinScreen.unity
+    guid: a4aa60ae7970a9e44b0064912a52c562
+  - enabled: 1
+    path: Assets/Scenes/Actual/DeathScreen.unity
+    guid: c82cf9ef83649d145bf6529556bf7222
   m_configObjects:
     com.unity.input.settings.actions: {fileID: -944628639613478452, guid: beebc186c9198a5408aab7737b4d8c34,
       type: 3}

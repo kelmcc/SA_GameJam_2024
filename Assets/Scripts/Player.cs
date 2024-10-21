@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using Agents;
 using Framework;
+using SoundManager;
 using System.Collections;
 using UnityEngine;
 using UnityEngine.InputSystem;
@@ -13,6 +14,11 @@ using UnityEngine.VFX;
 
 public class Player : Damagable
 {
+    public EffectSoundBank GrindSFX;
+    private EffectSoundInstance _grindInstance;
+    public EffectSoundBank JumpSFX;
+
+    [Space]
     [FormerlySerializedAs("Respawn")] public Transform LastStableGroundPosition;
     public float WalkSpeed = 5;
     public float SprintSpeed = 10;
@@ -157,9 +163,19 @@ public class Player : Damagable
 
     public void Update()
     {
+        if (Input.GetKeyDown(KeyCode.Alpha6))
+        {
+            _coinz = WinningCoinCount;
+        }
+        
         if (_coinz >= WinningCoinCount)
         {
-            Debug.Log("PLAYER WINS. DO SOMETHING?!");
+            if (reloading)
+            {
+                return;
+            }
+            reloading = true;
+            SceneManager.LoadScene(3);
         }
         
         if (_coinz <= 0)
@@ -207,7 +223,12 @@ public class Player : Damagable
             if (info.distance < GroundedRaycastDistance)
             {
 //                Debug.Log("<color=green>Player Grounded</color>");
+                if (_grounded == false)
+                {
+                    JumpSFX.Play();
+                }
                 _grounded = true;
+               
                 _groundedDistance = info.distance;
                 _lastGroundedTime = Time.time;
 
@@ -422,7 +443,7 @@ public class Player : Damagable
             return;
         }
         reloading = true;
-        SceneManager.LoadScene(1);
+        SceneManager.LoadScene(4);
     }
 
     //ZOOP
@@ -455,6 +476,7 @@ public class Player : Damagable
 
         if (_zipPosition >= _zipline.Length)//|| Jump.ToInputAction().IsPressed())
         {
+            _grindInstance?.StopAndDestroy();
             _body.isKinematic = false;
             _body.velocity = _zipline.GetTangent(_startZip, _zipPosition) * _zipVelocity;
             _body.AddForce(Vector3.up * ZipJumpOffForce, ForceMode.VelocityChange);
@@ -477,7 +499,8 @@ public class Player : Damagable
         Debug.Log("ZIPPING");
         ZipLineSparks1.SendEvent(Shader.PropertyToID("Spark"));
         ZipLineSparks2.SendEvent(Shader.PropertyToID("Spark"));
-
+        
+       _grindInstance = GrindSFX.Play();
         Anim.PlayGrind();
         AnimUI.PlayGrind();
         IsZipping = true;

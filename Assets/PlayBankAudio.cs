@@ -5,7 +5,7 @@ using UnityEngine;
 
 public class PlayBankAudio : MonoBehaviour
 {
-    [SerializeField] private EffectSoundBank bank;
+    [SerializeField] private SoundBank bank;
 
     void OnEnable()
     {

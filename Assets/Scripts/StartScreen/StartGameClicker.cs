@@ -13,6 +13,8 @@ namespace UI
         [SerializeField] private List<GameObject> _slides = new List<GameObject>();
         private int _currentIndex = 0;
 
+        [SerializeField] private bool backToMain = false;
+        
         private void Awake()
         {
             ResetSlides();
@@ -35,7 +37,16 @@ namespace UI
             if (_currentIndex == _slides.Count)
             {
                 TimeTicker.Instance.transform.parent = transform;
-                SceneManager.LoadScene(1);
+
+                if (backToMain)
+                {
+                    SceneManager.LoadScene(0);
+                }
+                else
+                {
+                    SceneManager.LoadScene(1);
+                }
+               
                 return;
             }
 

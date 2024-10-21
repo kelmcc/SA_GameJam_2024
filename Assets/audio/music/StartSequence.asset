@@ -9,8 +9,8 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c97d9cc3c2f807d4e930250d8e644db8, type: 3}
-  m_Name: Main
+  m_Script: {fileID: 11500000, guid: 9127f0837bcabd547bcea42807f8b164, type: 3}
+  m_Name: StartSequence
   m_EditorClassIdentifier: 
   _ignoreListenerSettings: 0
   _outOfSightVolumeMultiplier: 1
@@ -172,17 +172,27 @@ MonoBehaviour:
       m_PreInfinity: 2
       m_PostInfinity: 2
       m_RotationOrder: 4
-  _volumeRange:
-    _min: 0.5
-    _max: 0.5
-  _pitchRange:
-    _min: 1
-    _max: 1
-  _rolloffDistance:
-    _min: 1
-    _max: 10
-  _cooldown: 0
   _outputMixer: {fileID: 0}
-  _clipSelection: 3
-  _audioClips:
-  - {fileID: 8300000, guid: 2d5791b4e7e2d5640afb8f9fe1a47cb2, type: 3}
+  _sections:
+  - Sound:
+      _isBank: 1
+      _audioClip: {fileID: 0}
+      _soundBank: {fileID: 11400000, guid: 2c3312b1a84da24418e38d8dcb6e940e, type: 2}
+    RolloffDistance:
+      _min: 1
+      _max: 10
+    Loop: 0
+    Repititions: 1
+    Delay: 1
+    _initialized: 1
+  - Sound:
+      _isBank: 1
+      _audioClip: {fileID: 0}
+      _soundBank: {fileID: 11400000, guid: dc7d0cda56262492ba5f0e75b409ccd9, type: 2}
+    RolloffDistance:
+      _min: 1
+      _max: 10
+    Loop: 1
+    Repititions: 1
+    Delay: -0.2
+    _initialized: 1
