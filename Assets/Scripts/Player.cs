@@ -65,6 +65,7 @@ public class Player : Damagable
     [SerializeField] private float _health = 200;
 
     [Header("Anim")] public SkaterAnimator Anim;
+    public SkaterAnimator AnimUI;
     
     public float VelocityAnimSpeedMultiplier = 0.1f;
 
@@ -197,10 +198,12 @@ public class Player : Damagable
                 if (movement.y < 0)
                 {
                     Anim.PlayBreak();
+                    AnimUI.PlayBreak();
                 }
                 else
                 {
                     Anim.PlaySkate();
+                    AnimUI.PlaySkate();
                 }
             }
             else
@@ -208,18 +211,23 @@ public class Player : Damagable
                 if (mag < 0.1f)
                 {
                     Anim.PlayIdle();
+                    AnimUI.PlayIdle();
                 }
                 else
                 {
                     Anim.PlayFreewheel();
+                    AnimUI.PlayFreewheel();
                 }
             }
           
-            Anim.Speed = mag * VelocityAnimSpeedMultiplier;
+            float speed =  mag * VelocityAnimSpeedMultiplier;
+            Anim.Speed = speed;
+            AnimUI.Speed = speed;
         }
         else
         {
             Anim.Speed = 1;
+            AnimUI.Speed = 1;
             
             //cant rotate to facing dir while falling.
             _body.velocity = vNorm * mag;
@@ -270,6 +278,7 @@ public class Player : Damagable
                     _jumpStarted = true;
                     Debug.Log("JUMP");
                     Anim.PlayJump();
+                    AnimUI.PlayJump();
                     LastJumpTime = Time.time;
                     _body.AddForce(Vector3.up * jump, ForceMode.VelocityChange);
                 }
@@ -284,6 +293,7 @@ public class Player : Damagable
                     if (_flailTime > FlailDelay)
                     {
                         Anim.PlayFall();
+                        AnimUI.PlayFall();
                     }
                   
                 }
@@ -379,6 +389,7 @@ public class Player : Damagable
     {
         Debug.Log("ZIPPING");
         Anim.PlayGrind();
+        AnimUI.PlayGrind();
         IsZipping = true;
         _startZipTime = Time.time;
 
