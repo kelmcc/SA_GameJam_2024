@@ -60,8 +60,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1534723203913602554}
   serializedVersion: 2
-  m_LocalRotation: {x: 0.055662014, y: 0.4721722, z: -0.11353629, w: -0.8723903}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalRotation: {x: 0.057827845, y: 0.40698397, z: -0.09786144, w: -0.90633506}
+  m_LocalPosition: {x: -0.0000009536743, y: 0.00000021116281, z: 0.00000068337476}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -139,8 +139,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2476438111577166606}
   serializedVersion: 2
-  m_LocalRotation: {x: 0.005452317, y: 0.4648699, z: -0.14047451, w: -0.8741472}
-  m_LocalPosition: {x: 0.0000019073486, y: -0.00000028155043, z: -0.00000091116635}
+  m_LocalRotation: {x: 0.005664462, y: 0.4006898, z: -0.12108057, w: -0.9081603}
+  m_LocalPosition: {x: 0.0000009536743, y: -0.00000042232563, z: -0.0000013667495}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -306,7 +306,7 @@ Transform:
   m_GameObject: {fileID: 4284448583010590741}
   serializedVersion: 2
   m_LocalRotation: {x: 0.1492864, y: -0, z: -0, w: 0.988794}
-  m_LocalPosition: {x: 7.6769037, y: 5.980839, z: 1.4129584}
+  m_LocalPosition: {x: 6.8744984, y: 5.980839, z: 0.31664753}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -659,8 +659,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 6149162538972518045}
   serializedVersion: 2
-  m_LocalRotation: {x: 0.03065304, y: 0.4687267, z: -0.12701319, w: -0.87362653}
-  m_LocalPosition: {x: 0.0000019073486, y: -0.00000028155043, z: -0.00000091116635}
+  m_LocalRotation: {x: 0.03184579, y: 0.4040141, z: -0.10947781, w: -0.9076194}
+  m_LocalPosition: {x: 0.0000009536743, y: -0.00000042232563, z: -0.0000013667495}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -1218,7 +1218,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d4a175624171126408de99c0a02207a7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  TakeDamageRadius: 3
+  TakeDamageRadius: 1.62
+  MouseSensitivity: {x: 0.5, y: 0.5}
   LastStableGroundPosition: {fileID: 1656201151308733207}
   WalkSpeed: 6
   SprintSpeed: 6
@@ -1236,7 +1237,7 @@ MonoBehaviour:
   GroundRaycastMask:
     serializedVersion: 2
     m_Bits: 1
-  GroundedRaycastDistance: 0.6
+  GroundedRaycastDistance: 0.8
   FrictionInverseCurve:
     serializedVersion: 2
     m_Curve:

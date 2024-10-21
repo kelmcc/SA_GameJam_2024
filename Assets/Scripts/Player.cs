@@ -12,6 +12,7 @@ using UnityEngine.VFX;
 
 public class Player : Damagable
 {
+    public Vector2 MouseSensitivity;
     [FormerlySerializedAs("Respawn")] public Transform LastStableGroundPosition;
     public float WalkSpeed = 5;
     public float SprintSpeed = 10;
@@ -176,6 +177,7 @@ public class Player : Damagable
 
 
         Vector2 movement = Move.ToInputAction().ReadValue<Vector2>();
+        movement *= MouseSensitivity;
         movement.Normalize();
 
         _hasInput = Mathf.Abs(movement.y) > 0 || Mathf.Abs(movement.x) > 0;
