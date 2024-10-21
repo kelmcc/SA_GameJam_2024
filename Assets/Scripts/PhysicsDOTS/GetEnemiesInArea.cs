@@ -1,6 +1,8 @@
+using Unity.Entities;
+
 namespace PhysicsDOTS
 {
-    public class GetEnemiesInArea : JobComponentSystem
+    public class GetEnemiesInArea 
     {
         
     }
