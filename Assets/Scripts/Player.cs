@@ -188,7 +188,7 @@ public class Player : Damagable
         {
             if (info.distance < GroundedRaycastDistance)
             {
-                Debug.Log("<color=green>Player Grounded</color>");
+//                Debug.Log("<color=green>Player Grounded</color>");
                 _grounded = true;
                 _groundedDistance = info.distance;
                 _lastGroundedTime = Time.time;
