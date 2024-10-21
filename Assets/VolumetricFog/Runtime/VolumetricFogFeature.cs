@@ -224,14 +224,13 @@ namespace Andicraft.VolumetricFog
 
                     m_FogVolumesBuffer.SetData(structs);
                     renderMaterial.SetBuffer(VFogVolumes, m_FogVolumesBuffer);
+                    
+                    Shader.SetKeyword(kw_VolumesEnabled, vfog.volumes.Count != 0);
+                    ConfigureTarget(renderingData.cameraData.renderer.cameraColorTargetHandle);
+                    renderMaterial.SetVector(s_blueNoiseOffset, new Vector4(Random.Range(0, 1f), Random.Range(0, 1f)));
+                    renderMaterial.SetVector(VFogHeightNoiseRange, vfog.minMaxHeightFogNoise);
+                    renderMaterial.SetFloat(VFogHeightNoiseScale, vfog.heightFogNoiseScale);
                 }
-
-                Shader.SetKeyword(kw_VolumesEnabled, vfog.volumes.Count != 0);
-                ConfigureTarget(renderingData.cameraData.renderer.cameraColorTargetHandle);
-                renderMaterial.SetVector(s_blueNoiseOffset, new Vector4(Random.Range(0, 1f), Random.Range(0, 1f)));
-                renderMaterial.SetVector(VFogHeightNoiseRange, vfog.minMaxHeightFogNoise);
-                renderMaterial.SetFloat(VFogHeightNoiseScale, vfog.heightFogNoiseScale);
-
             }
 
             public override void Execute(ScriptableRenderContext context, ref RenderingData renderingData)
