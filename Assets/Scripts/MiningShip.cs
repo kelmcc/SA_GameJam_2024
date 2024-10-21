@@ -17,7 +17,7 @@ namespace Agents.ShipSystem
         
         [SerializeField] private List<GameObject> _miningDebrisPrefabs;
 
-        protected override void TakeDamage(float damage)
+        protected override void TakeDamage(float damage, Vector3 damageSourcePosition)
         {
             // First check if we have shields
 

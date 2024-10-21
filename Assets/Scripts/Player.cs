@@ -420,20 +420,27 @@ public class Player : Damagable
 
     public void OnFall()
     {
-        // what happens when the player dies?
-
-        TakeDamage(_fallDamage);
-
         _body.velocity = Vector3.zero;
         transform.position = LastStableGroundPosition.position;
-
         Debug.LogError("Player has fallen");
+
+        TakeDamage(_fallDamage, transform.position);
     }
 
-    protected override void TakeDamage(float damage)
+    protected override void TakeDamage(float damage, Vector3 damageSourcePosition)
     {
+        if (transform.position != damageSourcePosition)
+        {
+            _flailTime = FlailDelay + 0.1f;
+            Vector3 dir = (transform.position - damageSourcePosition).normalized;
+            _body.AddForce(Vector3.up * 6, ForceMode.VelocityChange);
+            _body.AddForce(dir * 6, ForceMode.VelocityChange);
+        }
+        
+        
         _coinz -= damage;
-
+        DamageNumbers.Instance.SpawnDamageNumber(transform.position + Vector3.up * 2, (int)damage, true);
+        
         if (_coinz <= 0)
         {
             Death();

@@ -122,11 +122,10 @@ namespace Agents
             if (hit)
             {
                 Debug.Log($"<color=red>{gameObject.name} takes damage!</color>");
-                TakeDamage(10);
+                TakeDamage(10, pos);
                 destroy?.Invoke();
                 Player.Instance.PlayEnemyDie(transform.position);
             }
-       
         }
 
         private void OnDrawGizmos()
@@ -135,6 +134,6 @@ namespace Agents
             Gizmos.DrawWireSphere(transform.position, TakeDamageRadius);
         }
 
-        protected abstract void TakeDamage(float damage);
+        protected abstract void TakeDamage(float damage, Vector3 damageSourcePosition);
     }
 }

@@ -56,11 +56,11 @@ public class Tower : Building
         //throw new System.NotImplementedException();
     }
 
-    protected override void TakeDamage(float damage)
+    protected override void TakeDamage(float damage, Vector3 damageSourcePosition)
     {
         CurrentHealth -= (int)damage;
         CurrentHealth = Mathf.Max(0, CurrentHealth);
-
+        DamageNumbers.Instance.SpawnDamageNumber(transform.position + Vector3.up * 5, (int)damage, false);
         // throw new System.NotImplementedException();
     }
 

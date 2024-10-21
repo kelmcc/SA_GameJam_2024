@@ -8,5 +8,5 @@ public abstract class Building : Damagable
     public abstract void SetInteractable();
 
     public abstract void SetPassive();
-    protected abstract override void TakeDamage(float damage);
+    protected abstract override void TakeDamage(float damage, Vector3 damageSourcePosition);
 }

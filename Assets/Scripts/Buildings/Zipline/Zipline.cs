@@ -141,7 +141,7 @@ public class Zipline : Building
         Point2.DisableUse();
     }
 
-    protected override void TakeDamage(float damage)
+    protected override void TakeDamage(float damage, Vector3 damageSourcePosition)
     {
         //todo?
     }
