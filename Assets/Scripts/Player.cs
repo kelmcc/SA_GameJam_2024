@@ -2,6 +2,7 @@ using Cinemachine;
 using System;
 using System.Collections.Generic;
 using Agents;
+using Framework;
 using System.Collections;
 using UnityEngine;
 using UnityEngine.InputSystem;
@@ -12,7 +13,6 @@ using UnityEngine.VFX;
 
 public class Player : Damagable
 {
-    public Vector2 MouseSensitivity;
     [FormerlySerializedAs("Respawn")] public Transform LastStableGroundPosition;
     public float WalkSpeed = 5;
     public float SprintSpeed = 10;
@@ -32,13 +32,11 @@ public class Player : Damagable
     public float FrictionCoeff = 0.1f;
 
     [FormerlySerializedAs("zoopForce")] public Vector3 _zoopForce;
-
-
+    
     public LayerMask GroundRaycastMask;
 
     [Space] public float GroundedRaycastDistance = 0.8f;
-
-    [FormerlySerializedAs("FrictionCurve")] public AnimationCurve FrictionInverseCurve;
+    
     public float MaxGroundedVelocity = 20;
 
     [Range(0, 1)]
@@ -177,8 +175,20 @@ public class Player : Damagable
 
 
         Vector2 movement = Move.ToInputAction().ReadValue<Vector2>();
-        movement *= MouseSensitivity;
         movement.Normalize();
+        
+        
+        if (movement.y < 0)
+        {
+            _currentBreakTime += Time.time;
+            movement.y *= 3;
+
+            // _body.velocity = Vector3.Lerp(_body.velocity, Vector3.zero, Mathf.Clamp01(_currentBreakTime / BreakTime));
+        }
+        else
+        {
+            _currentBreakTime = 0;
+        }
 
         _hasInput = Mathf.Abs(movement.y) > 0 || Mathf.Abs(movement.x) > 0;
 
@@ -201,9 +211,14 @@ public class Player : Damagable
                 _groundedDistance = info.distance;
                 _lastGroundedTime = Time.time;
 
-                right = Vector3.Cross(info.normal, forward);
-                forward = Quaternion.AngleAxis(-90, Vector3.up) * right;
-                Debug.DrawLine(transform.position, transform.position + Vector3.up * 3, Color.green);
+                Debug.DrawLine(info.point, info.point + info.normal*10, Color.green);
+
+                Vector3 norm = info.normal.normalized;
+                right = Vector3.Cross(norm, forward);
+                forward = Quaternion.AngleAxis(-90, norm) * right;
+                
+                Debug.DrawLine(transform.position, transform.position +right * 10, Color.red);
+                Debug.DrawLine(transform.position, transform.position +forward * 10, Color.blue);
 
                 LastStableGroundPosition.position = transform.position;
             }
@@ -235,8 +250,8 @@ public class Player : Damagable
 
         //Debug.
         Vector3 u = Vector3.up * 0.1f;
-        Debug.DrawLine(transform.position + u, transform.position + u + forward * 5, Color.blue);
-        Debug.DrawLine(transform.position + u, transform.position + u + right * 5, Color.red);
+        //Debug.DrawLine(transform.position + u, transform.position + u + forward * 10, Color.blue);
+        //Debug.DrawLine(transform.position + u, transform.position + u + right * 5, Color.red);
         //
 
         // if (Grounded)
@@ -248,7 +263,7 @@ public class Player : Damagable
         float maxSpeedNorm = mag / MaxGroundedVelocity;
         bool inJumpWindow = InJumpWindow();
         bool isZooping = Time.time - _lastZoopTime < 2;
-        if (Grounded || _flailing && !isZooping)
+        //if (Grounded || _flailing && !isZooping)
         {
             //mag  *= FrictionInverseCurve.Evaluate(Mathf.Clamp01(maxSpeedNorm));
             mag *= 1 - (FrictionCoeff * Time.deltaTime);
@@ -256,13 +271,15 @@ public class Player : Damagable
         }
 
         Vector3 vNorm = _body.velocity.normalized;
-
+        
+        
+        
         if (Grounded)
         {
             //rotate v to facing dir
             //   Sliding = Mathf.Lerp(1, 0, avSpeedNorm);
             _body.velocity = Vector3.Lerp(forward * mag, vNorm * mag, Sliding);
-
+            
             if (_hasInput)
             {
                 if (movement.y < 0)
@@ -299,17 +316,23 @@ public class Player : Damagable
             Anim.Speed = 1;
             AnimUI.Speed = 1;
 
+            _body.velocity = Vector3.Lerp(forward * mag, vNorm * mag, Sliding).WithY(_body.velocity.y);
             //cant rotate to facing dir while falling.
-            _body.velocity = vNorm * mag;
+           // _body.velocity = vNorm * mag;
         }
 
 
-        if (Grounded)
+      
+        if (Mathf.Abs(movement.x) > 0)
         {
-            if (Mathf.Abs(movement.x) > 0)
+            Vector3 dir = right * movement.x;
+            if (Grounded)
             {
-                Vector3 dir = right * movement.x;
                 _body.velocity = Vector3.Slerp(_body.velocity, dir * _body.velocity.magnitude, Time.deltaTime * 5);
+            }
+            else
+            {
+                _body.velocity = Vector3.Slerp(_body.velocity, dir * _body.velocity.magnitude, Time.deltaTime * 5).WithY(_body.velocity.y);
             }
         }
 
@@ -319,16 +342,6 @@ public class Player : Damagable
         if (mag > 0.1)
         {
             _body.MoveRotation(Quaternion.LookRotation(vDir, Vector3.up));
-        }
-
-        if (movement.y < 0)
-        {
-            _currentBreakTime += Time.time;
-            _body.velocity = Vector3.Lerp(_body.velocity, Vector3.zero, Mathf.Clamp01(_currentBreakTime / BreakTime));
-        }
-        else
-        {
-            _currentBreakTime = 0;
         }
 
         _body.AddForce(_zoopForce);
