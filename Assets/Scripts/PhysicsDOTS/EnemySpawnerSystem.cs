@@ -57,7 +57,9 @@ namespace PhysicsDOTS
                 Rotation = quaternion.identity,
                 Scale = availableEnemies[1].Scale
             });
-
+            
+            EntityManager.AddComponent<EnemyTag>(newEnemy);
+            
             nextSpawnTime = (float)SystemAPI.Time.ElapsedTime + enemySpawnerComponent.SpawnInterval;
         }
 
