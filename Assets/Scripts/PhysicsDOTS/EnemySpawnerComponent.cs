@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using Unity.Collections;
 using Unity.Entities;
 using Unity.Mathematics;
 
@@ -7,8 +8,13 @@ namespace PhysicsDOTS
     public struct EnemySpawnerComponent : IComponentData
     {
         public float SpawnInterval;
-        public float3 SpawnPosition_1;
-        public float3 SpawnPosition_2;
-        public float3 SpawnPosition_3;
+        public BlobAssetReference<EnemySpawnerBlob> SpawnPositions;
     }
+
+// Define a Blob structure to store an array of positions
+    public struct EnemySpawnerBlob
+    {
+        public BlobArray<float3> SpawnPositions;
+    }
+
 }

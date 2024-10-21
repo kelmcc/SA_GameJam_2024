@@ -1,8 +1,10 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using Cinemachine;
 using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.Rendering;
 
 [RequireComponent(typeof(LineRenderer))]
 [ExecuteAlways]
@@ -12,6 +14,7 @@ public class Zipline : Building
     public ZiplinePole Point2;
     public float SegmentLength;
     public float MidOffset = 0.1f;
+    public CinemachineImpulseSource StartImpact;
 
     private LineRenderer _lineRenderer;
 
@@ -28,7 +31,7 @@ public class Zipline : Building
             return _accurateLength;
         }
     }
-    
+
     private LineRenderer LineRenderer
     {
         get
@@ -47,11 +50,11 @@ public class Zipline : Building
 
         float midH = (Point1.LineConnector.position.y + Point2.LineConnector.position.y) / 2f;
         float minHeight = midH - MidOffset;
-        mid = new Vector3(mid.x,minHeight, mid.z);
+        mid = new Vector3(mid.x, minHeight, mid.z);
 
         return mid;
     }
-    
+
     private void LateUpdate()
     {
         if (Point1.isActiveAndEnabled && Point2.isActiveAndEnabled)
@@ -62,9 +65,9 @@ public class Zipline : Building
             float length = Vector3.Distance(Point1.LineConnector.position, Point2.LineConnector.position);
 
             Vector3 mid = GetMid(p1, p2);
-            
+
             List<Vector3> points = new List<Vector3>();
-            if(SegmentLength == 0)
+            if (SegmentLength == 0)
             {
                 SegmentLength = 1f;
             }
@@ -72,7 +75,7 @@ public class Zipline : Building
             {
                 float t = d / length;
                 points.Add(Vector3.Lerp(Vector3.Lerp(p1, mid, t), Vector3.Lerp(mid, p2, t), t));
-                
+
             }
             points.Add(p2);
             LineRenderer.positionCount = points.Count;
@@ -92,12 +95,12 @@ public class Zipline : Building
         float length = Vector3.Distance(Point1.LineConnector.position, Point2.LineConnector.position);
 
         Vector3 mid = GetMid(p1, p2);
-        
-        if(SegmentLength == 0)
+
+        if (SegmentLength == 0)
         {
             SegmentLength = 1f;
         }
-        
+
         Vector3 last = p1;
         float accurateLength = 0;
         for (float d = 0; d < length; d += SegmentLength)
@@ -115,6 +118,7 @@ public class Zipline : Building
 
     public void StartZip(ZiplinePole ziplinePole, Player player)
     {
+        StartImpact.GenerateImpulse();
         if (ziplinePole == Point1)
         {
             player.Zip(Point1, Point2, this);
@@ -144,7 +148,7 @@ public class Zipline : Building
 
     public Vector3 GetPosition(ZiplinePole startZip, float zipPosition)
     {
-        if(SegmentLength == 0)
+        if (SegmentLength == 0)
         {
             SegmentLength = 1f;
         }
@@ -152,7 +156,7 @@ public class Zipline : Building
         Vector3 p1 = Point1.LineConnector.position;
         Vector3 p2 = Point2.LineConnector.position;
         Vector3 mid = GetMid(p1, p2);
-        
+
         if (startZip == Point2)
         {
             (p1, p2) = (p2, p1);
@@ -160,12 +164,12 @@ public class Zipline : Building
 
         float t = zipPosition / Length;
         return Vector3.Lerp(Vector3.Lerp(p1, mid, t), Vector3.Lerp(mid, p2, t), t);
-        
+
     }
 
     public Vector3 GetTangent(ZiplinePole startZip, float zipPosition)
     {
-        if(SegmentLength == 0)
+        if (SegmentLength == 0)
         {
             SegmentLength = 1f;
         }
@@ -173,7 +177,7 @@ public class Zipline : Building
         Vector3 p1 = Point1.LineConnector.position;
         Vector3 p2 = Point2.LineConnector.position;
         Vector3 mid = GetMid(p1, p2);
-        
+
         if (startZip == Point2)
         {
             (p1, p2) = (p2, p1);
@@ -184,16 +188,16 @@ public class Zipline : Building
         Vector3 s1 = Vector3.Lerp(Vector3.Lerp(p1, mid, t), Vector3.Lerp(mid, p2, t), t);
         Vector3 s2 = Vector3.zero;
         float epsilon = 0.05f;
-        if (t >= 1-epsilon)
+        if (t >= 1 - epsilon)
         {
-            float t0 = t-epsilon;
+            float t0 = t - epsilon;
             s2 = Vector3.Lerp(Vector3.Lerp(p1, mid, t0), Vector3.Lerp(mid, p2, t0), t0);
 
             return (s1 - s2).normalized;
         }
         else
         {
-            float t1 = t-epsilon;
+            float t1 = t - epsilon;
             s2 = Vector3.Lerp(Vector3.Lerp(p1, mid, t1), Vector3.Lerp(mid, p2, t1), t1);
             return (s2 - s1).normalized;
         }

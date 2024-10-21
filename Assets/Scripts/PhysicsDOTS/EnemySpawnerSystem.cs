@@ -48,20 +48,18 @@ namespace PhysicsDOTS
                 }
             }
 
-            int index = random.NextInt(0, 3);
-            float3[] positions = new float3[]
-            {
-                enemySpawnerComponent.SpawnPosition_1, enemySpawnerComponent.SpawnPosition_2,
-                enemySpawnerComponent.SpawnPosition_3
-            };
+            int index = random.NextInt(0, enemySpawnerComponent.SpawnPositions.Value.SpawnPositions.Length);
+
             Entity newEnemy = EntityManager.Instantiate((availableEnemies[1].Prefab));
             EntityManager.SetComponentData(newEnemy, new LocalTransform()
             {
-                Position = AddJitter(positions[index]),
+                Position = AddJitter(enemySpawnerComponent.SpawnPositions.Value.SpawnPositions[index]),
                 Rotation = quaternion.identity,
                 Scale = availableEnemies[1].Scale
             });
-
+            
+            EntityManager.AddComponent<EnemyTag>(newEnemy);
+            
             nextSpawnTime = (float)SystemAPI.Time.ElapsedTime + enemySpawnerComponent.SpawnInterval;
         }
 

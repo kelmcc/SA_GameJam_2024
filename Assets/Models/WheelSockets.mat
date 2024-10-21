@@ -123,10 +123,10 @@ Material:
     - _QueueControl: 0
     - _QueueOffset: 0
     - _ReceiveShadows: 1
-    - _ShadingFreq: 0
-    - _ShadingNoiseScale: 0
-    - _ShadingThreshold: 0
-    - _ShadowThreshold: 0
+    - _ShadingFreq: 8
+    - _ShadingNoiseScale: 0.24
+    - _ShadingThreshold: 0.167
+    - _ShadowThreshold: 0.353
     - _Smoothness: 0.5
     - _SmoothnessTextureChannel: 0
     - _SpecularHighlights: 1
@@ -135,7 +135,7 @@ Material:
     - _Surface: 0
     - _UVSec: 0
     - _WorkflowMode: 1
-    - _ZStep: 0
+    - _ZStep: 0.318
     - _ZWrite: 1
     m_Colors:
     - _BaseColor: {r: 0.9063317, g: 0.9063317, b: 0.9063317, a: 1}
@@ -145,6 +145,6 @@ Material:
     - _MesaXY2: {r: 0.9433962, g: 0.21804905, b: 0.21804905, a: 0}
     - _MesaXY3: {r: 1, g: 0.47641504, b: 0.92947674, a: 0}
     - _MesaZ: {r: 0.9433962, g: 0.21804905, b: 0.21804905, a: 0}
-    - _ShadingColor: {r: 0, g: 0, b: 0, a: 0}
+    - _ShadingColor: {r: 0.6415094, g: 0.45692417, b: 0.45692417, a: 0}
     - _SpecColor: {r: 0.19999996, g: 0.19999996, b: 0.19999996, a: 1}
   m_BuildTextureStacks: []
