@@ -27,7 +27,9 @@ public class ShockwaveInstance : MonoBehaviour
         foreach (Renderer r in Renderers)
         {
             var m = r.material;
-            m.color = m.color.WithAlpha(1);
+            Color color = m.color;
+            color.a = 1;
+            m.color = color;
         }
     }
 
@@ -41,7 +43,8 @@ public class ShockwaveInstance : MonoBehaviour
         {
             var m = r.material;
             Color c = m.GetColor(Color1);
-            m.SetColor(Color1, c.WithAlpha(t));
+            c.a = t;
+            m.SetColor(Color1, c);
         }
 
         if (_currentLifetime >= Lifetime)
