@@ -17,7 +17,7 @@ namespace Agents
         public float TakeDamageRadius = 3;
         List<EnemyBase> _enemiesInRange = new List<EnemyBase>();
 
-        private void Start()
+        protected void Start()
         {
             TimeTicker.OnTick += OnTick;
         }

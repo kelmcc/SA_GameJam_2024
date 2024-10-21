@@ -23,6 +23,8 @@ public class Tower : Building
     [FormerlySerializedAs("_currentHealth")] public int CurrentHealth;
     public bool IsBought => _active;
 
+    public UnityEvent OnDestroyed;
+
     private void Awake()
     {
         if (isCrib)
@@ -31,8 +33,9 @@ public class Tower : Building
         }
     }
 
-    private void Start()
+    private new void Start()
     {
+        base.Start();
         if (!Application.isPlaying)
         {
             _active = true;
@@ -57,16 +60,19 @@ public class Tower : Building
     protected override void TakeDamage(float damage)
     {
         CurrentHealth -= (int)damage;
+        CurrentHealth = Mathf.Max(0, CurrentHealth);
 
-        if (CurrentHealth <= 0)
-        {
-            SetPassive();
-        }
         // throw new System.NotImplementedException();
     }
 
     private void Update()
     {
+        if (CurrentHealth <= 0)
+        {
+            Debug.Log($"{gameObject.name} Has been destroyed");
+            OnDestroyed?.Invoke();
+        }
+        
         if (!_active)
         {
             _currentT = 0;

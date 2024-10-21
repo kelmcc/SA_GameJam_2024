@@ -8,7 +8,7 @@ namespace Core
     {
         public static event Action OnTick;
         
-        private float _tickInterval = 1f;
+        private float _tickInterval = 0.333f;
         public float TickInterval
         {
             get => _tickInterval;

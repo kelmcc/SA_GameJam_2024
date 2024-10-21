@@ -22,7 +22,7 @@ namespace Agents.ShipSystem
             // First check if we have shields
 
             _health -= damage;
-
+            Debug.LogError($"Ship takes {damage} damage");
             if (_health <= 0)
             {
                 OnDeath();

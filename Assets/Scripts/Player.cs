@@ -112,11 +112,13 @@ public class Player : Damagable
         };
     }
 
-    private IEnumerator Start()
+    private new IEnumerator Start()
     {
+        base.Start();
         int i = 0;
         int startingC = (int)_coinz;
         LastStableGroundPosition.position = transform.position;
+        
         yield return new WaitForSeconds(5);
 
         if (_startingAnim != null)
@@ -160,8 +162,17 @@ public class Player : Damagable
         base.OnTriggerEnter(collider);
     }
 
+    private bool _cribDestroyedDeathListenerSet;
+
     public void Update()
     {
+        if (Tower.Crib != null && !_cribDestroyedDeathListenerSet)
+        {
+            _cribDestroyedDeathListenerSet = true;
+            Tower.Crib.OnDestroyed.AddListener(()=>Death());
+        }
+        
+        
         if (Input.GetKeyDown(KeyCode.Alpha6))
         {
             _coinz = WinningCoinCount;
