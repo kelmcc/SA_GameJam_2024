@@ -8,6 +8,7 @@ namespace PhysicsDOTS
     public struct EnemySpawnerComponent : IComponentData
     {
         public float SpawnInterval;
+        public float SpawnCountPerTick;
         public BlobAssetReference<EnemySpawnerBlob> SpawnPositions;
     }
 

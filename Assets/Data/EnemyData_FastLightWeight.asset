@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4e22a7694da14718a912f74ac5b1a9b2, type: 3}
   m_Name: EnemyData_FastLightWeight
   m_EditorClassIdentifier: 
-  Level: 1
+  Level: 100
   BaseDamage: 1
   DamageMultiplier: 1
   Speed: 4
