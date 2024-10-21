@@ -1,13 +1,13 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using Cinemachine;
 using UnityEngine;
 using UnityEngine.Pool;
 
 public class Shockwave : MonoBehaviour
 {
     public GameObject ShockwavePrefab;
-
 
     private ObjectPool<GameObject> _pool;
 

@@ -104,15 +104,15 @@ Material:
     - _Metallic: 0
     - _Mode: 0
     - _NoiseScale: 0
-    - _NoiseStrength: 11.4
+    - _NoiseStrength: 0
     - _OcclusionStrength: 1
     - _Parallax: 0.02
     - _QueueControl: 0
     - _QueueOffset: 0
     - _ReceiveShadows: 1
-    - _ShadingFreq: 50
-    - _ShadingNoiseScale: 12.9
-    - _ShadingThreshold: 0.54
+    - _ShadingFreq: 9
+    - _ShadingNoiseScale: 4.18
+    - _ShadingThreshold: 0.246
     - _ShadowThreshold: 0.178
     - _Smoothness: 0.5
     - _SmoothnessTextureChannel: 0
@@ -129,10 +129,10 @@ Material:
     - _Color: {r: 0.9068248, g: 0.5479262, b: 0.78224665, a: 1}
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 0}
     - _MesaXY1: {r: 1, g: 0.48584908, b: 0.9309352, a: 0}
-    - _MesaXY2: {r: 0.87350845, g: 0.4292453, b: 1, a: 0}
+    - _MesaXY2: {r: 1, g: 0.3254717, b: 0.75320166, a: 0}
     - _MesaXY3: {r: 1, g: 0.47641504, b: 0.92947674, a: 0}
-    - _MesaZ: {r: 1, g: 0, b: 0.83552647, a: 0}
-    - _ShadingColor: {r: 0.447, g: 0.27010214, b: 0.43748936, a: 1}
+    - _MesaZ: {r: 0.9716981, g: 0.5454343, b: 0.90149003, a: 0}
+    - _ShadingColor: {r: 0.638, g: 0.3861579, b: 0.626807, a: 1}
     - _SpecColor: {r: 0.19999996, g: 0.19999996, b: 0.19999996, a: 1}
   m_BuildTextureStacks: []
 --- !u!114 &1126571665302257661

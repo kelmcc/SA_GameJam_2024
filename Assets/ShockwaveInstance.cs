@@ -1,3 +1,4 @@
+using Cinemachine;
 using Ross.EditorRuntimeCombatibility;
 using System;
 using System.Collections;
@@ -13,6 +14,8 @@ public class ShockwaveInstance : MonoBehaviour
     private float _currentLifetime;
 
     public List<Renderer> Renderers;
+    public CinemachineImpulseSource ShockwaveImpulseSource;
+
     private static readonly int Color1 = Shader.PropertyToID("_Color");
     public Action OnDestroy { get; set; }
 
@@ -20,9 +23,10 @@ public class ShockwaveInstance : MonoBehaviour
     {
         transform.localScale = Vector3.one;
         _currentLifetime = 0;
+        ShockwaveImpulseSource.GenerateImpulse();
         foreach (Renderer r in Renderers)
         {
-            var m =  r.material;
+            var m = r.material;
             m.color = m.color.WithAlpha(1);
         }
     }
@@ -31,15 +35,15 @@ public class ShockwaveInstance : MonoBehaviour
     {
         _currentLifetime += Time.deltaTime;
         float t = Mathf.Clamp01(_currentLifetime / Lifetime);
-        transform.localScale = Vector3.Lerp(Vector3.one, new Vector3(MaxScale,MaxScale,MaxScale),t );
+        transform.localScale = Vector3.Lerp(Vector3.one, new Vector3(MaxScale, MaxScale, MaxScale), t);
 
         foreach (Renderer r in Renderers)
         {
-           var m =  r.material;
-           Color c = m.GetColor(Color1);
-           m.SetColor(Color1, c.WithAlpha(t));
+            var m = r.material;
+            Color c = m.GetColor(Color1);
+            m.SetColor(Color1, c.WithAlpha(t));
         }
-        
+
         if (_currentLifetime >= Lifetime)
         {
             OnDestroy?.Invoke();

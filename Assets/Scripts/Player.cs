@@ -6,6 +6,7 @@ using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.SceneManagement;
 using UnityEngine.Serialization;
+using UnityEngine.Rendering;
 
 public class Player : Damagable
 {
@@ -29,12 +30,12 @@ public class Player : Damagable
 
 
     public LayerMask GroundRaycastMask;
-    
+
     [Space] public float GroundedRaycastDistance = 0.8f;
 
     [FormerlySerializedAs("FrictionCurve")] public AnimationCurve FrictionInverseCurve;
     public float MaxGroundedVelocity = 20;
-    
+
     [Range(0, 1)]
     public float Sliding = 0;
 
@@ -66,7 +67,10 @@ public class Player : Damagable
 
     [Header("Anim")] public SkaterAnimator Anim;
     public SkaterAnimator AnimUI;
-    
+
+    public Volume ZipVFXVolume;
+    public AnimationCurve ZipLineVFXAnimationCurve;
+
     public float VelocityAnimSpeedMultiplier = 0.1f;
 
     public void Awake()
@@ -79,7 +83,7 @@ public class Player : Damagable
 
         Interact.ToInputAction().performed += (context) =>
         {
-           
+
         };
     }
 
@@ -105,8 +109,8 @@ public class Player : Damagable
 
             return;
         }
-        
-        
+
+
         Vector2 movement = Move.ToInputAction().ReadValue<Vector2>();
         movement.Normalize();
 
@@ -153,13 +157,13 @@ public class Player : Damagable
             _grounded = false;
             Debug.DrawLine(transform.position, transform.position + Vector3.up * 3, Color.cyan);
         }
-        
-        if(!Grounded)
+
+        if (!Grounded)
         {
             Vector3 flatForward = new Vector3(forward.x, 0, forward.z).normalized;
-           forward = flatForward;
+            forward = flatForward;
         }
-        
+
         right.Normalize();
         forward.Normalize();
 
@@ -169,20 +173,20 @@ public class Player : Damagable
         Debug.DrawLine(transform.position + u, transform.position + u + right * 5, Color.red);
         //
 
-       // if (Grounded)
+        // if (Grounded)
         {
             _body.AddForce(((forward * movement.y) + (right * movement.x)) * Time.deltaTime * _currentSpeed, ForceMode.VelocityChange);
         }
-        
+
         float mag = _body.velocity.magnitude;
-        float maxSpeedNorm =  mag  / MaxGroundedVelocity;
+        float maxSpeedNorm = mag / MaxGroundedVelocity;
         bool inJumpWindow = InJumpWindow();
         bool isZooping = Time.time - _lastZoopTime < 2;
         if (Grounded || _flailing && !isZooping)
         {
             //mag  *= FrictionInverseCurve.Evaluate(Mathf.Clamp01(maxSpeedNorm));
-            mag *= 1-(FrictionCoeff*Time.deltaTime);
-            mag  = Mathf.Min(MaxGroundedVelocity, mag);
+            mag *= 1 - (FrictionCoeff * Time.deltaTime);
+            mag = Mathf.Min(MaxGroundedVelocity, mag);
         }
 
         Vector3 vNorm = _body.velocity.normalized;
@@ -190,7 +194,7 @@ public class Player : Damagable
         if (Grounded)
         {
             //rotate v to facing dir
-         //   Sliding = Mathf.Lerp(1, 0, avSpeedNorm);
+            //   Sliding = Mathf.Lerp(1, 0, avSpeedNorm);
             _body.velocity = Vector3.Lerp(forward * mag, vNorm * mag, Sliding);
 
             if (_hasInput)
@@ -219,8 +223,8 @@ public class Player : Damagable
                     AnimUI.PlayFreewheel();
                 }
             }
-          
-            float speed =  mag * VelocityAnimSpeedMultiplier;
+
+            float speed = mag * VelocityAnimSpeedMultiplier;
             Anim.Speed = speed;
             AnimUI.Speed = speed;
         }
@@ -228,7 +232,7 @@ public class Player : Damagable
         {
             Anim.Speed = 1;
             AnimUI.Speed = 1;
-            
+
             //cant rotate to facing dir while falling.
             _body.velocity = vNorm * mag;
         }
@@ -238,14 +242,14 @@ public class Player : Damagable
         {
             if (Mathf.Abs(movement.x) > 0)
             {
-                Vector3 dir =  right * movement.x;
+                Vector3 dir = right * movement.x;
                 _body.velocity = Vector3.Slerp(_body.velocity, dir * _body.velocity.magnitude, Time.deltaTime * 5);
             }
         }
-    
-        
+
+
         Vector3 vDir = new Vector3(vNorm.x, 0, vNorm.z).normalized;
-        
+
         if (mag > 0.1)
         {
             _body.MoveRotation(Quaternion.LookRotation(vDir, Vector3.up));
@@ -260,7 +264,7 @@ public class Player : Damagable
         {
             _currentBreakTime = 0;
         }
-        
+
         _body.AddForce(_zoopForce);
         _zoopForce = Vector3.zero;
 
@@ -295,7 +299,7 @@ public class Player : Damagable
                         Anim.PlayFall();
                         AnimUI.PlayFall();
                     }
-                  
+
                 }
                 else
                 {
@@ -312,12 +316,12 @@ public class Player : Damagable
     public void OnFall()
     {
         // what happens when the player dies?
-        
+
         TakeDamage(_fallDamage);
-        
+
         _body.velocity = Vector3.zero;
         transform.position = LastStableGroundPosition.position;
-        
+
         Debug.LogError("Player has fallen");
     }
 
@@ -341,7 +345,7 @@ public class Player : Damagable
         reloading = true;
         SceneManager.LoadScene(1);
     }
-    
+
     //ZOOP
 
     public void Zoop(Vector3 zoopForce)
@@ -350,9 +354,9 @@ public class Player : Damagable
         _zoopForce += zoopForce;
     }
 
-    
+
     //ZIP
-    
+
     private ZiplinePole _startZip;
     private ZiplinePole _endZip;
     private Zipline _zipline;
@@ -361,6 +365,7 @@ public class Player : Damagable
 
     private void UpdateZip()
     {
+        ZipVFXVolume.weight = Mathf.Clamp01(ZipLineVFXAnimationCurve.Evaluate(Time.time - _startZipTime));
         _body.velocity = Vector3.zero;
         _body.isKinematic = true;
         _zipVelocity += ZipAcceleration * Time.deltaTime;
@@ -374,7 +379,7 @@ public class Player : Damagable
             _body.isKinematic = false;
             _body.velocity = _zipline.GetTangent(_startZip, _zipPosition) * _zipVelocity;
             _body.AddForce(Vector3.up * ZipJumpOffForce, ForceMode.VelocityChange);
-            
+
             IsZipping = false;
 
             _zipPosition = 0;
@@ -382,6 +387,7 @@ public class Player : Damagable
             _startZip = null;
             _endZip = null;
             _zipline = null;
+            ZipVFXVolume.weight = 0;
         }
     }
 
