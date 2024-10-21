@@ -530,4 +530,9 @@ public class Player : Damagable
         }
         
     }
+
+    public void Buy(int cost)
+    {
+        _coinz -= cost;
+    }
 }

@@ -1,5 +1,6 @@
 using Framework;
 using PhysicsDOTS;
+using SoundManager;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -28,6 +29,9 @@ public class LazerTower : MonoBehaviour
     public LineRenderer LazerLine;
 
     public ParticleSystem afterFiring;
+    
+    public EffectSoundBank ZapSFX;
+    public EffectSoundBank SpiderDieSFX;
 
     private Coroutine test = null;
     private void Update()
@@ -153,12 +157,15 @@ public class LazerTower : MonoBehaviour
             
             Pivot.rotation = destination;
 
+            HitPoint.transform.position = Pivot.transform.position;
+            ZapSFX.Play(HitPoint.transform);
             yield return new WaitForSeconds(0.1f);
             
             LazerRoot.SetActive(true);
             destroy?.Invoke();
-            
+         
             Vector3 hitPos = Pivot.position + direction * Mathf.Abs(distance);
+            SpiderDieSFX.Play(hitPos);
             
             float diff = Vector3.Distance(Pivot.transform.position, LazerLine.transform.position);
             LazerLine.transform.localScale = new Vector3(1, 1, (distance-diff) / MaxRange);

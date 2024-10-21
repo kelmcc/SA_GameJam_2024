@@ -1,12 +1,15 @@
 using Framework;
 using System;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.InputSystem;
 
 public class ConstructionZone : MonoBehaviour
 {
+   public int Cost;
+   
    public LayerMask BuildTriggerMask;
    public float Radius;
    public SphereCollider Coll;
@@ -19,6 +22,12 @@ public class ConstructionZone : MonoBehaviour
    public Building Building;
    public Material HologramMaterial;
 
+   public GameObject CanAffordPrompt;
+   public GameObject CantAffordPrompt;
+
+   public TextMeshProUGUI CostText;
+   public TextMeshProUGUI CostText2;
+   
    private bool _canBuild;
    private bool _built;
    private Collider _builder;
@@ -28,6 +37,16 @@ public class ConstructionZone : MonoBehaviour
       _renderers =  Building.GetComponentsInChildren<Renderer>();
       SetHologram();
       Building.gameObject.SetActive(false);
+
+      CostText.text = "" + Cost;
+      CostText2.text = "" + Cost;
+      CanAffordPrompt.SetActive(false);
+      CantAffordPrompt.SetActive(false);
+   }
+
+   private bool CanAfford()
+   {
+      return Player.Instance.Coinz > Cost;
    }
 
    private void SetHologram()
@@ -57,6 +76,17 @@ public class ConstructionZone : MonoBehaviour
          _builder = other;
          Building.gameObject.SetActive(true); 
          _canBuild = true;
+
+         if (CanAfford())
+         {
+            CanAffordPrompt.SetActive(true);
+            CantAffordPrompt.SetActive(false);
+         }
+         else
+         {
+            CanAffordPrompt.SetActive(false);
+            CantAffordPrompt.SetActive(true);
+         }
       }
    }
 
@@ -68,6 +98,9 @@ public class ConstructionZone : MonoBehaviour
          {
             Building.gameObject.SetActive(false); 
          }
+         
+         CanAffordPrompt.SetActive(false);
+         CantAffordPrompt.SetActive(false);
        
          _canBuild = false;
       }
@@ -84,8 +117,12 @@ public class ConstructionZone : MonoBehaviour
       
       if (InteractReference.ToInputAction().IsPressed())
       {
-         if (!_built)
+         if (!_built && CanAfford())
          {
+            CanAffordPrompt.SetActive(false);
+            CantAffordPrompt.SetActive(false);
+            Player.Instance.Buy(Cost);
+            
             Building.gameObject.SetActive(true);
             SetReal();
             OnBuilt?.Invoke(Building);

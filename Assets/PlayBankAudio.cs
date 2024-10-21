@@ -6,10 +6,20 @@ using UnityEngine;
 public class PlayBankAudio : MonoBehaviour
 {
     [SerializeField] private SoundBank bank;
+    [SerializeField] private bool loop = false;
 
     void OnEnable()
     {
-        bank.Play();
+      
+        if (bank is EffectSoundBank e)
+        {
+            var instance = e.Play();
+            instance.SetLooping(loop);
+        }
+        else
+        {
+            bank.Play();
+        }
     }
 
 }

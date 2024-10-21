@@ -3780,7 +3780,7 @@ MonoBehaviour:
   m_PreserveMeshAssetOnDestroy: 0
   assetGuid: 
   m_Mesh: {fileID: 0}
-  m_VersionIndex: 1492
+  m_VersionIndex: 1546
   m_IsSelectable: 1
   m_SelectedFaces: 
   m_SelectedEdges: []
@@ -9667,7 +9667,7 @@ PrefabInstance:
     - target: {fileID: 2004613567666843739, guid: eb93c186207333c489ee652a74038d7b,
         type: 3}
       propertyPath: m_VersionIndex
-      value: 1532
+      value: 1586
       objectReference: {fileID: 0}
     - target: {fileID: 2897410660354093979, guid: eb93c186207333c489ee652a74038d7b,
         type: 3}
@@ -9785,6 +9785,8 @@ MonoBehaviour:
   HitPoint: {fileID: 4887347311905022911}
   LazerLine: {fileID: 8073929925039204436}
   afterFiring: {fileID: 5654460000644347778}
+  ZapSFX: {fileID: 11400000, guid: e27b673a45023a843a9d5030d1f968d6, type: 2}
+  SpiderDieSFX: {fileID: 11400000, guid: 56fa01b5b6e613b4697abd9bee8123e0, type: 2}
 --- !u!4 &6688734486683424872 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 1995097576163778945, guid: eb93c186207333c489ee652a74038d7b,
