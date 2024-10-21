@@ -36,7 +36,7 @@ public class CoinUIController : MonoBehaviour
     {
         if (Tower.Crib != null)
         {
-            if (Tower.Crib.CurrentHealth != Tower.Crib.Health)
+            if (Tower.Crib.IsBought)
             {
                 cribsHealthRoot.gameObject.SetActive(true);
             }
@@ -55,8 +55,8 @@ public class CoinUIController : MonoBehaviour
         Player p = Player.Instance;
         text.text = ""+p.Coinz;
         fillImage.fillAmount = Mathf.Clamp01(p.Coinz / (float)p.WinningCoinCount);
-
-        youNeedText.text = $"You need <size=50>{p.WinningCoinCount-p.Coinz}</size> Coinz <sup>(tm)</sup> to pay rent!";
+        youNeedText.text =  $"You're<size=50><color=red>-{p.WinningCoinCount-p.Coinz}</color></size> Coinz<sup>(tm)</sup> in debt!";
+        //$"You need <size=50></size> Coinz <sup>(tm)</sup> to pay rent!";
         //spiderText.text = "The spiders are angry!";
     }
 }

@@ -60,8 +60,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1534723203913602554}
   serializedVersion: 2
-  m_LocalRotation: {x: -0.4770823, y: -0.65746146, z: -0.37629908, w: 0.44557378}
-  m_LocalPosition: {x: 0.00000023841858, y: 0, z: 0}
+  m_LocalRotation: {x: -0.47577217, y: -0.65879893, z: -0.3770646, w: 0.44435018}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -139,8 +139,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2476438111577166606}
   serializedVersion: 2
-  m_LocalRotation: {x: -0.45069695, y: -0.67799324, z: -0.3379072, w: 0.47224584}
-  m_LocalPosition: {x: 0.00000023841858, y: 0, z: 0}
+  m_LocalRotation: {x: -0.44945922, y: -0.67937267, z: -0.33859473, w: 0.47094885}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -306,7 +306,7 @@ Transform:
   m_GameObject: {fileID: 4284448583010590741}
   serializedVersion: 2
   m_LocalRotation: {x: 0.1492864, y: -0, z: -0, w: 0.988794}
-  m_LocalPosition: {x: 3.5363727, y: -6.5965576, z: 6.7181573}
+  m_LocalPosition: {x: 3.5338366, y: -6.5965576, z: 6.7348723}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -659,8 +659,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 6149162538972518045}
   serializedVersion: 2
-  m_LocalRotation: {x: -0.46412516, y: -0.667969, z: -0.3573143, w: 0.45905524}
-  m_LocalPosition: {x: 0.00000023841858, y: 0, z: 0}
+  m_LocalRotation: {x: -0.46285066, y: -0.6693279, z: -0.35804117, w: 0.45779473}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -1751,6 +1751,12 @@ PrefabInstance:
         type: 3}
       propertyPath: m_IsActive
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 734258620337631022, guid: 340db147df269a34da3a44469717aa54,
+        type: 3}
+      propertyPath: m_text
+      value: You're <size=50><color=red> -10000</color></size> Coinz<sup>(tm)</sup>
+        in debt!
       objectReference: {fileID: 0}
     - target: {fileID: 5048278035924593851, guid: 340db147df269a34da3a44469717aa54,
         type: 3}

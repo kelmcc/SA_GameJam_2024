@@ -21,6 +21,7 @@ public class Tower : Building
     public static Tower Crib;
     public int Health = 200;
     [FormerlySerializedAs("_currentHealth")] public int CurrentHealth;
+    public bool IsBought => _active;
 
     private void Awake()
     {

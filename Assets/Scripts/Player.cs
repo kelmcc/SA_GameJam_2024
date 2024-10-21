@@ -116,7 +116,7 @@ public class Player : Damagable
     {
         int i = 0;
         int startingC = (int)_coinz;
-
+        LastStableGroundPosition.position = transform.position;
         yield return new WaitForSeconds(5);
 
         if (_startingAnim != null)
@@ -132,7 +132,6 @@ public class Player : Damagable
         }
     }
     
-
     public float JumpWindowTime = 0.5f;
     private float LastJumpTime;
     private bool _flailing;
@@ -240,8 +239,6 @@ public class Player : Damagable
                 
                 Debug.DrawLine(transform.position, transform.position +right * 10, Color.red);
                 Debug.DrawLine(transform.position, transform.position +forward * 10, Color.blue);
-
-                LastStableGroundPosition.position = transform.position;
             }
             else
             {
@@ -292,8 +289,6 @@ public class Player : Damagable
         }
 
         Vector3 vNorm = _body.velocity.normalized;
-        
-        
         
         if (Grounded)
         {
