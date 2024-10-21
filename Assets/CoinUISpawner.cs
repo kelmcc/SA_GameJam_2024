@@ -33,7 +33,7 @@ public class CoinUISpawner : MonoBehaviour
         GameObject g = _pool.Get();
         g.transform.position = SpawnPoint.position;
         var rb = g.GetComponent<Rigidbody>();
-        rb.velocity = Random.onUnitSphere;
+        rb.velocity = Random.onUnitSphere*0.1f;
         rb.angularVelocity = new Vector3(Random.value * 60, Random.value * 60, Random.value *60);
     }
 

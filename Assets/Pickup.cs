@@ -37,7 +37,7 @@ public class Pickup : MonoBehaviour
         {
             rb =  GetComponent<Rigidbody>();
         }
-        rb.isKinematic = true;
+        rb.isKinematic = false;
         _pickedUp = false;
         t = 0;
     }
