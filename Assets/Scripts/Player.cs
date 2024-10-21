@@ -2,6 +2,7 @@ using Cinemachine;
 using System;
 using System.Collections.Generic;
 using Agents;
+using System.Collections;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.SceneManagement;
@@ -22,6 +23,8 @@ public class Player : Damagable
     public float ZipSyncSpeed = 10;
     public float ZipAcceleration;
     public float MaxZipVelocity;
+
+    public int WinningCoinCount = 10000;
 
     [Space]
     public float FrictionCoeff = 0.1f;
@@ -65,7 +68,8 @@ public class Player : Damagable
 
     [Header("Damagable")]
     [SerializeField] private float _fallDamage = 50;
-    [SerializeField] private float _health = 200;
+    [FormerlySerializedAs("_health")] [SerializeField] private float _coinz = 50;
+    public int Coinz => (int)_coinz;
 
     [Header("Anim")] public SkaterAnimator Anim;
     public SkaterAnimator AnimUI;
@@ -76,6 +80,8 @@ public class Player : Damagable
     public float VelocityAnimSpeedMultiplier = 0.1f;
 
     public static Player Instance;
+
+    public Animator _startingAnim;
 
     public void Awake()
     {
@@ -88,8 +94,28 @@ public class Player : Damagable
 
         Interact.ToInputAction().performed += (context) =>
         {
-
+            
         };
+    }
+
+    private IEnumerator Start()
+    {
+        int i = 0;
+        int startingC = (int)_coinz;
+
+        yield return new WaitForSeconds(5);
+
+        if (_startingAnim != null)
+        {
+            _startingAnim.SetTrigger("Start");
+        }
+        
+        while (i < startingC)
+        {
+            yield return new WaitForSeconds(0.1f);
+            i++;
+          //  coinUISpawner.Spawn();
+        }
     }
     
 
@@ -112,7 +138,7 @@ public class Player : Damagable
         Pickup pickup = collider.GetComponent<Pickup>();
         if (pickup != null)
         {
-            _health += 1;
+            _coinz += 1;
             coinUISpawner.Spawn();
             pickup.PickedUp();
             return;
@@ -123,6 +149,15 @@ public class Player : Damagable
 
     public void Update()
     {
+        if (_coinz >= WinningCoinCount)
+        {
+            Debug.Log("PLAYER WINS. DO SOMETHING?!");
+        }
+        
+        if (_coinz <= 0)
+        {
+            Death();
+        }
         if (IsZipping)
         {
             UpdateZip();
@@ -347,9 +382,9 @@ public class Player : Damagable
 
     protected override void TakeDamage(float damage)
     {
-        _health -= damage;
+        _coinz -= damage;
 
-        if (_health <= 0)
+        if (_coinz <= 0)
         {
             Death();
         }

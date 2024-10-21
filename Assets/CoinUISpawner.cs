@@ -11,8 +11,11 @@ public class CoinUISpawner : MonoBehaviour
     public GameObject Prefab;
     private ObjectPool<GameObject> _pool;
 
+    public static CoinUISpawner Instance;
+
     private void Awake()
     {
+        Instance = this;
         _pool = new ObjectPool<GameObject>(() => Instantiate(Prefab, transform, false),
             g => { g.SetActive(true); },
             gr => gr.SetActive(false),
@@ -30,6 +33,7 @@ public class CoinUISpawner : MonoBehaviour
 
     public void Spawn()
     {
+        CoinUIController.Instance.PopObjective();
         GameObject g = _pool.Get();
         g.transform.position = SpawnPoint.position;
         var rb = g.GetComponent<Rigidbody>();
