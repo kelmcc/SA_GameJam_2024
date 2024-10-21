@@ -1,4 +1,5 @@
 using Unity.Entities;
+using Unity.Physics;
 using UnityEngine;
 
 namespace PhysicsDOTS
@@ -12,7 +13,7 @@ namespace PhysicsDOTS
             public override void Bake(EnemyAuthoring authoring)
             {
                 Entity enemyAuth = GetEntity(TransformUsageFlags.None);
-
+               
                 AddComponent(enemyAuth, new EnemyComponent { MoveSpeed = authoring.MoveSpeed });
             }
         }

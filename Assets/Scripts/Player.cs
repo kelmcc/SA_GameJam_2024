@@ -5,9 +5,9 @@ using Agents;
 using System.Collections;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.Rendering;
 using UnityEngine.SceneManagement;
 using UnityEngine.Serialization;
-using UnityEngine.Rendering;
 using UnityEngine.VFX;
 
 public class Player : Damagable
@@ -86,10 +86,16 @@ public class Player : Damagable
 
     public Animator _startingAnim;
 
+    private UnityEngine.Pool.ObjectPool<ParticleSystem> _pool;
+    
     public void Awake()
     {
         _body = GetComponent<Rigidbody>();
         Instance = this;
+        
+        _pool = new UnityEngine.Pool.ObjectPool<ParticleSystem>(() => Instantiate(EnemyDieParticles, transform, false),
+            g => { g.gameObject.SetActive(true); },
+            gr => gr.gameObject.SetActive(false), (o)=>Destroy(o.gameObject));
 
         Attack.ToInputAction().performed += (context) => { Debug.Log("ATTACK"); };
 
@@ -468,5 +474,22 @@ public class Player : Damagable
         _startZip = point1;
         _endZip = point2;
         _zipline = zipline;
+    }
+
+    public ParticleSystem EnemyDieParticles;
+
+    public void PlayEnemyDie(Vector3 transformPosition)
+    {
+        ParticleSystem instance = _pool.Get();
+        instance.transform.position = transformPosition;
+        instance.Play();
+
+        StartCoroutine(Wait());
+        IEnumerator Wait()
+        {
+            yield return new WaitForSeconds(0.75f);
+            _pool.Release(instance);
+        }
+        
     }
 }

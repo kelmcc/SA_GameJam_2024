@@ -6607,6 +6607,43 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2003714321}
   m_Mesh: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
+--- !u!1 &2005696764
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 2005696765}
+  m_Layer: 0
+  m_Name: Spawn (3)
+  m_TagString: Untagged
+  m_Icon: {fileID: -5442936267250999957, guid: 0000000000000000d000000000000000, type: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &2005696765
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2005696764}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 2.27, y: 35.77, z: 40.22}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 2010582561}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!4 &2010582561 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 8959749968533900089, guid: df13955d9611c42a98db3c5a5de36ccb,
+    type: 3}
+  m_PrefabInstance: {fileID: 7798256152375063392}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &2011171580
 GameObject:
   m_ObjectHideFlags: 0
@@ -11170,6 +11207,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3238075435911108395, guid: df13955d9611c42a98db3c5a5de36ccb,
         type: 3}
+      propertyPath: SpawnPoints.Array.size
+      value: 4
+      objectReference: {fileID: 0}
+    - target: {fileID: 3238075435911108395, guid: df13955d9611c42a98db3c5a5de36ccb,
+        type: 3}
       propertyPath: SpawnPoints.Array.data[0]
       value: 
       objectReference: {fileID: 7798256152375063395}
@@ -11183,6 +11225,11 @@ PrefabInstance:
       propertyPath: SpawnPoints.Array.data[2]
       value: 
       objectReference: {fileID: 7798256152375063393}
+    - target: {fileID: 3238075435911108395, guid: df13955d9611c42a98db3c5a5de36ccb,
+        type: 3}
+      propertyPath: SpawnPoints.Array.data[3]
+      value: 
+      objectReference: {fileID: 2005696765}
     - target: {fileID: 6677361651978689191, guid: df13955d9611c42a98db3c5a5de36ccb,
         type: 3}
       propertyPath: m_Name
@@ -11240,7 +11287,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
-    m_AddedGameObjects: []
+    m_AddedGameObjects:
+    - targetCorrespondingSourceObject: {fileID: 8959749968533900089, guid: df13955d9611c42a98db3c5a5de36ccb,
+        type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 2005696765}
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: df13955d9611c42a98db3c5a5de36ccb, type: 3}
 --- !u!4 &7798256152375063393 stripped

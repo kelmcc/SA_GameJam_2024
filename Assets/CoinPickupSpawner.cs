@@ -5,12 +5,12 @@ using Random = UnityEngine.Random;
 public class CoinPickupSpawner : MonoBehaviour
 {
     public Pickup Prefab;
-    private ObjectPool<Pickup> _pool;
+  
 
     public static CoinPickupSpawner Instance;
 
     public Player Player;
-
+    private ObjectPool<Pickup> _pool;
     private void Awake()
     {
         Instance = this;
