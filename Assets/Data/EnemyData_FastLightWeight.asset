@@ -18,4 +18,4 @@ MonoBehaviour:
   Speed: 4
   Health: 20
   Prefab: {fileID: 2492553801180306694, guid: 21e4ea46156c74bfe932ffa2d60c36e3, type: 3}
-  Scale: 3
+  Scale: 2

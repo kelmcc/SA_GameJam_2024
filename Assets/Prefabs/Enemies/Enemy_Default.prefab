@@ -29,7 +29,7 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 20.01, z: 0}
-  m_LocalScale: {x: 5, y: 5, z: 5}
+  m_LocalScale: {x: 2, y: 2, z: 2}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 914838996336285365}
@@ -65,7 +65,7 @@ Rigidbody:
   m_GameObject: {fileID: 9215937770422019796}
   serializedVersion: 4
   m_Mass: 30
-  m_Drag: 0.5
+  m_Drag: 1
   m_AngularDrag: 0.05
   m_CenterOfMass: {x: 0, y: 0, z: 0}
   m_InertiaTensor: {x: 1, y: 1, z: 1}
@@ -167,7 +167,7 @@ PrefabInstance:
     - target: {fileID: 982621435804495006, guid: 0034055f5c55e43ada2f57f8f3e15e8b,
         type: 3}
       propertyPath: m_IsActive
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 1571821295541747244, guid: 0034055f5c55e43ada2f57f8f3e15e8b,
         type: 3}
@@ -252,7 +252,7 @@ PrefabInstance:
     - target: {fileID: 1717313246478335235, guid: 0034055f5c55e43ada2f57f8f3e15e8b,
         type: 3}
       propertyPath: m_IsActive
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 2138160073403211540, guid: 0034055f5c55e43ada2f57f8f3e15e8b,
         type: 3}
