@@ -17,7 +17,7 @@ public class Player : Damagable
     public EffectSoundBank GrindSFX;
     private EffectSoundInstance _grindInstance;
     public EffectSoundBank JumpSFX;
-
+    public EffectSoundBank SpiderDieSFX;
     [Space]
     [FormerlySerializedAs("Respawn")] public Transform LastStableGroundPosition;
     public float WalkSpeed = 5;
@@ -521,14 +521,13 @@ public class Player : Damagable
         ParticleSystem instance = _pool.Get();
         instance.transform.position = transformPosition;
         instance.Play();
-
+        SpiderDieSFX.Play(transformPosition);
         StartCoroutine(Wait());
         IEnumerator Wait()
         {
             yield return new WaitForSeconds(0.75f);
             _pool.Release(instance);
         }
-        
     }
 
     public void Buy(int cost)

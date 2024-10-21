@@ -13,6 +13,9 @@ public class CoinUIController : MonoBehaviour
     public TextMeshProUGUI youNeedText;
     public TextMeshProUGUI spiderText;
 
+    public Transform cribsHealthRoot;
+    public Image cribsFill;
+
     public static CoinUIController Instance;
 
     private Tween t;
@@ -31,6 +34,24 @@ public class CoinUIController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        if (Tower.Crib != null)
+        {
+            if (Tower.Crib.CurrentHealth != Tower.Crib.Health)
+            {
+                cribsHealthRoot.gameObject.SetActive(true);
+            }
+            else
+            {
+                cribsHealthRoot.gameObject.SetActive(false);
+            }
+            cribsFill.fillAmount = Mathf.Clamp01(Tower.Crib.CurrentHealth / (float)Tower.Crib.Health);
+        }
+        else
+        {
+            cribsHealthRoot.gameObject.SetActive(false);
+        }
+        
+        
         Player p = Player.Instance;
         text.text = ""+p.Coinz;
         fillImage.fillAmount = Mathf.Clamp01(p.Coinz / (float)p.WinningCoinCount);

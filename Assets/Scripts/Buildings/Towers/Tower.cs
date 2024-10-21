@@ -1,8 +1,10 @@
 using SoundManager;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
+using UnityEngine.Serialization;
 
 [ExecuteAlways]
 public class Tower : Building
@@ -14,6 +16,20 @@ public class Tower : Building
 
     private bool _active;
 
+    public bool isCrib;
+
+    public static Tower Crib;
+    public int Health = 200;
+    [FormerlySerializedAs("_currentHealth")] public int CurrentHealth;
+
+    private void Awake()
+    {
+        if (isCrib)
+        {
+            Crib = this;
+        }
+    }
+
     private void Start()
     {
         if (!Application.isPlaying)
@@ -24,6 +40,7 @@ public class Tower : Building
     
     public override void SetInteractable()
     {
+        CurrentHealth = Health;
         _active = true;
 
         //throw new System.NotImplementedException();
@@ -38,7 +55,13 @@ public class Tower : Building
 
     protected override void TakeDamage(float damage)
     {
-       // throw new System.NotImplementedException();
+        CurrentHealth -= (int)damage;
+
+        if (CurrentHealth <= 0)
+        {
+            SetPassive();
+        }
+        // throw new System.NotImplementedException();
     }
 
     private void Update()

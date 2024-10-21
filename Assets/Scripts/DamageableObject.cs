@@ -47,7 +47,7 @@ namespace Agents
         {
             Position = pos,
             MaxDistance = radius,
-            Filter =  new CollisionFilter {CollidesWith = (uint)EnemiesLayer.Enemies, BelongsTo  = (uint)EnemiesLayer.Triggers}
+            Filter =  new CollisionFilter {CollidesWith = (uint)EnemiesLayer.Enemies, BelongsTo  = (uint)(EnemiesLayer.Enemies | EnemiesLayer.Triggers | EnemiesLayer.Player | EnemiesLayer.Buildings)}
         };
         
         // Prepare the collector to gather all hits

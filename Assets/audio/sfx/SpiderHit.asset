@@ -180,7 +180,7 @@ MonoBehaviour:
     _max: 1
   _rolloffDistance:
     _min: 1
-    _max: 10
+    _max: 100
   _cooldown: 0
   _outputMixer: {fileID: 0}
   _clipSelection: 0

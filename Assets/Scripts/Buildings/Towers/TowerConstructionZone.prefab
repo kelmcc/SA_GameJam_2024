@@ -1419,6 +1419,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 07f6217b64587a24e87bffdb8585d75d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  TakeDamageRadius: 3
+  Interval: 5
+  OnTrigger:
+    m_PersistentCalls:
+      m_Calls: []
+  isCrib: 0
+  Health: 200
+  CurrentHealth: 200
 --- !u!1 &8984363319748455501
 GameObject:
   m_ObjectHideFlags: 0
@@ -1464,6 +1472,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: ConstructionZone
+      objectReference: {fileID: 0}
+    - target: {fileID: 2102102105693151819, guid: 0de3360d5f1d65f4da1afbe60739d4a5,
+        type: 3}
+      propertyPath: m_Layer
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 3124579125011742527, guid: 0de3360d5f1d65f4da1afbe60739d4a5,
         type: 3}

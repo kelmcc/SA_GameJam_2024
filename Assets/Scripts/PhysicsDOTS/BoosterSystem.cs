@@ -122,5 +122,6 @@ public enum EnemiesLayer
 {
     Player = 1 << 4,
     Enemies = 1 << 6,
-    Triggers = 1 << 7
+    Triggers = 1 << 7,
+    Buildings = 1 << 10
 }
