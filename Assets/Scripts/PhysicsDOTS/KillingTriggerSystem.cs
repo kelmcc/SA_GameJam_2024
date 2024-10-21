@@ -77,5 +77,13 @@ namespace PhysicsDOTS
             }
         }
 
+        public void OnDestroy(ref SystemState state)
+        {
+            if (_triggerEntities.IsCreated)
+            {
+                _triggerEntities.Dispose();
+            }
+        }
+
     }
 }

@@ -104,6 +104,15 @@ namespace PhysicsDOTS
                 }
             }
         }
+        
+        public void OnDestroy(ref SystemState state)
+        {
+            if (_boosterEntities.IsCreated)
+            {
+                _boosterEntities.Dispose();
+            }
+        }
+
     }
 }
 
