@@ -8,7 +8,6 @@ namespace Core
         private void Start()
         {
             Cursor.visible = false;
-            Cursor.lockState = CursorLockMode.Locked;
         }
 
         private void Update()
