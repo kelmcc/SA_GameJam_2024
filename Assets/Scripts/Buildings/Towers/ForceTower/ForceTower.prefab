@@ -1985,7 +1985,7 @@ MonoBehaviour:
   m_PreserveMeshAssetOnDestroy: 0
   assetGuid: 
   m_Mesh: {fileID: 0}
-  m_VersionIndex: 1273
+  m_VersionIndex: 1414
   m_IsSelectable: 1
   m_SelectedFaces: 
   m_SelectedEdges: []
@@ -2010,7 +2010,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 31321ba15b8f8eb4c954353edc038b1d, type: 2}
+  - {fileID: 2100000, guid: acee22987d03f1846a0cc7bcf93adb7a, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -2123,7 +2123,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 31321ba15b8f8eb4c954353edc038b1d, type: 2}
+  - {fileID: 2100000, guid: acee22987d03f1846a0cc7bcf93adb7a, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -2243,7 +2243,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 31321ba15b8f8eb4c954353edc038b1d, type: 2}
+  - {fileID: 2100000, guid: acee22987d03f1846a0cc7bcf93adb7a, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -2347,7 +2347,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 31321ba15b8f8eb4c954353edc038b1d, type: 2}
+  - {fileID: 2100000, guid: acee22987d03f1846a0cc7bcf93adb7a, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -4354,7 +4354,7 @@ MonoBehaviour:
   m_PreserveMeshAssetOnDestroy: 0
   assetGuid: 
   m_Mesh: {fileID: 0}
-  m_VersionIndex: 1273
+  m_VersionIndex: 1420
   m_IsSelectable: 1
   m_SelectedFaces: 
   m_SelectedEdges: []
@@ -4379,7 +4379,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 31321ba15b8f8eb4c954353edc038b1d, type: 2}
+  - {fileID: 2100000, guid: acee22987d03f1846a0cc7bcf93adb7a, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -4457,8 +4457,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 8479376232225434628}
   serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 4.8542457, z: 0}
+  m_LocalRotation: {x: 0, y: 0.9178732, z: 0, w: -0.3968738}
+  m_LocalPosition: {x: 0, y: 3.299305, z: 0}
   m_LocalScale: {x: 4.2065487, y: 0.5727642, z: 4.2065487}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -4492,7 +4492,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 31321ba15b8f8eb4c954353edc038b1d, type: 2}
+  - {fileID: 2100000, guid: 4530a5056356f3c48b936eea9b204285, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -4525,17 +4525,17 @@ PrefabInstance:
     - target: {fileID: 1172916566806755909, guid: eb93c186207333c489ee652a74038d7b,
         type: 3}
       propertyPath: m_LocalPosition.x
-      value: 0
+      value: -8.75
       objectReference: {fileID: 0}
     - target: {fileID: 1172916566806755909, guid: eb93c186207333c489ee652a74038d7b,
         type: 3}
       propertyPath: m_LocalPosition.y
-      value: 0
+      value: 26.42
       objectReference: {fileID: 0}
     - target: {fileID: 1172916566806755909, guid: eb93c186207333c489ee652a74038d7b,
         type: 3}
       propertyPath: m_LocalPosition.z
-      value: 0
+      value: 41.76
       objectReference: {fileID: 0}
     - target: {fileID: 1172916566806755909, guid: eb93c186207333c489ee652a74038d7b,
         type: 3}
@@ -4575,13 +4575,63 @@ PrefabInstance:
     - target: {fileID: 2004613567666843739, guid: eb93c186207333c489ee652a74038d7b,
         type: 3}
       propertyPath: m_VersionIndex
-      value: 1313
+      value: 1460
       objectReference: {fileID: 0}
     - target: {fileID: 2897410660354093979, guid: eb93c186207333c489ee652a74038d7b,
         type: 3}
       propertyPath: m_Name
       value: ForceTower
       objectReference: {fileID: 0}
+    - target: {fileID: 3989402554293216131, guid: eb93c186207333c489ee652a74038d7b,
+        type: 3}
+      propertyPath: Building
+      value: 
+      objectReference: {fileID: 1474736577900759227}
+    - target: {fileID: 5986545206409523538, guid: eb93c186207333c489ee652a74038d7b,
+        type: 3}
+      propertyPath: OnTrigger.m_PersistentCalls.m_Calls.Array.size
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5986545206409523538, guid: eb93c186207333c489ee652a74038d7b,
+        type: 3}
+      propertyPath: OnTrigger.m_PersistentCalls.m_Calls.Array.data[0].m_Mode
+      value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 5986545206409523538, guid: eb93c186207333c489ee652a74038d7b,
+        type: 3}
+      propertyPath: OnTrigger.m_PersistentCalls.m_Calls.Array.data[0].m_Target
+      value: 
+      objectReference: {fileID: 3878626125897115433}
+    - target: {fileID: 5986545206409523538, guid: eb93c186207333c489ee652a74038d7b,
+        type: 3}
+      propertyPath: OnTrigger.m_PersistentCalls.m_Calls.Array.data[0].m_CallState
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 5986545206409523538, guid: eb93c186207333c489ee652a74038d7b,
+        type: 3}
+      propertyPath: OnTrigger.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
+      value: SetTrigger
+      objectReference: {fileID: 0}
+    - target: {fileID: 5986545206409523538, guid: eb93c186207333c489ee652a74038d7b,
+        type: 3}
+      propertyPath: OnTrigger.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
+      value: UnityEngine.Animator, UnityEngine
+      objectReference: {fileID: 0}
+    - target: {fileID: 5986545206409523538, guid: eb93c186207333c489ee652a74038d7b,
+        type: 3}
+      propertyPath: OnTrigger.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_StringArgument
+      value: Trigger
+      objectReference: {fileID: 0}
+    - target: {fileID: 5986545206409523538, guid: eb93c186207333c489ee652a74038d7b,
+        type: 3}
+      propertyPath: OnTrigger.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_ObjectArgumentAssemblyTypeName
+      value: UnityEngine.Object, UnityEngine
+      objectReference: {fileID: 0}
+    - target: {fileID: 8322863535936614743, guid: eb93c186207333c489ee652a74038d7b,
+        type: 3}
+      propertyPath: m_Materials.Array.data[0]
+      value: 
+      objectReference: {fileID: 2100000, guid: acee22987d03f1846a0cc7bcf93adb7a, type: 2}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects:
@@ -4597,19 +4647,31 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 7233602812730958188, guid: eb93c186207333c489ee652a74038d7b,
         type: 3}
       insertIndex: -1
-      addedObject: {fileID: 1612086179496118555}
+      addedObject: {fileID: 6759305447679014660}
     - targetCorrespondingSourceObject: {fileID: 7233602812730958188, guid: eb93c186207333c489ee652a74038d7b,
         type: 3}
       insertIndex: -1
       addedObject: {fileID: 3878626125897115433}
   m_SourcePrefab: {fileID: 100100000, guid: eb93c186207333c489ee652a74038d7b, type: 3}
+--- !u!114 &1474736577900759227 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 5986545206409523538, guid: eb93c186207333c489ee652a74038d7b,
+    type: 3}
+  m_PrefabInstance: {fileID: 5144001649674009065}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2522509823695640709}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 07f6217b64587a24e87bffdb8585d75d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &2522509823695640709 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 7233602812730958188, guid: eb93c186207333c489ee652a74038d7b,
     type: 3}
   m_PrefabInstance: {fileID: 5144001649674009065}
   m_PrefabAsset: {fileID: 0}
---- !u!114 &1612086179496118555
+--- !u!114 &6759305447679014660
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -4621,6 +4683,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: da2c336f67d59294a8e9d8298773c35f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  ShockwavePrefab: {fileID: 2293565041368225159, guid: 66265009020009d41a731c2dbcfbe501,
+    type: 3}
 --- !u!95 &3878626125897115433
 Animator:
   serializedVersion: 5
