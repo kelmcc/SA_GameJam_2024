@@ -17,7 +17,7 @@ namespace Agents
             TimeTicker.OnTick += OnTick;
         }
 
-        private void OnTriggerEnter(Collider other)
+        protected void OnTriggerEnter(Collider other)
         {
             var enemy = other.gameObject.GetComponent<EnemyBase>();
             if (enemy != null && !_enemiesInRange.Contains(enemy))
@@ -26,7 +26,7 @@ namespace Agents
             }
         }
 
-        private void OnTriggerExit(Collider other)
+        protected void OnTriggerExit(Collider other)
         {
             var enemy = other.gameObject.GetComponent<EnemyBase>();
             if (enemy != null && !_enemiesInRange.Contains(enemy))

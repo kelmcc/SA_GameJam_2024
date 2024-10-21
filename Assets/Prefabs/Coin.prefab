@@ -10,7 +10,10 @@ GameObject:
   m_Component:
   - component: {fileID: 8650566261368012669}
   - component: {fileID: 5243130999885169378}
-  m_Layer: 0
+  - component: {fileID: 9024291637015547788}
+  - component: {fileID: 3948472608240240848}
+  - component: {fileID: 4252206387291865184}
+  m_Layer: 9
   m_Name: Coin
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -53,6 +56,75 @@ MonoBehaviour:
     _max: 200
   BounceSize: 0.7
   StartBouncePosition: {x: 0, y: 1.5, z: 0}
+--- !u!54 &9024291637015547788
+Rigidbody:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 565961797072850792}
+  serializedVersion: 4
+  m_Mass: 1
+  m_Drag: 0
+  m_AngularDrag: 0.05
+  m_CenterOfMass: {x: 0, y: 0, z: 0}
+  m_InertiaTensor: {x: 1, y: 1, z: 1}
+  m_InertiaRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ImplicitCom: 1
+  m_ImplicitTensor: 1
+  m_UseGravity: 1
+  m_IsKinematic: 0
+  m_Interpolate: 0
+  m_Constraints: 122
+  m_CollisionDetection: 1
+--- !u!135 &3948472608240240848
+SphereCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 565961797072850792}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 8
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Radius: 0.5
+  m_Center: {x: 0, y: 0.37, z: 0}
+--- !u!135 &4252206387291865184
+SphereCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 565961797072850792}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 1
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Radius: 5.3
+  m_Center: {x: 0, y: 0.23, z: 0}
 --- !u!1 &1679526457014875257
 GameObject:
   m_ObjectHideFlags: 0
@@ -63,7 +135,7 @@ GameObject:
   m_Component:
   - component: {fileID: 3842178017059814587}
   - component: {fileID: 6775620236012126001}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: Decal
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -125,7 +197,7 @@ PrefabInstance:
     - target: {fileID: -8679921383154817045, guid: 335c849e385df2241a724c898b024595,
         type: 3}
       propertyPath: m_LocalPosition.y
-      value: 1.9175869
+      value: 1.4814906
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 335c849e385df2241a724c898b024595,
         type: 3}
@@ -135,22 +207,22 @@ PrefabInstance:
     - target: {fileID: -8679921383154817045, guid: 335c849e385df2241a724c898b024595,
         type: 3}
       propertyPath: m_LocalRotation.w
-      value: 0.98394215
+      value: -0.8451729
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 335c849e385df2241a724c898b024595,
         type: 3}
       propertyPath: m_LocalRotation.x
-      value: 0
+      value: -0
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 335c849e385df2241a724c898b024595,
         type: 3}
       propertyPath: m_LocalRotation.y
-      value: 0.17848793
+      value: -0.53449315
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 335c849e385df2241a724c898b024595,
         type: 3}
       propertyPath: m_LocalRotation.z
-      value: 0
+      value: -0
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 335c849e385df2241a724c898b024595,
         type: 3}
@@ -177,15 +249,35 @@ PrefabInstance:
       propertyPath: m_Materials.Array.data[0]
       value: 
       objectReference: {fileID: 2100000, guid: dbeacb7a11a739345999eeb226e4beaf, type: 2}
+    - target: {fileID: -7029948723529949830, guid: 335c849e385df2241a724c898b024595,
+        type: 3}
+      propertyPath: m_Layer
+      value: 9
+      objectReference: {fileID: 0}
     - target: {fileID: -5428214754450737354, guid: 335c849e385df2241a724c898b024595,
         type: 3}
       propertyPath: m_Materials.Array.data[0]
       value: 
       objectReference: {fileID: 2100000, guid: dbeacb7a11a739345999eeb226e4beaf, type: 2}
+    - target: {fileID: -5178728247018516864, guid: 335c849e385df2241a724c898b024595,
+        type: 3}
+      propertyPath: m_Layer
+      value: 9
+      objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: 335c849e385df2241a724c898b024595,
         type: 3}
       propertyPath: m_Name
       value: catcoin
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 335c849e385df2241a724c898b024595,
+        type: 3}
+      propertyPath: m_Layer
+      value: 9
+      objectReference: {fileID: 0}
+    - target: {fileID: 7880410108957794536, guid: 335c849e385df2241a724c898b024595,
+        type: 3}
+      propertyPath: m_Layer
+      value: 9
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -289,6 +381,16 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: vfxRing
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: e09bd9570dbb84e4b8e3537f3117bac0,
+        type: 3}
+      propertyPath: m_Layer
+      value: 9
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: e09bd9570dbb84e4b8e3537f3117bac0,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []

@@ -23,6 +23,12 @@ namespace EnemyAI.Spawning
             {
                 player.OnFall();
             }
+            
+            Pickup pickup = other.gameObject.GetComponent<Pickup>();
+            if (pickup)
+            {
+                pickup.PickedUp();
+            }
         }
 
     }

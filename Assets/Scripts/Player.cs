@@ -47,6 +47,8 @@ public class Player : Damagable
     public InputActionReference Grapple;
     public InputActionReference Interact;
 
+    [FormerlySerializedAs("CoinSpawn")] public CoinUISpawner coinUISpawner;
+
     private bool _grounded = false;
     public bool Grounded => _grounded && !InJumpWindow();
     public bool IsZipping { get; private set; }
@@ -69,9 +71,12 @@ public class Player : Damagable
     
     public float VelocityAnimSpeedMultiplier = 0.1f;
 
+    public static Player Instance;
+
     public void Awake()
     {
         _body = GetComponent<Rigidbody>();
+        Instance = this;
 
         Attack.ToInputAction().performed += (context) => { Debug.Log("ATTACK"); };
 
@@ -82,6 +87,7 @@ public class Player : Damagable
            
         };
     }
+    
 
     public float JumpWindowTime = 0.5f;
     private float LastJumpTime;
@@ -95,6 +101,20 @@ public class Player : Damagable
     public bool InJumpWindow()
     {
         return Time.time - LastJumpTime < JumpWindowTime;
+    }
+
+    protected new void OnTriggerEnter(Collider collider)
+    {
+        Pickup pickup = collider.GetComponent<Pickup>();
+        if (pickup != null)
+        {
+            _health += 1;
+            coinUISpawner.Spawn();
+            pickup.PickedUp();
+            return;
+        }
+        
+        base.OnTriggerEnter(collider);
     }
 
     public void Update()

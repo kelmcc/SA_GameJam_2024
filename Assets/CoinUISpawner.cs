@@ -5,7 +5,7 @@ using UnityEngine;
 using UnityEngine.Pool;
 using Random = UnityEngine.Random;
 
-public class CoinSpawn : MonoBehaviour
+public class CoinUISpawner : MonoBehaviour
 {
     public Transform SpawnPoint;
     public GameObject Prefab;
@@ -18,6 +18,7 @@ public class CoinSpawn : MonoBehaviour
             gr => gr.SetActive(false),
             Destroy);
     }
+    
 
     public void Update()
     {

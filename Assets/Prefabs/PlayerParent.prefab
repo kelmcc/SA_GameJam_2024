@@ -479,7 +479,7 @@ Transform:
   m_GameObject: {fileID: 1217272341485625937}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 74.7, y: 0, z: 45.8}
+  m_LocalPosition: {x: 74.7, y: -9.8, z: 53.4}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -547,8 +547,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1534723203913602554}
   serializedVersion: 2
-  m_LocalRotation: {x: 0.06277998, y: 0.16240895, z: -0.03905209, w: -0.9839497}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalRotation: {x: 0.06359049, y: 0.049948465, z: -0.012010368, w: -0.99665296}
+  m_LocalPosition: {x: -0.00000023841858, y: 0.00000007038761, z: 0.00000022779159}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -668,7 +668,7 @@ Camera:
     width: 1
     height: 1
   near clip plane: 0.3
-  far clip plane: 15
+  far clip plane: 20
   field of view: 60
   orthographic: 0
   orthographic size: 5
@@ -764,8 +764,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2476438111577166606}
   serializedVersion: 2
-  m_LocalRotation: {x: 0.0061495556, y: 0.15989724, z: -0.048317783, w: -0.9859313}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalRotation: {x: 0.0062289187, y: 0.04917599, z: -0.014860012, w: -0.9986602}
+  m_LocalPosition: {x: -0.00000023841858, y: 0.00000007038761, z: 0.00000022779159}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -1336,7 +1336,7 @@ Transform:
   m_GameObject: {fileID: 4284448583010590741}
   serializedVersion: 2
   m_LocalRotation: {x: 0.1492864, y: -0, z: -0, w: 0.988794}
-  m_LocalPosition: {x: 2.9782271, y: 5.980839, z: -2.34728}
+  m_LocalPosition: {x: 0.92777264, y: 5.980839, z: -2.8041215}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -1724,8 +1724,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 6149162538972518045}
   serializedVersion: 2
-  m_LocalRotation: {x: 0.03457288, y: 0.16122386, z: -0.04368764, w: -0.9853441}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalRotation: {x: 0.035019226, y: 0.049583975, z: -0.013436015, w: -0.9980655}
+  m_LocalPosition: {x: -0.00000023841858, y: 0.00000007038761, z: 0.00000022779159}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -2377,6 +2377,7 @@ MonoBehaviour:
   Grapple: {fileID: 2473330573701837956, guid: beebc186c9198a5408aab7737b4d8c34, type: 3}
   Interact: {fileID: 1781555164194001046, guid: beebc186c9198a5408aab7737b4d8c34,
     type: 3}
+  coinUISpawner: {fileID: 3651722682936494432}
   _fallDamage: 50
   _health: 200
   Anim: {fileID: 6754857712956739872}
