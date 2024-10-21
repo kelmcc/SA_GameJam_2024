@@ -8,6 +8,7 @@ using UnityEngine.InputSystem;
 using UnityEngine.SceneManagement;
 using UnityEngine.Serialization;
 using UnityEngine.Rendering;
+using UnityEngine.VFX;
 
 public class Player : Damagable
 {
@@ -76,6 +77,8 @@ public class Player : Damagable
 
     public Volume ZipVFXVolume;
     public AnimationCurve ZipLineVFXAnimationCurve;
+    public VisualEffect ZipLineSparks1;
+    public VisualEffect ZipLineSparks2;
 
     public float VelocityAnimSpeedMultiplier = 0.1f;
 
@@ -443,12 +446,17 @@ public class Player : Damagable
             _endZip = null;
             _zipline = null;
             ZipVFXVolume.weight = 0;
+            ZipLineSparks1.SendEvent(Shader.PropertyToID("StopSpark"));
+            ZipLineSparks2.SendEvent(Shader.PropertyToID("StopSpark"));
         }
     }
 
     public void Zip(ZiplinePole point1, ZiplinePole point2, Zipline zipline)
     {
         Debug.Log("ZIPPING");
+        ZipLineSparks1.SendEvent(Shader.PropertyToID("Spark"));
+        ZipLineSparks2.SendEvent(Shader.PropertyToID("Spark"));
+
         Anim.PlayGrind();
         AnimUI.PlayGrind();
         IsZipping = true;
