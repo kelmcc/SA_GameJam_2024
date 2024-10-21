@@ -1,0 +1,188 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c97d9cc3c2f807d4e930250d8e644db8, type: 3}
+  m_Name: Main
+  m_EditorClassIdentifier: 
+  _ignoreListenerSettings: 0
+  _outOfSightVolumeMultiplier: 1
+  _offscreenVolumeMultiplier: 1
+  _dopplerLevel: 1
+  _defaultDelay: 0
+  _distortionFilter:
+    _isEnabled: 0
+    distortionLevel: 0.5
+  _lowPassFilter:
+    _isEnabled: 0
+    cutoffFrequency: 5000
+    lowpassResonanceQ: 1
+  _highPassFilter:
+    _isEnabled: 0
+    cutoffFrequency: 5000
+    highpassResonanceQ: 1
+  _chorusFilter:
+    _isEnabled: 0
+    dryMix: 0.5
+    wetMix1: 0.5
+    wetMix2: 0.5
+    wetMix3: 0.5
+    delay: 40
+    rate: 0.8
+    depth: 0.03
+  _echoFilter:
+    _isEnabled: 0
+    delay: 500
+    decayRatio: 0.5
+    wetMix: 1
+    dryMix: 1
+  _reverbFilter:
+    _isEnabled: 0
+    reverbPreset: 27
+    dryLevel: 0
+    room: 0
+    roomHF: 0
+    roomLF: 0
+    decayTime: 1
+    decayHFRatio: 0.5
+    reflectionsLevel: -10000
+    reflectionsDelay: 0
+    reverbLevel: 0
+    reverbDelay: 0.04
+    HFReference: 5000
+    LFReference: 250
+    diffusion: 100
+    density: 100
+  _startFadeFilter:
+    _isEnabled: 0
+    duration: 1
+    delay: 0
+    startVolume: 0
+    endVolume: 1
+    fadeCurve:
+      serializedVersion: 2
+      m_Curve:
+      - serializedVersion: 3
+        time: 0
+        value: 0
+        inSlope: 0
+        outSlope: 1
+        tangentMode: 0
+        weightedMode: 0
+        inWeight: 0
+        outWeight: 0
+      - serializedVersion: 3
+        time: 1
+        value: 1
+        inSlope: 1
+        outSlope: 0
+        tangentMode: 0
+        weightedMode: 0
+        inWeight: 0
+        outWeight: 0
+      m_PreInfinity: 2
+      m_PostInfinity: 2
+      m_RotationOrder: 4
+  _endFadeFilter:
+    _isEnabled: 0
+    duration: 1
+    endDelay: 0
+    startVolume: 1
+    endVolume: 0
+    fadeCurve:
+      serializedVersion: 2
+      m_Curve:
+      - serializedVersion: 3
+        time: 0
+        value: 0
+        inSlope: 0
+        outSlope: 1
+        tangentMode: 0
+        weightedMode: 0
+        inWeight: 0
+        outWeight: 0
+      - serializedVersion: 3
+        time: 1
+        value: 1
+        inSlope: 1
+        outSlope: 0
+        tangentMode: 0
+        weightedMode: 0
+        inWeight: 0
+        outWeight: 0
+      m_PreInfinity: 2
+      m_PostInfinity: 2
+      m_RotationOrder: 4
+  _volumeCurveFilter:
+    _isEnabled: 0
+    volumeCurve:
+      serializedVersion: 2
+      m_Curve:
+      - serializedVersion: 3
+        time: 0
+        value: 0
+        inSlope: 0
+        outSlope: 1
+        tangentMode: 0
+        weightedMode: 0
+        inWeight: 0
+        outWeight: 0
+      - serializedVersion: 3
+        time: 1
+        value: 1
+        inSlope: 1
+        outSlope: 0
+        tangentMode: 0
+        weightedMode: 0
+        inWeight: 0
+        outWeight: 0
+      m_PreInfinity: 2
+      m_PostInfinity: 2
+      m_RotationOrder: 4
+  _pitchCurveFilter:
+    _isEnabled: 0
+    pitchCurve:
+      serializedVersion: 2
+      m_Curve:
+      - serializedVersion: 3
+        time: 0
+        value: 1
+        inSlope: 0
+        outSlope: 0
+        tangentMode: 0
+        weightedMode: 0
+        inWeight: 0
+        outWeight: 0
+      - serializedVersion: 3
+        time: 1
+        value: 1
+        inSlope: 0
+        outSlope: 0
+        tangentMode: 0
+        weightedMode: 0
+        inWeight: 0
+        outWeight: 0
+      m_PreInfinity: 2
+      m_PostInfinity: 2
+      m_RotationOrder: 4
+  _volumeRange:
+    _min: 0.5
+    _max: 0.5
+  _pitchRange:
+    _min: 1
+    _max: 1
+  _rolloffDistance:
+    _min: 1
+    _max: 10
+  _cooldown: 0
+  _outputMixer: {fileID: 0}
+  _clipSelection: 3
+  _audioClips:
+  - {fileID: 8300000, guid: 2d5791b4e7e2d5640afb8f9fe1a47cb2, type: 3}
