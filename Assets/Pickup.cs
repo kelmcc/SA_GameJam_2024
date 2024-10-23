@@ -22,7 +22,8 @@ public class Pickup : MonoBehaviour
     private bool _pickedUp;
     private Rigidbody rb;
     private float t = 0;
-    
+    public bool Kinematic { get; set; }
+
     void Start()
     {
         bounceRoot.transform.localPosition = StartBouncePosition;

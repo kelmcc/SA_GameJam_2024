@@ -26,6 +26,8 @@ public class Player : Damagable
     
     public VolumetricFog Fog;
     public List<FogSetting> FogSettings;
+
+    public float MinimumVelocityDoubleForce = 1f;
     
     
     public EffectSoundBank GrindSFX;
@@ -166,7 +168,7 @@ public class Player : Damagable
         Pickup pickup = collider.GetComponent<Pickup>();
         if (pickup != null)
         {
-            _coinz += 1;
+            _coinz += 2;
             coinUISpawner.Spawn();
             pickup.PickedUp();
             return;
@@ -235,6 +237,11 @@ public class Player : Damagable
         if (Sprint.ToInputAction().IsPressed())
         {
             _currentSpeed = SprintSpeed;
+        }
+
+        if (_body.velocity.magnitude < MinimumVelocityDoubleForce)
+        {
+            _currentSpeed *= 2;
         }
 
         Vector3 forward = (transform.position - VCam.transform.position).normalized;
@@ -438,7 +445,7 @@ public class Player : Damagable
         transform.position = LastStableGroundPosition.position;
         Debug.LogError("Player has fallen");
 
-        TakeDamage(_fallDamage, transform.position);
+        //TakeDamage(_fallDamage, transform.position);
     }
 
     protected override void TakeDamage(float damage, Vector3 damageSourcePosition)

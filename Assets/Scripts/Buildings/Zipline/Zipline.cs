@@ -54,8 +54,14 @@ public class Zipline : Building
 
         return mid;
     }
-
-    private void LateUpdate()
+    
+    
+    private void Start()
+    {
+        Generate();
+    }
+    
+    private void Generate()
     {
         if (Point1.isActiveAndEnabled && Point2.isActiveAndEnabled)
         {
@@ -71,11 +77,22 @@ public class Zipline : Building
             {
                 SegmentLength = 1f;
             }
+            
+          
+
+            int c = 0;
             for (float d = 0; d < length; d += SegmentLength)
             {
                 float t = d / length;
-                points.Add(Vector3.Lerp(Vector3.Lerp(p1, mid, t), Vector3.Lerp(mid, p2, t), t));
+                Vector3 p = Vector3.Lerp(Vector3.Lerp(p1, mid, t), Vector3.Lerp(mid, p2, t), t);
+                points.Add(p);
 
+                float sidePadding = 6;
+                if (Application.isPlaying && c %4 == 0 && d > sidePadding && d < length-sidePadding)
+                {
+                    CoinPickupSpawner.Instance.SpawnCoin(p, true);
+                }
+                c++;
             }
             points.Add(p2);
             LineRenderer.positionCount = points.Count;
