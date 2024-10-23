@@ -46,8 +46,9 @@ public class CoinUIController : MonoBehaviour
             Player.Instance.SpidersHaveIncreased();
         }
 
-        int seconds = (int) (t % 60f);
-        int minutes = (int)(t / 60f);
+        float tInverse = _spiderUpdateInterval - t;
+        int seconds = (int) (tInverse % 60f);
+        int minutes = (int)(tInverse / 60f);
 
         spiderText.text = $"Spiders increasing in: {minutes:0}:{seconds:00}";
 

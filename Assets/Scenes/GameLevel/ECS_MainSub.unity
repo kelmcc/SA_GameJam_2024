@@ -26515,7 +26515,7 @@ MonoBehaviour:
   - {fileID: 5375864959004207078}
   - {fileID: 473523667061733108}
   - {fileID: 3160251843228813252}
-  SpawnCountPerTick: 2
+  SpawnCountPerTick: 0
 --- !u!1 &4683273617110206713
 GameObject:
   m_ObjectHideFlags: 0

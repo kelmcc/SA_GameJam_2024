@@ -278,7 +278,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fc2965538461bce4d869a6bd0300b25c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Cost: 200
+  Cost: 150
   BuildTriggerMask:
     serializedVersion: 2
     m_Bits: 8
